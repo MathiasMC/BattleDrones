@@ -1,0 +1,201 @@
+settings:
+  name: '&dDrone shop > Energy'
+  size: 54
+0:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+1:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+2:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+3:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+4:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+5:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+6:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+7:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+8:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+9:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+17:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+18:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+26:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+27:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+35:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+36:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+44:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+45:
+  NAME: ' '
+  LORES: []
+  MATERIAL: RED_STAINED_GLASS_PANE
+  AMOUNT: 1
+  OPTIONS:
+    - BACK
+46:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+47:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+48:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+49:
+  NAME: '&6My balance'
+  LORES:
+    - '&f{coins}'
+  MATERIAL: SUNFLOWER
+  AMOUNT: 1
+50:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+51:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+52:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+53:
+  NAME: ' '
+  LORES: []
+  MATERIAL: BLACK_STAINED_GLASS_PANE
+  AMOUNT: 1
+20:
+  NAME: '&6Laser drone'
+  LORES:
+    - '&f-----------------'
+    - '&fDrones armed with'
+    - '&flaser weapons.'
+    - ' '
+    - '&7Cost: 100 coin(s)'
+  HEAD: laser-1
+  AMOUNT: 1
+  OPTIONS:
+    - DRONE_LASER_BUY
+  SHOP-COMMANDS:
+    BOUGHT:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Laser Drone&a!'
+    COINS:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
+    HAVE:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
+  COST: 100
+21:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1
+22:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1
+23:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1
+24:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1
+29:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1
+30:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1
+31:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1
+32:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1
+33:
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
+  AMOUNT: 1

@@ -1,0 +1,200 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+
+gui:
+  NAME: '&6Healing drone'
+  LORES:
+    - '&f-----------------'
+    - '&fDrone armed with'
+    - '&fhealing systems.'
+    - ' '
+    - '&fLMB &7- &aActivate'
+    - '&fRMB &7- &cDeactivate'
+    - '&fMiddle click &7- Open drone menu'
+  AMOUNT: 1
+  POSITION: 21
+  SPAWN-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6Healing Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  REMOVE-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Healing Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  WAIT:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Healing Drone &cright now try again later.'
+  WAIT-SECONDS: 20
+
+  # Ammo used by this drone and it must match (/bd give ammo)
+  AMMO:
+    NAME: '&6Healing Ammo'
+    LORES:
+      - '&fThis is your drone ammo'
+    MATERIAL: GREEN_DYE
+
+default:
+  1:
+
+    # Custom head from config.yml
+    head: healing-1
+
+    # Heal amount between min and max
+    min: 1
+    max: 3
+
+    # How far to look for entity´s
+    range: 10
+
+    # Delay seconds
+    cooldown: 6
+
+    # cost: amount (this is not needed for level 1)
+
+    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    max-ammo-slots: 2
+
+    # Health
+    health: 50
+
+    # Regen drone
+    regen:
+
+      # Amount of health to add
+      health: 1
+
+      # Regen (health) every (x amount of seconds) (0 to disable)
+      delay: 20
+
+    # Commands when damaged
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+
+    # Particle line
+    particle-line:
+      space: 0.4
+      amount: 3
+      size: 1
+      rgb:
+        r: 0
+        g: 255
+        b: 0
+
+    # Every x amount of ammo used -1 health
+    wear-and-tear: 15
+
+    # This section is run every time the drone shoots
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+
+    # Upgrade Commands
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour healing drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your healing drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour healing drone is at the max level already!'
+
+    messages:
+      name:
+        searching: '&6HEALING DRONE &7(&3{name}&7) &7(&e1&7)'
+        target: '&6HEALING DRONE &7(&3{name}&7) &7(&e1&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected entity to heal...'
+  2:
+    head: healing-2
+    min: 1
+    max: 4
+    range: 11
+    cooldown: 5
+    cost: 1000
+    max-ammo-slots: 4
+    health: 65
+    regen:
+      health: 1
+      delay: 18
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    particle-line:
+      space: 0.4
+      amount: 3
+      size: 1
+      rgb:
+        r: 0
+        g: 255
+        b: 0
+    wear-and-tear: 18
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour healing drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your healing drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour healing drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6HEALING DRONE &7(&3{name}&7) &7(&e2&7)'
+        target: '&6HEALING DRONE &7(&3{name}&7) &7(&e2&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected entity to heal...'
+  3:
+    head: healing-3
+    min: 1
+    max: 6
+    range: 12
+    cooldown: 4
+    cost: 2000
+    max-ammo-slots: 6
+    health: 75
+    regen:
+      health: 1
+      delay: 14
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    particle-line:
+      space: 0.4
+      amount: 3
+      size: 1
+      rgb:
+        r: 0
+        g: 255
+        b: 0
+    wear-and-tear: 20
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour healing drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your healing drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour healing drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6HEALING DRONE &7(&3{name}&7) &7(&e3&7)'
+        target: '&6HEALING DRONE &7(&3{name}&7) &7(&e3&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected entity to heal...'

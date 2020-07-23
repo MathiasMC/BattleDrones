@@ -1,0 +1,162 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+
+gui:
+  NAME: '&6Machine Gun drone'
+  LORES:
+    - '&f-----------------'
+    - '&fDrone armed with'
+    - '&fmachine gun weapon.'
+    - ' '
+    - '&fLMB &7- &aActivate'
+    - '&fRMB &7- &cDeactivate'
+    - '&fMiddle click &7- Open drone menu'
+  AMOUNT: 1
+  POSITION: 20
+  SPAWN-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6Machine Gun Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  REMOVE-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Machine Gun Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  WAIT:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Machine Gun Drone &cright now try again later.'
+  WAIT-SECONDS: 20
+
+  # Ammo used by this drone and it must match (/bd give ammo)
+  AMMO:
+    NAME: '&6Machine Gun Ammo'
+    LORES:
+      - '&fThis is your drone ammo'
+    MATERIAL: STICK
+
+default:
+  1:
+
+    # Custom head from config.yml
+    head: machine-gun-1
+
+    # Damage between min, max
+    min: 3.5
+    max: 5
+
+    # How far to look for entity´s
+    range: 10
+
+    # Delay 20 = 1 second
+    cooldown: 2
+
+    # The accuracy of the drone to hit and damage max
+    accuracy: 0.45
+
+    # cost: amount (this is not needed for level 1)
+
+    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    max-ammo-slots: 2
+
+    # Health
+    health: 50
+
+    # Regen drone
+    regen:
+
+      # Amount of health to add
+      health: 1
+
+      # Regen (health) every (x amount of seconds) (0 to disable)
+      delay: 20
+
+    # Commands when damaged
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+
+    # Particle line
+    particle-line:
+      space: 0.2
+      length: 0.8
+      amount: 3
+      size: 1
+      rgb:
+        r: 105
+        g: 105
+        b: 105
+
+    # Every x amount of ammo used -1 health
+    wear-and-tear: 15
+
+    # This section is run every time the drone shoots
+    run:
+      player:
+        - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
+      monster:
+        - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
+      animal:
+        - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
+
+    # Upgrade Commands
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour machine gun drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your machine gun drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour machine gun drone is at the max level already!'
+
+    messages:
+      name:
+        searching: '&6MACHINE GUN DRONE &7(&3{name}&7) &7(&e1&7)'
+        target: '&6MACHINE GUN DRONE &7(&3{name}&7) &7(&e1&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  2:
+    head: machine-gun-2
+    min: 1.5
+    max: 7
+    range: 11
+    cooldown: 2
+    accuracy: 0.55
+    cost: 1000
+    max-ammo-slots: 4
+    health: 65
+    regen:
+      health: 1
+      delay: 18
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    particle-line:
+      space: 0.2
+      length: 0.8
+      amount: 3
+      size: 1
+      rgb:
+        r: 105
+        g: 105
+        b: 105
+    wear-and-tear: 25
+    run:
+      player:
+        - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
+      monster:
+        - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
+      animal:
+        - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour machine gun drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your machine gun drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour machine gun drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6MACHINE GUN DRONE &7(&3{name}&7) &7(&e2&7)'
+        target: '&6MACHINE GUN DRONE &7(&3{name}&7) &7(&e2&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'

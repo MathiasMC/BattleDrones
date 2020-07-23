@@ -1,0 +1,11 @@
+main: me.MathiasMC.BattleDrones.BattleDrones
+version: ${project.version}
+name: ${project.name}
+author: MathiasMC
+description: ${project.description}
+api-version: 1.13
+softdepend: [PlaceholderAPI, WorldGuard]
+commands:
+  battledrones:
+    description: BattleDrones main command
+    aliases: [bd]

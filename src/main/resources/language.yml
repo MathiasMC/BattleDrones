@@ -1,0 +1,183 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+
+battledrones:
+  command:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    unknown:
+      - '&7[&dBattleDrones&7] &cUnknown sub command &f{command}'
+    message:
+      - '&c&m---------------------------------------------'
+      - '&7&l> &dBattleDrones created by &eMathiasMC'
+      - '&7&l> &bVersion: &e{version}'
+      - '&7&l> &f/battledrones help for list of commands'
+      - '&7&l> &2Any ideas for the plugin or need help?'
+      - '&7&l> &2Contact me on spigot'
+      - '&c&m---------------------------------------------'
+  help:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    message:
+      - '&c&m---------------------------------------------'
+      - '&7&l> &f/battledrones reload'
+      - '&7&l> &f/battledrones shop'
+      - '&7&l> &f/battledrones menu'
+      - '&7&l> &f/battledrones save'
+      - '&7&l> &f/battledrones unlock <droneType> <player>'
+      - '&7&l> &f/battledrones lock <droneType> <player>'
+      - '&7&l> &f/battledrones group set <player> <groupName>'
+      - '&7&l> &f/battledrones group reset <player>'
+      - '&7&l> &f/battledrones message <player> <text>'
+      - '&7&l> &f/battledrones coins set/add/remove <player> <amount>'
+      - '&7&l> &f/battledrones give ammo <droneType> <player> <amount>'
+      - '&7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
+      - '&c&m---------------------------------------------'
+  reload:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    message:
+      - '&7[&dBattleDrones&7] &eReloaded all configs!'
+  message:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones <player> <text>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  save:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    message:
+      - '&7[&dBattleDrones&7] &aSaved cached data to the database!'
+  shop:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones shop <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  menu:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones menu <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  sound:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
+    names:
+      - '&c{sound_names}'
+    world:
+      - '&7[&dBattleDrones&7] &cNot a valid world!'
+    number:
+      - '&7[&dBattleDrones&7] &cSomething is wrong with the numbers!'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    found:
+      - '&7[&dBattleDrones&7] &cThe sound is not found!'
+  unlock:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones unlock <droneType> <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    type:
+      - '&7[&dBattleDrones&7] &cNot a valid drone type!'
+    message:
+      - '&7[&dBattleDrones&7] &eUnlocked drone {drone} for {player}'
+  lock:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones lock <droneType> <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    type:
+      - '&7[&dBattleDrones&7] &cNot a valid drone type!'
+    message:
+      - '&7[&dBattleDrones&7] &eLocked drone {drone} for {player}'
+  group:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones group set/reset'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    valid:
+      - '&7[&dBattleDrones&7] &cNot a valid group name! [a-zA-Z]'
+    reset:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones group reset <player>'
+      message:
+        - '&7[&dBattleDrones&7] &e{player} group is reset back to the default group!'
+    set:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones group set <player> <groupName>'
+      message:
+        - '&7[&dBattleDrones&7] &e{player} group is now set to {group}'
+  coins:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    set:
+      - '&7[&dBattleDrones&7] &e{player} coins is now set to {coins}'
+    add:
+      - '&7[&dBattleDrones&7] &eAdded {coins} coins to {player}'
+    remove:
+      - '&7[&dBattleDrones&7] &eRemoved {coins} coins from {player}'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones coins set/add/remove <player> <amount>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    number:
+      - '&7[&dBattleDrones&7] &cNot a number!'
+    0:
+      - '&7[&dBattleDrones&7] &cThe amount must be over 0!'
+  give:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    number:
+      - '&7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
+    ammo:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <amount>'
+      message:
+        - '&7[&dBattleDrones&7] &aAdded &6{amount} {drone} &aammo to &6{player}'
+gui:
+  whitelist:
+    seconds: 15
+    time:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &eYou have 15 seconds to type an whitelist name in the chat!'
+    add:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &eAdded {name} to your drone whitelist!'
+    same:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot whitelist the same name!'
+    active:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot do that!'
+    own:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cant whitelist yourself. You are funny'
+    name-color: '&6'
+    lores:
+      - '&cRight Click to remove this player'
+      - '&cfrom the whitelist'
+  ammo:
+    full:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYour drone ammo storage is full!'
+    not:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cThat item is not the right ammo for your drone!'
+  drone:
+    enabled: Enabled
+    disabled: Disabled

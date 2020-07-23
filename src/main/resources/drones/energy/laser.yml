@@ -1,0 +1,210 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+
+gui:
+  NAME: '&6Laser drone'
+  LORES:
+    - '&f-----------------'
+    - '&fDrone armed with'
+    - '&flaser weapon.'
+    - ' '
+    - '&fLMB &7- &aActivate'
+    - '&fRMB &7- &cDeactivate'
+    - '&fMiddle click &7- Open drone menu'
+  AMOUNT: 1
+  POSITION: 20
+  SPAWN-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6Laser Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  REMOVE-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Laser Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  WAIT:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Laser Drone &cright now try again later.'
+  WAIT-SECONDS: 20
+
+  # Ammo used by this drone and it must match (/bd give ammo)
+  AMMO:
+    NAME: '&6Laser Ammo'
+    LORES:
+      - '&fThis is your drone ammo'
+    MATERIAL: REDSTONE
+
+default:
+  1:
+
+    # Custom head from config.yml
+    head: laser-1
+
+    # Damage between min, max
+    min: 0.5
+    max: 3
+
+    # How far to look for entity´s
+    range: 10
+
+    # Delay 20 = 1 second
+    cooldown: 23
+
+    # The accuracy of the drone to hit and damage max (0-1)
+    accuracy: 0.45
+
+    # How much knockback to give to your target
+    knockback: 0
+
+    # cost: amount (this is not needed for level 1)
+
+    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    max-ammo-slots: 2
+
+    # Health
+    health: 50
+
+    # Regen drone
+    regen:
+
+      # Amount of health to add
+      health: 1
+
+      # Regen (health) every (x amount of seconds) (0 to disable)
+      delay: 20
+
+    # Commands when damaged
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+
+    # Particle line
+    particle-line:
+      space: 0.4
+      amount: 3
+      size: 1
+      rgb:
+        r: 188
+        g: 31
+        b: 31
+
+    # Every x amount of ammo used -1 health
+    wear-and-tear: 12
+
+    # This section is run every time the drone shoots
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+
+    # Upgrade commands
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour laser drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your laser drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour laser drone is at the max level already!'
+
+    messages:
+      name:
+        searching: '&6LASER DRONE &7(&3{name}&7) &7(&e1&7)'
+        target: '&6LASER DRONE &7(&3{name}&7) &7(&e1&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  2:
+    head: laser-2
+    min: 1.2
+    max: 3.5
+    range: 11
+    cooldown: 21
+    accuracy: 0.55
+    knockback: 0.5
+    cost: 1000
+    max-ammo-slots: 4
+    health: 65
+    regen:
+      health: 1
+      delay: 16
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    particle-line:
+      space: 0.4
+      amount: 3
+      size: 1
+      rgb:
+        r: 188
+        g: 31
+        b: 31
+    wear-and-tear: 14
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour laser drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your laser drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour laser drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6LASER DRONE &7(&3{name}&7) &7(&e2&7)'
+        target: '&6LASER DRONE &7(&3{name}&7) &7(&e2&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  3:
+    head: laser-3
+    min: 2.2
+    max: 4.8
+    range: 12
+    cooldown: 18
+    accuracy: 0.65
+    knockback: 1.2
+    cost: 2000
+    max-ammo-slots: 6
+    health: 75
+    regen:
+      health: 1
+      delay: 14
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    particle-line:
+      space: 0.4
+      amount: 3
+      size: 1
+      rgb:
+        r: 188
+        g: 31
+        b: 31
+    wear-and-tear: 18
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour laser drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your laser drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour laser drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6LASER DRONE &7(&3{name}&7) &7(&e3&7)'
+        target: '&6LASER DRONE &7(&3{name}&7) &7(&e3&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'

@@ -1,0 +1,341 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+
+gui:
+  NAME: '&6Rocket drone'
+  LORES:
+    - '&f-----------------'
+    - '&fDrone armed with'
+    - '&frocket weapon.'
+    - ' '
+    - '&fLMB &7- &aActivate'
+    - '&fRMB &7- &cDeactivate'
+    - '&fMiddle click &7- Open drone menu'
+  AMOUNT: 1
+  POSITION: 20
+  SPAWN-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6Rocket Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  REMOVE-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Rocket Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  WAIT:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Rocket Drone &cright now try again later.'
+  WAIT-SECONDS: 20
+
+  # Ammo used by this drone and it must match (/bd give ammo)
+  AMMO:
+    NAME: '&6Rocket Ammo'
+    LORES:
+      - '&fThis is your drone ammo'
+    MATERIAL: LEVER
+
+default:
+  1:
+
+    # Custom head from config.yml
+    head: rocket-1
+
+    # Damage between min, max
+    min: 0.5
+    max: 3
+
+    # How far to look for entity´s
+    range: 10
+
+    # Delay 20 = 1 second
+    cooldown: 60
+
+    # Rocket head
+    rocket-head: rocket-head
+
+    # Rocket speed
+    rocket-speed: 0.3
+
+    # Time to live for the rocket entity (seconds)
+    rocket-time: 6
+
+    # Damage radius
+    rocket-radius: 3
+
+    # Create explosion?
+    rocket-explosion: true
+
+    # Power of the explosion (if enabled)
+    rocket-explosion-power: 1
+
+    # Fire where the explosion is?
+    rocket-explosion-fire: false
+
+    # Destroy blocks?
+    rocket-explosion-block: false
+
+    # cost: amount (this is not needed for level 1)
+
+    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    max-ammo-slots: 2
+
+    # Health
+    health: 50
+
+    # Regen drone
+    regen:
+
+      # Amount of health to add
+      health: 1
+
+      # Regen (health) every (x amount of seconds) (0 to disable)
+      delay: 20
+
+    # Particles when rocket explode
+    particle-explode:
+      particle: EXPLOSION_NORMAL
+      points: 12
+      radius: 1.6
+      random-radius: 2
+      amount: 6
+      speed: 0.01
+      x-offset: 0
+      y-offset: -1
+      z-offset: 0
+
+    # Particle sphere remove this section to disable this, remove inside or outside for only one
+    particle-circle:
+      outside:
+        rows: 5
+        tick: 7
+        delay: 5
+        amount: 1
+        size: 1
+        radius: 0.5
+        rgb:
+          r: 50
+          g: 50
+          b: 50
+      inside:
+        rows: 5
+        tick: 7
+        delay: 5
+        amount: 1
+        size: 1
+        radius: 0.2
+        rgb:
+          r: 255
+          g: 50
+          b: 50
+
+
+    # Commands when damaged
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+
+    # Every x amount of ammo used -1 health
+    wear-and-tear: 2
+
+    # This section is run every time the drone shoots
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+
+    # This section is run every time the rocket explode
+    explode:
+      player:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+
+    # Upgrade commands
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour rocket drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your rocket drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour rocket drone is at the max level already!'
+
+    messages:
+      name:
+        searching: '&6ROCKET DRONE &7(&3{name}&7) &7(&e1&7)'
+        target: '&6ROCKET DRONE &7(&3{name}&7) &7(&e1&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  2:
+    head: rocket-2
+    min: 0.5
+    max: 5
+    range: 11
+    cooldown: 54
+    rocket-head: rocket-head
+    rocket-speed: 0.35
+    rocket-time: 7
+    rocket-radius: 3
+    rocket-explosion: true
+    rocket-explosion-power: 1
+    rocket-explosion-fire: false
+    rocket-explosion-block: false
+    cost: 1000
+    max-ammo-slots: 4
+    health: 65
+    regen:
+      health: 1
+      delay: 18
+    particle-explode:
+      particle: EXPLOSION_NORMAL
+      points: 12
+      radius: 1.6
+      random-radius: 2
+      amount: 6
+      speed: 0.01
+      x-offset: 0
+      y-offset: -1
+      z-offset: 0
+    particle-circle:
+      outside:
+        rows: 5
+        tick: 7
+        delay: 5
+        amount: 1
+        size: 1
+        radius: 0.5
+        rgb:
+          r: 50
+          g: 50
+          b: 50
+      inside:
+        rows: 5
+        tick: 7
+        delay: 5
+        amount: 1
+        size: 1
+        radius: 0.2
+        rgb:
+          r: 255
+          g: 50
+          b: 50
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    wear-and-tear: 4
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    explode:
+      player:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour rocket drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your rocket drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour rocket drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6ROCKET DRONE &7(&3{name}&7) &7(&e2&7)'
+        target: '&6ROCKET DRONE &7(&3{name}&7) &7(&e2&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  3:
+    head: rocket-3
+    min: 2.5
+    max: 6
+    range: 12
+    cooldown: 48
+    rocket-head: rocket-head
+    rocket-speed: 0.4
+    rocket-time: 9
+    rocket-radius: 4
+    rocket-explosion: true
+    rocket-explosion-power: 2
+    rocket-explosion-fire: false
+    rocket-explosion-block: false
+    cost: 2000
+    max-ammo-slots: 6
+    health: 75
+    regen:
+      health: 1
+      delay: 14
+    particle-explode:
+      particle: EXPLOSION_NORMAL
+      points: 12
+      radius: 1.6
+      random-radius: 2
+      amount: 6
+      speed: 0.01
+      x-offset: 0
+      y-offset: -1
+      z-offset: 0
+    particle-circle:
+      outside:
+        rows: 5
+        tick: 7
+        delay: 5
+        amount: 1
+        size: 1
+        radius: 0.5
+        rgb:
+          r: 50
+          g: 50
+          b: 50
+      inside:
+        rows: 5
+        tick: 7
+        delay: 5
+        amount: 1
+        size: 1
+        radius: 0.2
+        rgb:
+          r: 255
+          g: 50
+          b: 50
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    wear-and-tear: 6
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    explode:
+      player:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour rocket drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your rocket drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour rocket drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6ROCKET DRONE &7(&3{name}&7) &7(&e3&7)'
+        target: '&6ROCKET DRONE &7(&3{name}&7) &7(&e3&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
