@@ -8,7 +8,7 @@
     <artifactId>BattleDrones</artifactId>
     <version>1.0.0</version>
     <name>BattleDrones</name>
-    <description>BattleDrones adds drones to your minecraft server</description>
+    <description>Battle Drones will add new combat mechanics to your minecraft server.</description>
 
     <repositories>
         <repository>
