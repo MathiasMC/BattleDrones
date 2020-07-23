@@ -9,4 +9,4 @@ BattleDrones will add new combat mechanics to your minecraft server.
 Mechanized machines-assistants armed with different types of weapons.
 
 # Downloads
-[spigot](soon)
+[spigot](https://www.spigotmc.org/resources/battle-drones.81850/)
