@@ -3,6 +3,7 @@ package me.MathiasMC.BattleDrones.drones;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -33,16 +34,18 @@ public class Healing {
                 if (droneHolder.getAmmo() > 0) {
                     double health = target.getHealth();
                     double maxHealth = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-                    if (armorStand.hasLineOfSight(target) && health < maxHealth) {
+                    final Location location = armorStand.getEyeLocation();
+                    final Location targetLocation = target.getEyeLocation();
+                    if (armorStand.hasLineOfSight(target) && health < maxHealth && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
                         double add = plugin.randomDouble(healing.getDouble(path + "min"), healing.getDouble(path + "max"));
                         if (health + add > maxHealth) {
                             target.setHealth(maxHealth);
                         } else {
                             target.setHealth(health + add);
                         }
-                        plugin.calculateManager.line(armorStand.getEyeLocation().add(0, 0.4, 0), target.getEyeLocation(), healing, path);
+                        plugin.calculateManager.line(location.add(0, 0.4, 0), targetLocation, healing, path);
                         BattleDrones.call.droneManager.checkAmmo(healing, path, droneHolder.getAmmo(), player.getName());
-                        BattleDrones.call.droneManager.checkShot(target, healing, armorStand.getLocation(), path, "run");
+                        BattleDrones.call.droneManager.checkShot(target, healing, location, path, "run");
                         BattleDrones.call.droneManager.takeAmmo(playerConnect, droneHolder, healing, path, player.getName());
                     }
                 }

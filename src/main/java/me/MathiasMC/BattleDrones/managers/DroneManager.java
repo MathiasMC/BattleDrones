@@ -134,10 +134,11 @@ public class DroneManager {
     public void regen(PlayerConnect playerConnect, DroneHolder droneHolder, FileConfiguration file, long drone_level) {
         final String group = playerConnect.getGroup();
         final String path = group + "." + drone_level + ".";
-        final int add_health = droneHolder.getHealth() + file.getInt(path + "regen.health");
+        final int health = file.getInt(path + "regen.health");
         if (file.getLong(path + "regen.delay") != 0) {
             playerConnect.RegenTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
                 if (playerConnect.canRegen()) {
+                    int add_health = droneHolder.getHealth() + health;
                     if (file.getInt(path + "health") >= add_health) {
                         droneHolder.setHealth(add_health);
                     }

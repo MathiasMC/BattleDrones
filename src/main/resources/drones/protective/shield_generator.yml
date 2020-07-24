@@ -68,7 +68,7 @@ default:
       health: 1
 
       # Regen (health) every (x amount of seconds) (0 to disable)
-      delay: 20
+      delay: 14
 
     # Commands when damaged
     hit-commands:
@@ -135,7 +135,7 @@ default:
     health: 65
     regen:
       health: 1
-      delay: 18
+      delay: 12
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     particle-circle:
@@ -190,8 +190,8 @@ default:
     max-ammo-slots: 6
     health: 75
     regen:
-      health: 1
-      delay: 16
+      health: 2
+      delay: 10
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     particle-circle:
@@ -246,8 +246,8 @@ default:
     max-ammo-slots: 8
     health: 85
     regen:
-      health: 1
-      delay: 14
+      health: 2
+      delay: 8
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     particle-circle:

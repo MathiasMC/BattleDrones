@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Random;
 
 public class CalculateManager {
 
@@ -163,5 +164,24 @@ public class CalculateManager {
                 location.subtract(x, y, z);
             }
         }
+    }
+
+    public void burst(Location start, Location end, double distance, double space, int r, int g, int b, int amount, int size) {
+        final Vector p1 = start.toVector();
+        final Vector vector = end.toVector().clone().subtract(p1).normalize().multiply(space);
+        double length = 0;
+        for (; length < distance; p1.add(vector)) {
+            Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
+            start.getWorld().spawnParticle(Particle.REDSTONE, p1.toLocation(start.getWorld()), amount, 0, 0, 0, 0F, dustOptions);
+            length += space;
+        }
+    }
+
+    public Location randomLocation(Location location, double radius) {
+        Random rand = new Random();
+        double angle = rand.nextDouble() * 360;
+        double x = location.getX() + (rand.nextDouble() * radius * Math.cos(Math.toRadians(angle)));
+        double z = location.getZ() + (rand.nextDouble() * radius * Math.sin(Math.toRadians(angle)));
+        return new Location(location.getWorld(), x, location.getY(), z);
     }
 }

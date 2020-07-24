@@ -35,15 +35,18 @@ public class Rocket {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
                 if (droneHolder.getAmmo() > 0) {
-                    if (armorStand.hasLineOfSight(target)) {
-                        ArmorStand rock = plugin.armorStandManager.getArmorStand(armorStand.getLocation(), false, true);
-                        rock.setHelmet(plugin.drone_heads.get(rocket.getString(path + "rocket-head")));
-                        rockets.add(rock);
-                        line(armorStand.getLocation(), target.getLocation(), rocket.getDouble(path + "rocket-speed"), rock, target, rocket, path, armorStand.getHeadPose());
-                        BattleDrones.call.droneManager.checkAmmo(rocket, path, droneHolder.getAmmo(), player.getName());
-                        BattleDrones.call.droneManager.checkShot(target, rocket, armorStand.getLocation(), path, "run");
-                        BattleDrones.call.droneManager.takeAmmo(playerConnect, droneHolder, rocket, path, player.getName());
-                    }
+                    final Location location = armorStand.getLocation();
+                    final Location targetLocation = target.getLocation();
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
+                            ArmorStand rock = plugin.armorStandManager.getArmorStand(armorStand.getLocation(), false, true);
+                            rock.setHelmet(plugin.drone_heads.get(rocket.getString(path + "rocket-head")));
+                            rockets.add(rock);
+                            line(location, targetLocation, rocket.getDouble(path + "rocket-speed"), rock, target, rocket, path, armorStand.getHeadPose(), player);
+                            BattleDrones.call.droneManager.checkAmmo(rocket, path, droneHolder.getAmmo(), player.getName());
+                            BattleDrones.call.droneManager.checkShot(target, rocket, location, path, "run");
+                            BattleDrones.call.droneManager.takeAmmo(playerConnect, droneHolder, rocket, path, player.getName());
+
+                        }
                 }
                 playerConnect.setRegen(false);
             } else {
@@ -52,7 +55,7 @@ public class Rocket {
         }, 0, rocket.getLong(path + "cooldown")).getTaskId();
     }
 
-    private void line(Location start, Location end, double space, ArmorStand armorStand, LivingEntity target, FileConfiguration file, String path, EulerAngle eulerAngle) {
+    private void line(Location start, Location end, double space, ArmorStand armorStand, LivingEntity target, FileConfiguration file, String path, EulerAngle eulerAngle, Player player) {
         new BukkitRunnable() {
             final Vector p1 = start.toVector();
             final Vector vector = end.toVector().clone().subtract(p1).normalize().multiply(space);
@@ -60,29 +63,32 @@ public class Rocket {
             int timer = 0;
             int sphereTime = 0;
             final ArrayList<String> exclude = new ArrayList<>();
+            final World world = start.getWorld();
             @Override
             public void run() {
                 p1.add(vector);
                 armorStand.setHeadPose(eulerAngle);
-                armorStand.teleport(p1.toLocation(start.getWorld()));
+                armorStand.teleport(p1.toLocation(world));
                 length += space;
-                if (timer > (file.getLong(path + "rocket-time") * 20) || plugin.armorStandManager.getEntityAround(armorStand, 1,  1, 1, 1, exclude, false).size() > 1 || armorStand.getTargetBlock(null, 1).getType() != Material.AIR) {
+                ArrayList<LivingEntity> rocket = plugin.armorStandManager.getEntityAround(armorStand, 1,  1, 1, 1, exclude, false);
+                rocket.remove(player);
+                if (timer > (file.getLong(path + "rocket-time") * 20) || rocket.size() > 0 || armorStand.getTargetBlock(null, 1).getType() != Material.AIR) {
                     this.cancel();
                     ArrayList<LivingEntity> livingEntities = plugin.armorStandManager.getEntityAround(armorStand, file.getInt(path + "rocket-radius"),  1, 1, 1, exclude, false);
                     for (LivingEntity livingEntity : livingEntities) {
                         plugin.calculateManager.damage(livingEntity, plugin.randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max")));
                     }
                     if (file.getBoolean(path + "rocket-explosion")) {
-                        start.getWorld().createExplosion(p1.toLocation(start.getWorld()), file.getInt(path + "rocket-explosion-power"), file.getBoolean(path + "rocket-explosion-fire"), file.getBoolean(path + "rocket-explosion-block"));
+                        world.createExplosion(p1.toLocation(world), file.getInt(path + "rocket-explosion-power"), file.getBoolean(path + "rocket-explosion-fire"), file.getBoolean(path + "rocket-explosion-block"));
                     }
-                    int points = file.getInt(path + "particle-explode.points");
-                    double radius = file.getDouble(path + "particle-explode.radius");
-                    Location location = armorStand.getLocation().add(file.getInt(path + "particle-explode.x-offset"), file.getInt(path + "particle-explode.y-offset"), file.getInt(path + "particle-explode.z-offset"));
+                    final int points = file.getInt(path + "particle-explode.points");
+                    final double radius = file.getDouble(path + "particle-explode.radius");
+                    final Location location = armorStand.getLocation().add(file.getInt(path + "particle-explode.x-offset"), file.getInt(path + "particle-explode.y-offset"), file.getInt(path + "particle-explode.z-offset"));
                     BattleDrones.call.droneManager.checkShot(target, file, armorStand.getLocation(), path, "explode");
                     for (int i = 0; i < points; i++) {
                         double angle = 2 * Math.PI * i / points;
                         Location point = location.clone().add(radius * Math.sin(angle), 0.0d, radius * Math.cos(angle));
-                        start.getWorld().spawnParticle(Particle.valueOf(file.getString(path + "particle-explode.particle")), randomLocation(point, file.getInt(path + "particle-explode.random-radius")), file.getInt(path + "particle-explode.amount"), 0, 0, 0, file.getDouble(path + "particle-explode.speed"));
+                        world.spawnParticle(Particle.valueOf(file.getString(path + "particle-explode.particle")), plugin.calculateManager.randomLocation(point, file.getInt(path + "particle-explode.random-radius")), file.getInt(path + "particle-explode.amount"), 0, 0, 0, file.getDouble(path + "particle-explode.speed"));
                     }
                     armorStand.remove();
                 }
@@ -120,13 +126,5 @@ public class Rocket {
                 }
             }
         }.runTaskTimer(plugin, 0, 1);
-    }
-
-    private Location randomLocation(Location location, double radius) {
-        Random rand = new Random();
-        double angle = rand.nextDouble() * 360;
-        double x = location.getX() + (rand.nextDouble() * radius * Math.cos(Math.toRadians(angle)));
-        double z = location.getZ() + (rand.nextDouble() * radius * Math.sin(Math.toRadians(angle)));
-        return new Location(location.getWorld(), x, location.getY(), z);
     }
 }

@@ -3,6 +3,7 @@ package me.MathiasMC.BattleDrones.drones;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 
@@ -23,16 +24,17 @@ public class Laser {
         final FileConfiguration laser = plugin.droneFiles.get(drone);
         final String path = group + "." + droneHolder.getLevel() + ".";
         final ArmorStand armorStand = playerConnect.head;
+        final double minDamage = laser.getDouble(path + "min");
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-            double damage = laser.getDouble(path + "min");
+            double damage = minDamage;
                 final LivingEntity target = plugin.drone_targets.get(uuid);
                 if (target != null) {
                     if (droneHolder.getAmmo() > 0) {
-                        if (armorStand.hasLineOfSight(target)) {
-                            BattleDrones.call.droneManager.checkAmmo(laser, path, droneHolder.getAmmo(), player.getName());
-                            plugin.calculateManager.line(armorStand.getEyeLocation().add(0, 0.4, 0), target.getEyeLocation(), laser, path);
+                        final Location location = armorStand.getLocation();
+                        final Location targetLocation = target.getEyeLocation();
+                        if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
+                            plugin.calculateManager.line(armorStand.getEyeLocation().add(0, 0.4, 0), targetLocation, laser, path);
                             boolean getKnockback = false;
-                            BattleDrones.call.droneManager.checkShot(target, laser, armorStand.getLocation(), path, "run");
                             if (plugin.randomChance() <= laser.getDouble(path + "accuracy")) {
                                 getKnockback = true;
                                 damage = plugin.randomDouble(damage, laser.getDouble(path + "max"));
@@ -42,6 +44,8 @@ public class Laser {
                             if (getKnockback && knockback > 0) {
                                 target.setVelocity(target.getLocation().getDirection().setY(0).normalize().multiply(knockback));
                             }
+                            BattleDrones.call.droneManager.checkAmmo(laser, path, droneHolder.getAmmo(), player.getName());
+                            BattleDrones.call.droneManager.checkShot(target, laser, location, path, "run");
                             BattleDrones.call.droneManager.takeAmmo(playerConnect, droneHolder, laser, path, player.getName());
                         }
                     }

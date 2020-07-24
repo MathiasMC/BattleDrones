@@ -92,7 +92,7 @@ default:
       health: 1
 
       # Regen (health) every (x amount of seconds) (0 to disable)
-      delay: 20
+      delay: 14
 
     # Particles when rocket explode
     particle-explode:
@@ -192,7 +192,7 @@ default:
     health: 65
     regen:
       health: 1
-      delay: 18
+      delay: 12
     particle-explode:
       particle: EXPLOSION_NORMAL
       points: 12
@@ -275,8 +275,8 @@ default:
     max-ammo-slots: 6
     health: 75
     regen:
-      health: 1
-      delay: 14
+      health: 2
+      delay: 10
     particle-explode:
       particle: EXPLOSION_NORMAL
       points: 12

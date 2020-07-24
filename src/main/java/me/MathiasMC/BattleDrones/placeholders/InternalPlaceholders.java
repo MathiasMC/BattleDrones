@@ -38,7 +38,7 @@ public class InternalPlaceholders {
     public int getDroneMaxHealth(PlayerConnect playerConnect, String uuid) {
         if (playerConnect.hasActive()  && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
-            return plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLeft() + ".health");
+            return plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health");
         }
         return 0;
     }

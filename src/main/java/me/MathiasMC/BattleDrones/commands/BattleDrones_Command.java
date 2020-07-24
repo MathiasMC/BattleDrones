@@ -260,11 +260,12 @@ public class BattleDrones_Command implements CommandExecutor {
                         if (sender.hasPermission("battledrones.command.unlock")) {
                             if (args.length == 3) {
                                 if (plugin.drones.contains(args[1])) {
-                                    Player target = plugin.getServer().getPlayer(args[2]);
+                                    final Player target = plugin.getServer().getPlayer(args[2]);
                                     if (target != null) {
-                                        BattleDrones.call.loadDroneHolder(target.getUniqueId().toString(), args[1]);
-                                        PlayerConnect playerConnect = plugin.get(target.getUniqueId().toString());
-                                        DroneHolder droneHolder = plugin.getDroneHolder(target.getUniqueId().toString(), args[1]);
+                                        final String targetUUID = target.getUniqueId().toString();
+                                        BattleDrones.call.loadDroneHolder(targetUUID, args[1]);
+                                        PlayerConnect playerConnect = plugin.get(targetUUID);
+                                        DroneHolder droneHolder = plugin.getDroneHolder(targetUUID, args[1]);
                                         if (droneHolder.getUnlocked() != 1) {
                                             droneHolder.setUnlocked(1);
                                             droneHolder.setHealth(BattleDrones.call.droneFiles.get(args[1]).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
@@ -298,10 +299,11 @@ public class BattleDrones_Command implements CommandExecutor {
                         if (sender.hasPermission("battledrones.command.lock")) {
                             if (args.length == 3) {
                                 if (plugin.drones.contains(args[1])) {
-                                    Player target = plugin.getServer().getPlayer(args[2]);
+                                    final Player target = plugin.getServer().getPlayer(args[2]);
                                     if (target != null) {
-                                        BattleDrones.call.loadDroneHolder(target.getUniqueId().toString(), args[1]);
-                                        DroneHolder droneHolder = plugin.getDroneHolder(target.getUniqueId().toString(), args[1]);
+                                        final String targetUUID = target.getUniqueId().toString();
+                                        BattleDrones.call.loadDroneHolder(targetUUID, args[1]);
+                                        DroneHolder droneHolder = plugin.getDroneHolder(targetUUID, args[1]);
                                         if (droneHolder.getUnlocked() != 0) {
                                             droneHolder.setUnlocked(0);
                                             droneHolder.setHealth(0);

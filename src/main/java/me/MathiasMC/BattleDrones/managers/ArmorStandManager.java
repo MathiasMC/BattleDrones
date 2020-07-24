@@ -6,7 +6,9 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.util.BlockIterator;
 import org.bukkit.util.EulerAngle;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,5 +101,18 @@ public class ArmorStandManager {
                 }
         }
         return livingEntity;
+    }
+
+    public boolean hasBlockSight(Location start, Location end) {
+        if (plugin.config.get.getBoolean("better-block-check")) {
+            BlockIterator block = new BlockIterator(start.getWorld(), start.toVector(), new Vector(end.getBlockX() - start.getBlockX(), end.getBlockY() - start.getBlockY(), end.getBlockZ() - start.getBlockZ()), 0, (int) Math.floor(start.distanceSquared(end)));
+            while (block.hasNext()) {
+                Material material = block.next().getType();
+                if (material.equals(Material.LAVA) || material.equals(Material.WATER)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

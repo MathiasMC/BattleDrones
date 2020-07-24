@@ -20,7 +20,7 @@ public class AIManager {
         this.plugin = plugin;
     }
 
-    public void defaultAI(final Player player, PlayerConnect playerConnect, FileConfiguration file, long drone_level, int monsters, int animals, int players, List<String> exclude, boolean reverseExclude, boolean hpCheck, boolean lookAI) {
+    public void defaultAI(final Player player, final PlayerConnect playerConnect, final FileConfiguration file, final long drone_level, final int monsters, final int animals, final int players, final List<String> exclude, final boolean reverseExclude, final boolean hpCheck, final boolean lookAI) {
         final String uuid = player.getUniqueId().toString();
         final String group = playerConnect.getGroup();
         final ArmorStand head = playerConnect.head;

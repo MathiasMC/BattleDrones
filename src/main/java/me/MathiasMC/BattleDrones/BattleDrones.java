@@ -87,9 +87,9 @@ public class BattleDrones extends JavaPlugin {
 
     public WorldGuard worldGuard;
 
-    private static Economy econ = null;
-    private static Permission perms = null;
-    private static Chat chat = null;
+    private Economy econ = null;
+    private Permission perms = null;
+    private Chat chat = null;
 
     @Override
     public void onEnable() {

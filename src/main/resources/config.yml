@@ -36,6 +36,9 @@ health-placeholder:
 # WorldGuard support (allow only attack in regions)
 worldguard: []
 
+# Better block check (disable shoot thru lava, water, this will impact performance)
+better-block-check: false
+
 # Vault (Use vault economy instead of build in coins system)
 vault: false
 
@@ -72,6 +75,9 @@ heads:
   healing-1: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTEzYmY3NWRmZmI4MTZiYWVhNmJjMmE3NTNlZDVlMTZiOTgzOTFmZGU1MzNiYWVhY2EzYjhiOWY0YWE3YjEifX19
   healing-2: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjZiN2UwYWM5YjExNzg5N2UyZTI5ZDllMTczNDg1MTNkNTU4YjZiMGNlZWRmZTA5ZjlhZDY3NDczZTg3Y2U4MyJ9fX0=
   healing-3: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTFjYTY1MjhkZWVlZDFjZWFiN2RlODU0ZWQ5NGVlMmMzZTdkODE5NWI0YWVlYmFiMTgyYmMwMDVkNjU3MDdlNiJ9fX0=
+  flamethrower-1: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzgyNjYyYTE5OWNhMjk0NzlmZmVhOWRlODJjYTYzMDVlZjVjMmI1ZDQ3OGFjNzYyNmE0MjA0NjViYzY5YzViIn19fQ==
+  flamethrower-2: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTM4ZDY3ZDdiODViODlhODlhNWFkNGIxNjhlYzY3ZGJkZGIxZTU4YzY0OGFjYjFkMmQ2MDJjZGUzZDlmYjgyIn19fQ==
+  flamethrower-3: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTI4ZjFlZDFiOWNhNzZhYzcxNGYxODEzODNhNzVlNTQ0ZGRkYmVkNmZkOGUwMTJiOTU0OTI0NTI0ODBmNyJ9fX0=
 
 # Drone dead
 dead:
