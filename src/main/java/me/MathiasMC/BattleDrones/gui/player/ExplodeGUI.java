@@ -46,15 +46,19 @@ public class ExplodeGUI extends GUI {
         if (rocket.getInt("gui.POSITION") == slot && droneHolder.getUnlocked() == 1) {
             if (e.isLeftClick()) {
                 if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    BattleDrones.call.droneManager.runCommands(player, playerConnect, rocket, "gui.SPAWN-COMMANDS");
-                    playerConnect.stopDrone();
-                    spawnRocket(player, droneHolder, rocket);
-                    BattleDrones.call.droneManager.waitSchedule(uuid, rocket);
+                    if (BattleDrones.call.drone_amount.size() < BattleDrones.call.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount")) {
+                        BattleDrones.call.droneManager.runCommands(player, playerConnect, rocket, "gui.SPAWN-COMMANDS", false);
+                        playerConnect.stopDrone();
+                        spawnRocket(player, droneHolder, rocket);
+                        BattleDrones.call.droneManager.waitSchedule(uuid, rocket);
+                    } else {
+                        BattleDrones.call.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
+                    }
                 } else {
                     BattleDrones.call.droneManager.wait(player, rocket);
                 }
             } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.runCommands(player, playerConnect, rocket, "gui.REMOVE-COMMANDS");
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, rocket, "gui.REMOVE-COMMANDS", false);
                 playerConnect.stopDrone();
                 playerConnect.saveDrone(droneHolder);
                 playerConnect.save();

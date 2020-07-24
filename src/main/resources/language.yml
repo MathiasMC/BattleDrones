@@ -179,5 +179,7 @@ gui:
     not:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cThat item is not the right ammo for your drone!'
   drone:
+    amount-reached:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your drone right now maximum drone count reached.'
     enabled: Enabled
     disabled: Disabled

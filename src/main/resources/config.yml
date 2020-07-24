@@ -36,6 +36,9 @@ health-placeholder:
 # WorldGuard support (allow only attack in regions)
 worldguard: []
 
+# Drone count (How many drones can be active at the same time)
+drone-amount: 10
+
 # Save every x amount of minutes
 save:
   use: true

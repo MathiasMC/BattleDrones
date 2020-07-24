@@ -79,6 +79,8 @@ public class BattleDrones extends JavaPlugin {
 
     public ArrayList<String> drones = new ArrayList<>();
 
+    public HashSet<String> drone_amount = new HashSet<>();
+
     public WorldGuard worldGuard;
 
     @Override

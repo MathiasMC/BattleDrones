@@ -111,8 +111,8 @@ public class DroneManager {
         }
     }
 
-    public void runCommands(Player player, PlayerConnect playerConnect, FileConfiguration file, String path) {
-        if (!playerConnect.hasActive()) {
+    public void runCommands(Player player, PlayerConnect playerConnect, FileConfiguration file, String path, boolean bypass) {
+        if ((!playerConnect.hasActive() && path.equalsIgnoreCase("gui.SPAWN-COMMANDS")) || (playerConnect.hasActive() && path.equalsIgnoreCase("gui.REMOVE-COMMANDS")) || bypass) {
             final Location location = player.getLocation();
             final String x = String.valueOf(location.getBlockX());
             final String y = String.valueOf(location.getBlockY());

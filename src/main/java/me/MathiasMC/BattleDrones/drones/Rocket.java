@@ -66,7 +66,7 @@ public class Rocket {
                 armorStand.setHeadPose(eulerAngle);
                 armorStand.teleport(p1.toLocation(start.getWorld()));
                 length += space;
-                if (timer > (file.getLong(path + "rocket-time") * 20) || plugin.armorStandManager.getEntityAround(armorStand, 1,  1, 1, 1, exclude, false).size() > 0 || armorStand.getTargetBlock(null, 1).getType() != Material.AIR) {
+                if (timer > (file.getLong(path + "rocket-time") * 20) || plugin.armorStandManager.getEntityAround(armorStand, 1,  1, 1, 1, exclude, false).size() > 1 || armorStand.getTargetBlock(null, 1).getType() != Material.AIR) {
                     this.cancel();
                     ArrayList<LivingEntity> livingEntities = plugin.armorStandManager.getEntityAround(armorStand, file.getInt(path + "rocket-radius"),  1, 1, 1, exclude, false);
                     for (LivingEntity livingEntity : livingEntities) {

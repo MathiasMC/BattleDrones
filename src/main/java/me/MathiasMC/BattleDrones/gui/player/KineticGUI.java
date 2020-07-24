@@ -46,15 +46,19 @@ public class KineticGUI extends GUI {
         if (machine_gun.getInt("gui.POSITION") == slot && droneHolder.getUnlocked() == 1) {
             if (e.isLeftClick()) {
                 if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    BattleDrones.call.droneManager.runCommands(player, playerConnect, machine_gun, "gui.SPAWN-COMMANDS");
-                    playerConnect.stopDrone();
-                    spawnMachineGun(player, playerConnect, machine_gun);
-                    BattleDrones.call.droneManager.waitSchedule(uuid, machine_gun);
+                    if (BattleDrones.call.drone_amount.size() < BattleDrones.call.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount")) {
+                        BattleDrones.call.droneManager.runCommands(player, playerConnect, machine_gun, "gui.SPAWN-COMMANDS", false);
+                        playerConnect.stopDrone();
+                        spawnMachineGun(player, playerConnect, machine_gun);
+                        BattleDrones.call.droneManager.waitSchedule(uuid, machine_gun);
+                    } else {
+                        BattleDrones.call.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
+                    }
                 } else {
                     BattleDrones.call.droneManager.wait(player, machine_gun);
                 }
             } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.runCommands(player, playerConnect, machine_gun, "gui.REMOVE-COMMANDS");
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, machine_gun, "gui.REMOVE-COMMANDS", false);
                 playerConnect.stopDrone();
                 playerConnect.saveDrone(droneHolder);
                 playerConnect.save();

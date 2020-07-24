@@ -32,6 +32,7 @@ public class PlayerConnect {
 
     public void setActive(String set) {
         this.active = set;
+        BattleDrones.call.drone_amount.add(uuid);
     }
 
     public void setCoins(long set) {
@@ -98,6 +99,7 @@ public class PlayerConnect {
         stopShoot();
         stopRegen();
         setActive("");
+        BattleDrones.call.drone_amount.remove(uuid);
     }
 
     public void saveDrone(DroneHolder droneHolder) {

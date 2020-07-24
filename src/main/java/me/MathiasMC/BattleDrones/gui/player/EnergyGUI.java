@@ -46,15 +46,19 @@ public class EnergyGUI extends GUI {
         if (laser.getInt("gui.POSITION") == slot && droneHolder.getUnlocked() == 1) {
             if (e.isLeftClick()) {
                 if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    BattleDrones.call.droneManager.runCommands(player, playerConnect, laser, "gui.SPAWN-COMMANDS");
-                    playerConnect.stopDrone();
-                    spawnLaser(player, droneHolder, laser);
-                    BattleDrones.call.droneManager.waitSchedule(uuid, laser);
+                    if (BattleDrones.call.drone_amount.size() < BattleDrones.call.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount")) {
+                        BattleDrones.call.droneManager.runCommands(player, playerConnect, laser, "gui.SPAWN-COMMANDS", false);
+                        playerConnect.stopDrone();
+                        spawnLaser(player, droneHolder, laser);
+                        BattleDrones.call.droneManager.waitSchedule(uuid, laser);
+                    } else {
+                        BattleDrones.call.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
+                    }
                 } else {
                     BattleDrones.call.droneManager.wait(player, laser);
                 }
             } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.runCommands(player, playerConnect, laser, "gui.REMOVE-COMMANDS");
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, laser, "gui.REMOVE-COMMANDS", false);
                 playerConnect.stopDrone();
                 playerConnect.saveDrone(droneHolder);
                 playerConnect.save();
