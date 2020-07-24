@@ -46,7 +46,7 @@ public class KineticGUI extends GUI {
         if (machine_gun.getInt("gui.POSITION") == slot && droneHolder.getUnlocked() == 1) {
             if (e.isLeftClick()) {
                 if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    BattleDrones.call.droneManager.spawnCommands(player, playerConnect, machine_gun);
+                    BattleDrones.call.droneManager.runCommands(player, playerConnect, machine_gun, "gui.SPAWN-COMMANDS");
                     playerConnect.stopDrone();
                     spawnMachineGun(player, playerConnect, machine_gun);
                     BattleDrones.call.droneManager.waitSchedule(uuid, machine_gun);
@@ -54,7 +54,7 @@ public class KineticGUI extends GUI {
                     BattleDrones.call.droneManager.wait(player, machine_gun);
                 }
             } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.removeCommands(player, playerConnect, machine_gun);
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, machine_gun, "gui.REMOVE-COMMANDS");
                 playerConnect.stopDrone();
                 playerConnect.saveDrone(droneHolder);
                 playerConnect.save();
@@ -104,6 +104,6 @@ public class KineticGUI extends GUI {
                 false, false, true);
         BattleDrones.call.machineGun.shot(player);
         playerConnect.setActive("machine_gun");
-        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, playerConnect.getActive(), droneHolder.getLevel());
+        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
     }
 }

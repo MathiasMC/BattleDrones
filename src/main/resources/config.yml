@@ -6,6 +6,9 @@
 #           contact me on spigot          #
 #                                         #
 
+# Check for updates on startup?
+update-check: true
+
 # Drone health in gui
 health:
 
@@ -31,8 +34,7 @@ health-placeholder:
   amount: 20
 
 # WorldGuard support (allow only attack in regions)
-worldguard:
-  - region
+worldguard: []
 
 # Save every x amount of minutes
 save:

@@ -20,6 +20,7 @@ import me.MathiasMC.BattleDrones.placeholders.PlaceholderAPI;
 import me.MathiasMC.BattleDrones.support.WorldGuard;
 import me.MathiasMC.BattleDrones.utils.MetricsLite;
 import me.MathiasMC.BattleDrones.utils.TextUtils;
+import me.MathiasMC.BattleDrones.utils.UpdateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
@@ -125,6 +126,15 @@ public class BattleDrones extends JavaPlugin {
                 saveSchedule();
             }
             new MetricsLite(this, 8224);
+            if (config.get.getBoolean("update-check")) {
+                new UpdateUtils(this, 81850).getVersion(version -> {
+                    if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                        textUtils.info("You are using the latest version of BattleDrones (" + getDescription().getVersion() + ")");
+                    } else {
+                        textUtils.warning("Version: " + version + " has been released! you are currently using version: " + getDescription().getVersion());
+                    }
+                });
+            }
         } else {
             textUtils.error("Disabling plugin cannot connect to database");
             getServer().getPluginManager().disablePlugin(this);
@@ -262,7 +272,7 @@ public class BattleDrones extends JavaPlugin {
         }, interval * 1200, interval * 1200);
     }
 
-    public void addHeads() {
+    private void addHeads() {
         for (String head : config.get.getConfigurationSection("heads").getKeys(false)) {
             drone_heads.put(head, setTexture(config.get.getString("heads." + head)));
         }

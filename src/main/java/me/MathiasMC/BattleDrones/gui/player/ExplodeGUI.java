@@ -46,7 +46,7 @@ public class ExplodeGUI extends GUI {
         if (rocket.getInt("gui.POSITION") == slot && droneHolder.getUnlocked() == 1) {
             if (e.isLeftClick()) {
                 if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    BattleDrones.call.droneManager.spawnCommands(player, playerConnect, rocket);
+                    BattleDrones.call.droneManager.runCommands(player, playerConnect, rocket, "gui.SPAWN-COMMANDS");
                     playerConnect.stopDrone();
                     spawnRocket(player, droneHolder, rocket);
                     BattleDrones.call.droneManager.waitSchedule(uuid, rocket);
@@ -54,7 +54,7 @@ public class ExplodeGUI extends GUI {
                     BattleDrones.call.droneManager.wait(player, rocket);
                 }
             } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.removeCommands(player, playerConnect, rocket);
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, rocket, "gui.REMOVE-COMMANDS");
                 playerConnect.stopDrone();
                 playerConnect.saveDrone(droneHolder);
                 playerConnect.save();
@@ -104,6 +104,6 @@ public class ExplodeGUI extends GUI {
                 false, false, true);
         BattleDrones.call.rocket.shot(player);
         playerConnect.setActive("rocket");
-        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, playerConnect.getActive(), droneHolder.getLevel());
+        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
     }
 }

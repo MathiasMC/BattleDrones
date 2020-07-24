@@ -2,10 +2,7 @@ package me.MathiasMC.BattleDrones.managers;
 
 import com.google.common.base.Strings;
 import me.MathiasMC.BattleDrones.BattleDrones;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -138,17 +135,18 @@ public class CalculateManager {
     public void line(Location start, Location end, FileConfiguration file, String path) {
         final double distance = start.distance(end);
         final Vector p1Vector = start.toVector();
-        double space = file.getDouble(path + "particle-line.space");
-        int r = file.getInt(path + "particle-line.rgb.r");
-        int g = file.getInt(path + "particle-line.rgb.g");
-        int b = file.getInt(path + "particle-line.rgb.b");
-        int amount = file.getInt(path + "particle-line.amount");
-        int size = file.getInt(path + "particle-line.size");
+        final World world = start.getWorld();
+        final double space = file.getDouble(path + "particle-line.space");
+        final int r = file.getInt(path + "particle-line.rgb.r");
+        final int g = file.getInt(path + "particle-line.rgb.g");
+        final int b = file.getInt(path + "particle-line.rgb.b");
+        final int amount = file.getInt(path + "particle-line.amount");
+        final int size = file.getInt(path + "particle-line.size");
         final Vector vector = end.toVector().clone().subtract(p1Vector).normalize().multiply(space);
         double length = 0;
         for (; length < distance; p1Vector.add(vector)) {
             Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
-            start.getWorld().spawnParticle(Particle.REDSTONE, p1Vector.toLocation(start.getWorld()), amount, 0, 0, 0, 0F, dustOptions);
+            start.getWorld().spawnParticle(Particle.REDSTONE, p1Vector.toLocation(world), amount, 0, 0, 0, 0F, dustOptions);
             length += space;
         }
     }

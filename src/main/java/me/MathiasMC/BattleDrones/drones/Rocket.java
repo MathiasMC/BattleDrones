@@ -30,11 +30,11 @@ public class Rocket {
         final String group = playerConnect.getGroup();
         final FileConfiguration rocket = plugin.droneFiles.get(drone);
         final String path = group + "." + droneHolder.getLevel() + ".";
+        final ArmorStand armorStand = playerConnect.head;
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
                 if (droneHolder.getAmmo() > 0) {
-                    final ArmorStand armorStand = playerConnect.head;
                     if (armorStand.hasLineOfSight(target)) {
                         ArmorStand rock = plugin.armorStandManager.getArmorStand(armorStand.getLocation(), false, true);
                         rock.setHelmet(plugin.drone_heads.get(rocket.getString(path + "rocket-head")));

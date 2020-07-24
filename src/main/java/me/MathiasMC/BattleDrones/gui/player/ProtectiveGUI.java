@@ -49,7 +49,7 @@ public class ProtectiveGUI extends GUI {
         if (shield_generator.getInt("gui.POSITION") == slot && droneHolder.getUnlocked() == 1) {
             if (e.isLeftClick()) {
                 if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    BattleDrones.call.droneManager.spawnCommands(player, playerConnect, shield_generator);
+                    BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.SPAWN-COMMANDS");
                     playerConnect.stopDrone();
                     spawnShieldGenerator(player, playerConnect, shield_generator);
                     BattleDrones.call.droneManager.waitSchedule(uuid, shield_generator);
@@ -57,7 +57,7 @@ public class ProtectiveGUI extends GUI {
                     BattleDrones.call.droneManager.wait(player, shield_generator);
                 }
             } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.removeCommands(player, playerConnect, shield_generator);
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.REMOVE-COMMANDS");
                 playerConnect.stopDrone();
                 playerConnect.saveDrone(droneHolder);
                 playerConnect.save();
@@ -67,7 +67,7 @@ public class ProtectiveGUI extends GUI {
         } else if (healing.getInt("gui.POSITION") == slot && healingHolder.getUnlocked() == 1) {
             if (e.isLeftClick()) {
                 if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    BattleDrones.call.droneManager.spawnCommands(player, playerConnect, healing);
+                    BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.SPAWN-COMMANDS");
                     playerConnect.stopDrone();
                     spawnHealing(player, playerConnect, healing);
                     BattleDrones.call.droneManager.waitSchedule(uuid, healing);
@@ -75,7 +75,7 @@ public class ProtectiveGUI extends GUI {
                     BattleDrones.call.droneManager.wait(player, healing);
                 }
             } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.removeCommands(player, playerConnect, healing);
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.REMOVE-COMMANDS");
                 playerConnect.stopDrone();
                 playerConnect.saveDrone(healingHolder);
                 playerConnect.save();
@@ -133,7 +133,7 @@ public class ProtectiveGUI extends GUI {
         BattleDrones.call.shieldGenerator.shot(player);
         playerConnect.setActive("shield_generator");
         playerConnect.setRegen(true);
-        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, playerConnect.getActive(), droneHolder.getLevel());
+        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
     }
 
     private void spawnHealing(Player player, PlayerConnect playerConnect, FileConfiguration file) {
@@ -151,6 +151,6 @@ public class ProtectiveGUI extends GUI {
         BattleDrones.call.healing.shot(player);
         playerConnect.setActive("healing");
         playerConnect.setRegen(true);
-        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, playerConnect.getActive(), droneHolder.getLevel());
+        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
     }
 }

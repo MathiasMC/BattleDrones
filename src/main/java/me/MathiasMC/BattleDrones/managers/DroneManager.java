@@ -16,8 +16,8 @@ public class DroneManager {
     }
 
     public void checkAmmo(FileConfiguration file, String path, long ammo, String name) {
-        int maxAmmo = file.getInt(path + "max-ammo-slots") * 64;
-        long ammoLeft = Double.valueOf(Math.floor(ammo * (100D / maxAmmo))).longValue();
+        final int maxAmmo = file.getInt(path + "max-ammo-slots") * 64;
+        final long ammoLeft = Double.valueOf(Math.floor(ammo * (100D / maxAmmo))).longValue();
         if (ammoLeft != 0L) {
             if (ammoLeft != Double.valueOf(Math.floor((ammo + 1) * (100D / maxAmmo))).longValue()) {
                 ammoMessage(ammoLeft, name);
@@ -72,13 +72,17 @@ public class DroneManager {
     }
 
     private void shotCommands(FileConfiguration laser, String path, Location location, String targetName) {
+        final String x = String.valueOf(location.getBlockX());
+        final String y = String.valueOf(location.getBlockY());
+        final String z = String.valueOf(location.getBlockZ());
+        final String world = location.getWorld().getName();
         for (String command : laser.getStringList(path)) {
             BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
-                    .replace("{world}", location.getWorld().getName())
-                    .replace("{x}", String.valueOf(location.getBlockX()))
-                    .replace("{y}", String.valueOf(location.getBlockY()))
-                    .replace("{z}", String.valueOf(location.getBlockZ())
-                            .replace("{target}", targetName)));
+                    .replace("{world}", world)
+                    .replace("{x}", x)
+                    .replace("{y}", y)
+                    .replace("{z}", z)
+                            .replace("{target}", targetName));
         }
     }
 
@@ -90,55 +94,50 @@ public class DroneManager {
     }
 
     public void wait(Player player, FileConfiguration file) {
-        Location location = player.getLocation();
+        final Location location = player.getLocation();
+        final String x = String.valueOf(location.getBlockX());
+        final String y = String.valueOf(location.getBlockY());
+        final String z = String.valueOf(location.getBlockZ());
+        final String world = player.getWorld().getName();
+        final String name = player.getName();
         for (String command : file.getStringList("gui.WAIT")) {
             BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
-                    .replace("{player}", player.getName())
-                    .replace("{world}", player.getWorld().getName())
-                    .replace("{x}", String.valueOf(location.getBlockX()))
-                    .replace("{y}", String.valueOf(location.getBlockY()))
-                    .replace("{z}", String.valueOf(location.getBlockZ()))
+                    .replace("{player}", name)
+                    .replace("{world}", world)
+                    .replace("{x}", x)
+                    .replace("{y}", y)
+                    .replace("{z}", z)
             );
         }
     }
 
-    public void spawnCommands(Player player, PlayerConnect playerConnect, FileConfiguration file) {
+    public void runCommands(Player player, PlayerConnect playerConnect, FileConfiguration file, String path) {
         if (!playerConnect.hasActive()) {
-            Location location = player.getLocation();
-            for (String command : file.getStringList("gui.SPAWN-COMMANDS")) {
+            final Location location = player.getLocation();
+            final String x = String.valueOf(location.getBlockX());
+            final String y = String.valueOf(location.getBlockY());
+            final String z = String.valueOf(location.getBlockZ());
+            final String world = player.getWorld().getName();
+            final String name = player.getName();
+            for (String command : file.getStringList(path)) {
                 BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
-                        .replace("{player}", player.getName())
-                        .replace("{world}", player.getWorld().getName())
-                        .replace("{x}", String.valueOf(location.getBlockX()))
-                        .replace("{y}", String.valueOf(location.getBlockY()))
-                        .replace("{z}", String.valueOf(location.getBlockZ()))
+                        .replace("{player}", name)
+                        .replace("{world}", world)
+                        .replace("{x}", x)
+                        .replace("{y}", y)
+                        .replace("{z}", z)
                 );
             }
         }
     }
 
-    public void removeCommands(Player player, PlayerConnect playerConnect, FileConfiguration file) {
-        if (playerConnect.hasActive()) {
-            Location location = player.getLocation();
-            for (String command : file.getStringList("gui.REMOVE-COMMANDS")) {
-                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
-                        .replace("{player}", player.getName())
-                        .replace("{world}", player.getWorld().getName())
-                        .replace("{x}", String.valueOf(location.getBlockX()))
-                        .replace("{y}", String.valueOf(location.getBlockY()))
-                        .replace("{z}", String.valueOf(location.getBlockZ()))
-                );
-            }
-        }
-    }
-
-    public void regen(PlayerConnect playerConnect, DroneHolder droneHolder, FileConfiguration file, final String type, long drone_level) {
+    public void regen(PlayerConnect playerConnect, DroneHolder droneHolder, FileConfiguration file, long drone_level) {
         final String group = playerConnect.getGroup();
         final String path = group + "." + drone_level + ".";
+        final int add_health = droneHolder.getHealth() + file.getInt(path + "regen.health");
         if (file.getLong(path + "regen.delay") != 0) {
             playerConnect.RegenTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
                 if (playerConnect.canRegen()) {
-                    int add_health = droneHolder.getHealth() + file.getInt(path + "regen.health");
                     if (file.getInt(path + "health") >= add_health) {
                         droneHolder.setHealth(add_health);
                     }

@@ -22,19 +22,20 @@ public class EntityDamageByEntity implements Listener {
     @EventHandler
     public void onEntity(EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player) {
-            String entityUUID = e.getEntity().getUniqueId().toString();
-            PlayerConnect playerConnect = plugin.get(entityUUID);
-            if (playerConnect.getActive().equalsIgnoreCase("shield_generator")) {
-                DroneHolder droneHolder = plugin.getDroneHolder(entityUUID, "shield_generator");
+            final String entityUUID = e.getEntity().getUniqueId().toString();
+            final PlayerConnect playerConnect = plugin.get(entityUUID);
+            final String drone = "shield_generator";
+            if (playerConnect.getActive().equalsIgnoreCase(drone)) {
+                final DroneHolder droneHolder = plugin.getDroneHolder(entityUUID, drone);
                 if (!plugin.shieldGenerator.cooldown.contains(entityUUID)) {
                     if (droneHolder.getAmmo() > 0) {
                         plugin.shieldGenerator.cooldown.add(entityUUID);
                         playerConnect.setRegen(false);
-                        FileConfiguration shield_generator = plugin.droneFiles.get("shield_generator");
-                        String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".";
-                        double finalDamage = e.getFinalDamage();
-                        double randomReduce = plugin.randomDouble(shield_generator.getDouble(path + "min"), shield_generator.getDouble(path + "max"));
-                        double reducedDamage = finalDamage - finalDamage * randomReduce;
+                        final FileConfiguration shield_generator = plugin.droneFiles.get(drone);
+                        final String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".";
+                        final double finalDamage = e.getFinalDamage();
+                        final double randomReduce = plugin.randomDouble(shield_generator.getDouble(path + "min"), shield_generator.getDouble(path + "max"));
+                        final double reducedDamage = finalDamage - finalDamage * randomReduce;
                         e.setDamage(reducedDamage);
                         if (e.getDamager() instanceof Player) {
                             shieldGeneratorRun(shield_generator, path + "run.player", playerConnect.head.getLocation(), e.getEntity().getName(), String.valueOf(plugin.calculateManager.getProcentFromDouble(randomReduce)));
@@ -42,13 +43,13 @@ public class EntityDamageByEntity implements Listener {
                             shieldGeneratorRun(shield_generator, path + "run.monster", playerConnect.head.getLocation(), e.getEntity().getName(), String.valueOf(plugin.calculateManager.getProcentFromDouble(randomReduce)));
                         }
                         if (shield_generator.contains(path + "particle-circle.ability")) {
-                            double radius = shield_generator.getInt(path + "particle-circle.ability.radius");
-                            int size = shield_generator.getInt(path + "particle-circle.ability.size");
-                            int amount = shield_generator.getInt(path + "particle-circle.ability.amount");
-                            int rows = shield_generator.getInt(path + "particle-circle.ability.rows");
-                            int r = shield_generator.getInt(path + "particle-circle.ability.rgb.r");
-                            int g = shield_generator.getInt(path + "particle-circle.ability.rgb.g");
-                            int b = shield_generator.getInt(path + "particle-circle.ability.rgb.b");
+                            final double radius = shield_generator.getInt(path + "particle-circle.ability.radius");
+                            final int size = shield_generator.getInt(path + "particle-circle.ability.size");
+                            final int amount = shield_generator.getInt(path + "particle-circle.ability.amount");
+                            final int rows = shield_generator.getInt(path + "particle-circle.ability.rows");
+                            final int r = shield_generator.getInt(path + "particle-circle.ability.rgb.r");
+                            final int g = shield_generator.getInt(path + "particle-circle.ability.rgb.g");
+                            final int b = shield_generator.getInt(path + "particle-circle.ability.rgb.b");
                             plugin.calculateManager.sphere(playerConnect.head.getLocation().add(0, 0.8, 0), radius, rows, r, g, b, size, amount);
                         }
                         plugin.droneManager.takeAmmo(playerConnect, droneHolder, shield_generator, path, e.getEntity().getName());
@@ -63,12 +64,16 @@ public class EntityDamageByEntity implements Listener {
     }
 
     private void shieldGeneratorRun(FileConfiguration file, String path, Location location, String targetName, String reduce) {
+        final String world = location.getWorld().getName();
+        final String x = String.valueOf(location.getBlockX());
+        final String y = String.valueOf(location.getBlockX());
+        final String z = String.valueOf(location.getBlockX());
         for (String command : file.getStringList(path)) {
             BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
-                    .replace("{world}", location.getWorld().getName())
-                    .replace("{x}", String.valueOf(location.getBlockX()))
-                    .replace("{y}", String.valueOf(location.getBlockY()))
-                    .replace("{z}", String.valueOf(location.getBlockZ()))
+                    .replace("{world}", world)
+                    .replace("{x}", x)
+                    .replace("{y}", y)
+                    .replace("{z}", z)
                     .replace("{damage}", reduce)
                     .replace("{target}", targetName));
         }

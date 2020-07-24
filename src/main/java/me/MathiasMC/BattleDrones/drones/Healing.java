@@ -26,8 +26,8 @@ public class Healing {
         final String group = playerConnect.getGroup();
         final FileConfiguration healing = plugin.droneFiles.get(drone);
         final String path = group + "." + droneHolder.getLevel() + ".";
+        final ArmorStand armorStand = playerConnect.head;
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-            final ArmorStand armorStand = playerConnect.head;
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
                 if (droneHolder.getAmmo() > 0) {

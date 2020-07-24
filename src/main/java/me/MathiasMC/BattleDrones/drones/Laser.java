@@ -22,9 +22,9 @@ public class Laser {
         final String group = playerConnect.getGroup();
         final FileConfiguration laser = plugin.droneFiles.get(drone);
         final String path = group + "." + droneHolder.getLevel() + ".";
+        final ArmorStand armorStand = playerConnect.head;
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             double damage = laser.getDouble(path + "min");
-                final ArmorStand armorStand = playerConnect.head;
                 final LivingEntity target = plugin.drone_targets.get(uuid);
                 if (target != null) {
                     if (droneHolder.getAmmo() > 0) {

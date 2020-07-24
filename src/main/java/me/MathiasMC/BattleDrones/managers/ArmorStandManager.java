@@ -80,12 +80,13 @@ public class ArmorStandManager {
     public LivingEntity getClose(Entity entity, double radius, int monsters, int animal, int player, List<String> excludePlayers, boolean reverseExclude, boolean lowHP) {
         double max = Double.MAX_VALUE;
         LivingEntity livingEntity = null;
-        LivingEntity living = (LivingEntity) entity;
+        final LivingEntity living = (LivingEntity) entity;
         if (lowHP && living.getHealth() < living.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
             return (LivingEntity) entity;
         }
+        final Location entityLocation = entity.getLocation();
         for(LivingEntity key : getEntityAround(entity, radius, monsters, animal, player, excludePlayers, reverseExclude)) {
-            double distance = key.getLocation().distance(entity.getLocation());
+            double distance = key.getLocation().distance(entityLocation);
                 if (max == Double.MAX_VALUE || distance < max) {
                     max = distance;
                     if (!lowHP) {
