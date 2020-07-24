@@ -25,7 +25,7 @@ public class ArmorStandManager {
         as.setVisible(visible);
         as.setSmall(mini);
         as.setBasePlate(false);
-        as.setArms(true);
+        as.setArms(false);
         as.setInvulnerable(true);
         as.setCanPickupItems(false);
         as.setGravity(false);

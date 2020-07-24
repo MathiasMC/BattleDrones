@@ -40,11 +40,23 @@ public class ShopProtectiveGUI extends GUI {
                 DroneHolder droneHolder = null;
                 String drone = "";
                 if (file.getStringList(slot + ".OPTIONS").contains("DRONE_SHIELD_GENERATOR_BUY")) {
-                    drone = "shield_generator";
-                    droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "shield_generator");
+                    if (player.hasPermission("battledrones.shop.shield.generator")) {
+                        drone = "shield_generator";
+                        droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "shield_generator");
+                    } else {
+                        for (String command : file.getStringList(slot + ".SHOP-COMMANDS.PERMISSION")) {
+                            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                        }
+                    }
                 } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_HEALING_BUY")) {
-                    drone = "healing";
-                    droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "healing");
+                    if (player.hasPermission("battledrones.shop.healing")) {
+                        drone = "healing";
+                        droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "healing");
+                    } else {
+                        for (String command : file.getStringList(slot + ".SHOP-COMMANDS.PERMISSION")) {
+                            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                        }
+                    }
                 }
                 if (droneHolder == null) {
                     return;
@@ -52,8 +64,13 @@ public class ShopProtectiveGUI extends GUI {
                 if (droneHolder.getUnlocked() != 1) {
                     final long coins = playerConnect.getCoins();
                     final long cost = file.getLong(slot + ".COST");
-                    if (coins >= cost) {
-                        playerConnect.setCoins(coins - cost);
+                    if (!BattleDrones.call.config.get.getBoolean("vault") && coins >= cost ||
+                            BattleDrones.call.config.get.getBoolean("vault") &&
+                                    BattleDrones.call.getEconomy() != null &&
+                                    BattleDrones.call.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
+                        if (!BattleDrones.call.config.get.getBoolean("vault")) {
+                            playerConnect.setCoins(coins - cost);
+                        }
                         droneHolder.setUnlocked(1);
                         droneHolder.setHealth(BattleDrones.call.droneFiles.get(drone).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
                         droneHolder.save();

@@ -88,8 +88,13 @@ public class DroneMenu extends GUI {
                 if (file.contains(path)) {
                     long coins = playerConnect.getCoins();
                     long cost = file.getLong(path + ".cost");
-                    if (coins >= cost) {
-                        playerConnect.setCoins(coins - cost);
+                    if (!BattleDrones.call.config.get.getBoolean("vault") && coins >= cost ||
+                            BattleDrones.call.config.get.getBoolean("vault") &&
+                                    BattleDrones.call.getEconomy() != null &&
+                                    BattleDrones.call.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
+                        if (!BattleDrones.call.config.get.getBoolean("vault")) {
+                            playerConnect.setCoins(coins - cost);
+                        }
                         droneHolder.setLevel((droneHolder.getLevel() + 1));
                         for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.levelup")) {
                             BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));

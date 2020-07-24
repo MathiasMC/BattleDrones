@@ -6,7 +6,7 @@
 
     <groupId>me.MathiasMC</groupId>
     <artifactId>BattleDrones</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>BattleDrones</name>
     <description>Battle Drones will add new combat mechanics to your minecraft server.</description>
 
@@ -22,6 +22,10 @@
         <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -42,6 +46,12 @@
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
             <version>7.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

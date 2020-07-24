@@ -47,48 +47,56 @@ public class ProtectiveGUI extends GUI {
         final DroneHolder healingHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "healing");
         final FileConfiguration healing = BattleDrones.call.droneFiles.get("healing");
         if (shield_generator.getInt("gui.POSITION") == slot && droneHolder.getUnlocked() == 1) {
-            if (e.isLeftClick()) {
-                if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    if (BattleDrones.call.drone_amount.size() < BattleDrones.call.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount")) {
-                        BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.SPAWN-COMMANDS", false);
-                        playerConnect.stopDrone();
-                        spawnShieldGenerator(player, playerConnect, shield_generator);
-                        BattleDrones.call.droneManager.waitSchedule(uuid, shield_generator);
+            if (player.hasPermission("battledrones.player.shield.generator")) {
+                if (e.isLeftClick()) {
+                    if (!BattleDrones.call.drone_players.contains(uuid)) {
+                        if (BattleDrones.call.drone_amount.size() < BattleDrones.call.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount")) {
+                            BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.SPAWN-COMMANDS", false);
+                            playerConnect.stopDrone();
+                            spawnShieldGenerator(player, playerConnect, shield_generator);
+                            BattleDrones.call.droneManager.waitSchedule(uuid, shield_generator);
+                        } else {
+                            BattleDrones.call.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
+                        }
                     } else {
-                        BattleDrones.call.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
+                        BattleDrones.call.droneManager.wait(player, shield_generator);
                     }
-                } else {
-                    BattleDrones.call.droneManager.wait(player, shield_generator);
+                } else if (e.isRightClick()) {
+                    BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.REMOVE-COMMANDS", false);
+                    playerConnect.stopDrone();
+                    playerConnect.saveDrone(droneHolder);
+                    playerConnect.save();
+                } else if (e.getClick().equals(ClickType.MIDDLE)) {
+                    new DroneMenu(BattleDrones.call.getPlayerMenu(player), "shield_generator").open();
                 }
-            } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.REMOVE-COMMANDS", false);
-                playerConnect.stopDrone();
-                playerConnect.saveDrone(droneHolder);
-                playerConnect.save();
-            } else if (e.getClick().equals(ClickType.MIDDLE)) {
-                new DroneMenu(BattleDrones.call.getPlayerMenu(player), "shield_generator").open();
+            } else {
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.PERMISSION", true);
             }
         } else if (healing.getInt("gui.POSITION") == slot && healingHolder.getUnlocked() == 1) {
-            if (e.isLeftClick()) {
-                if (!BattleDrones.call.drone_players.contains(uuid)) {
-                    if (BattleDrones.call.drone_amount.size() < BattleDrones.call.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount")) {
-                        BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.SPAWN-COMMANDS", false);
-                        playerConnect.stopDrone();
-                        spawnHealing(player, playerConnect, healing);
-                        BattleDrones.call.droneManager.waitSchedule(uuid, healing);
+            if (player.hasPermission("battledrones.player.healing")) {
+                if (e.isLeftClick()) {
+                    if (!BattleDrones.call.drone_players.contains(uuid)) {
+                        if (BattleDrones.call.drone_amount.size() < BattleDrones.call.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount")) {
+                            BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.SPAWN-COMMANDS", false);
+                            playerConnect.stopDrone();
+                            spawnHealing(player, playerConnect, healing);
+                            BattleDrones.call.droneManager.waitSchedule(uuid, healing);
+                        } else {
+                            BattleDrones.call.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
+                        }
                     } else {
-                        BattleDrones.call.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
+                        BattleDrones.call.droneManager.wait(player, healing);
                     }
-                } else {
-                    BattleDrones.call.droneManager.wait(player, healing);
+                } else if (e.isRightClick()) {
+                    BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.REMOVE-COMMANDS", false);
+                    playerConnect.stopDrone();
+                    playerConnect.saveDrone(healingHolder);
+                    playerConnect.save();
+                } else if (e.getClick().equals(ClickType.MIDDLE)) {
+                    new DroneMenu(BattleDrones.call.getPlayerMenu(player), "healing").open();
                 }
-            } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.REMOVE-COMMANDS", false);
-                playerConnect.stopDrone();
-                playerConnect.saveDrone(healingHolder);
-                playerConnect.save();
-            } else if (e.getClick().equals(ClickType.MIDDLE)) {
-                new DroneMenu(BattleDrones.call.getPlayerMenu(player), "healing").open();
+            } else {
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.PERMISSION", true);
             }
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
             new PlayerGUI(BattleDrones.call.getPlayerMenu(player)).open();

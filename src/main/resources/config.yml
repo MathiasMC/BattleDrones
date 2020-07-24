@@ -36,6 +36,9 @@ health-placeholder:
 # WorldGuard support (allow only attack in regions)
 worldguard: []
 
+# Vault (Use vault economy instead of build in coins system)
+vault: false
+
 # Drone count (How many drones can be active at the same time)
 drone-amount: 10
 

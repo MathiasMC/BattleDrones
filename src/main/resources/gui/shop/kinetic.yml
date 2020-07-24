@@ -153,6 +153,8 @@ settings:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
     HAVE:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
+    PERMISSION:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this machine gun drone.'
   COST: 100
 21:
   NAME: ' '

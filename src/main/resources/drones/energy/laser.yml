@@ -24,6 +24,8 @@ gui:
   REMOVE-COMMANDS:
     - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Laser Drone&a!'
     - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  PERMISSION:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this laser drone.'
   WAIT:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Laser Drone &cright now try again later.'
   WAIT-SECONDS: 20

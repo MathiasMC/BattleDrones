@@ -21,6 +21,9 @@ import me.MathiasMC.BattleDrones.support.WorldGuard;
 import me.MathiasMC.BattleDrones.utils.MetricsLite;
 import me.MathiasMC.BattleDrones.utils.TextUtils;
 import me.MathiasMC.BattleDrones.utils.UpdateUtils;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
@@ -29,6 +32,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -82,6 +86,10 @@ public class BattleDrones extends JavaPlugin {
     public HashSet<String> drone_amount = new HashSet<>();
 
     public WorldGuard worldGuard;
+
+    private static Economy econ = null;
+    private static Permission perms = null;
+    private static Chat chat = null;
 
     @Override
     public void onEnable() {
@@ -137,6 +145,11 @@ public class BattleDrones extends JavaPlugin {
                     }
                 });
             }
+            if (config.get.getBoolean("vault")) {
+                if (setupEconomy()) {
+                    textUtils.info("Vault found");
+                }
+            }
         } else {
             textUtils.error("Disabling plugin cannot connect to database");
             getServer().getPluginManager().disablePlugin(this);
@@ -154,6 +167,22 @@ public class BattleDrones extends JavaPlugin {
             textUtils.exception(exception.getStackTrace(), exception.getMessage());
         }
         call = null;
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+
+    public Economy getEconomy() {
+        return econ;
     }
 
     public void load(String uuid) {

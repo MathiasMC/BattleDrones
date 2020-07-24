@@ -36,26 +36,37 @@ public class ShopKineticGUI extends GUI {
         if (file.contains(String.valueOf(slot))) {
             final Player player = playerMenu.getPlayer();
             if (file.getStringList(slot + ".OPTIONS").contains("DRONE_MACHINE_GUN_BUY")) {
-                final PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
-                final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "machine_gun");
-                if (droneHolder.getUnlocked() != 1) {
-                    final long coins = playerConnect.getCoins();
-                    final long cost = file.getLong(slot + ".COST");
-                    if (coins >= cost) {
-                        playerConnect.setCoins(coins - cost);
-                        droneHolder.setUnlocked(1);
-                        droneHolder.setHealth(BattleDrones.call.droneFiles.get("machine_gun").getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
-                        droneHolder.save();
-                        for (String command : file.getStringList(slot + ".SHOP-COMMANDS.BOUGHT")) {
-                            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                if (player.hasPermission("battledrones.shop.machine.gun")) {
+                    final PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
+                    final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "machine_gun");
+                    if (droneHolder.getUnlocked() != 1) {
+                        final long coins = playerConnect.getCoins();
+                        final long cost = file.getLong(slot + ".COST");
+                        if (!BattleDrones.call.config.get.getBoolean("vault") && coins >= cost ||
+                                BattleDrones.call.config.get.getBoolean("vault") &&
+                                        BattleDrones.call.getEconomy() != null &&
+                                        BattleDrones.call.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
+                            if (!BattleDrones.call.config.get.getBoolean("vault")) {
+                                playerConnect.setCoins(coins - cost);
+                            }
+                            droneHolder.setUnlocked(1);
+                            droneHolder.setHealth(BattleDrones.call.droneFiles.get("machine_gun").getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
+                            droneHolder.save();
+                            for (String command : file.getStringList(slot + ".SHOP-COMMANDS.BOUGHT")) {
+                                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                            }
+                        } else {
+                            for (String command : file.getStringList(slot + ".SHOP-COMMANDS.COINS")) {
+                                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                            }
                         }
                     } else {
-                        for (String command : file.getStringList(slot + ".SHOP-COMMANDS.COINS")) {
+                        for (String command : file.getStringList(slot + ".SHOP-COMMANDS.HAVE")) {
                             BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
                         }
                     }
                 } else {
-                    for (String command : file.getStringList(slot + ".SHOP-COMMANDS.HAVE")) {
+                    for (String command : file.getStringList(slot + ".SHOP-COMMANDS.PERMISSION")) {
                         BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
