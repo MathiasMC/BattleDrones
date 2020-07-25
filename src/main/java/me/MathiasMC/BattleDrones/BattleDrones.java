@@ -129,6 +129,7 @@ public class BattleDrones extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
             getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
             getServer().getPluginManager().registerEvents(new EntityDamageByEntity(this), this);
+            getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
             getCommand("battledrones").setExecutor(new BattleDrones_Command(this));
             addHeads();
             PlaceholderAPI();
@@ -183,6 +184,13 @@ public class BattleDrones extends JavaPlugin {
 
     public Economy getEconomy() {
         return econ;
+    }
+
+    public String replacePlaceholders(Player player, String message) {
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
+        }
+        return message;
     }
 
     public void load(String uuid) {

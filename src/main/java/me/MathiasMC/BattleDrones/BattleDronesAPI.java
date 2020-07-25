@@ -47,4 +47,8 @@ public class BattleDronesAPI {
     public int getDroneMaxAmmo(PlayerConnect playerConnect, String uuid) {
         return BattleDrones.call.internalPlaceholders.getDroneMaxAmmo(playerConnect, uuid);
     }
+
+    public String getDroneHealthBar(PlayerConnect playerConnect, String uuid) {
+        return BattleDrones.call.internalPlaceholders.getDroneHealthBar(playerConnect, uuid);
+    }
 }

@@ -30,12 +30,12 @@ public class GUIManager {
                     itemStack = plugin.drone_heads.get(file.getString(key + ".HEAD"));
                 }
                 ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', file.getString(key + ".NAME")
-                        .replace("{coins}", String.valueOf(droneHolder.getCoins()))));
+                itemMeta.setDisplayName(plugin.replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', file.getString(key + ".NAME")
+                        .replace("{coins}", String.valueOf(droneHolder.getCoins())))));
                 ArrayList<String> list = new ArrayList<>();
                 for (String lores : file.getStringList(key + ".LORES")) {
-                    list.add(ChatColor.translateAlternateColorCodes('&', lores
-                            .replace("{coins}", String.valueOf(droneHolder.getCoins()))));
+                    list.add(plugin.replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', lores
+                            .replace("{coins}", String.valueOf(droneHolder.getCoins())))));
                 }
                 itemMeta.setLore(list);
                 itemStack.setItemMeta(itemMeta);

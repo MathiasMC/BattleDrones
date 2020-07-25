@@ -64,14 +64,17 @@ public class ArmorStandManager {
             if (animal == 1 && currentEntity instanceof org.bukkit.entity.Animals) {
                 list.add((LivingEntity) currentEntity);
             }
-            if (player == 1 && currentEntity instanceof org.bukkit.entity.Player && ((Player) currentEntity).getGameMode().equals(GameMode.SURVIVAL)) {
-                if (reverseExclude) {
-                    if (excludePlayers.contains(currentEntity.getName().toLowerCase())) {
-                        list.add((LivingEntity) currentEntity);
-                    }
-                } else {
-                    if (!excludePlayers.contains(currentEntity.getName().toLowerCase())) {
-                        list.add((LivingEntity) currentEntity);
+            if (player == 1 && currentEntity instanceof org.bukkit.entity.Player) {
+                final Player playerEntity = (Player) currentEntity;
+                if (playerEntity.isOnline() && playerEntity.getGameMode().equals(GameMode.SURVIVAL)) {
+                    if (reverseExclude) {
+                        if (excludePlayers.contains(currentEntity.getName().toLowerCase())) {
+                            list.add((LivingEntity) currentEntity);
+                        }
+                    } else {
+                        if (!excludePlayers.contains(currentEntity.getName().toLowerCase())) {
+                            list.add((LivingEntity) currentEntity);
+                        }
                     }
                 }
             }
