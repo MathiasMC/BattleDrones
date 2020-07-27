@@ -33,11 +33,14 @@ health-placeholder:
     color: '&c'
   amount: 20
 
-# WorldGuard support (allow only attack in regions)
+# WorldGuard support (disable attack in regions)
 worldguard: []
 
 # Better block check (disable shoot thru lava, water, this will impact performance)
 better-block-check: false
+
+# Exclude entity´s (Example silverfish) (entity´s in this list will not be attacked)
+exclude: []
 
 # Vault (Use vault economy instead of build in coins system)
 vault: false

@@ -3,9 +3,12 @@ package me.MathiasMC.BattleDrones.drones;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.HashSet;
 
@@ -27,20 +30,91 @@ public class ShieldGenerator {
         final String group = playerConnect.getGroup();
         final FileConfiguration shield_generator = plugin.droneFiles.get(drone);
         final String path = group + "." + droneHolder.getLevel() + ".";
-        if (shield_generator.contains(path + "particle-circle.timer")) {
-            final ArmorStand armorStand = playerConnect.head;
-            final double radius = shield_generator.getInt(path + "particle-circle.timer.radius");
-            final int size = shield_generator.getInt(path + "particle-circle.timer.size");
-            final int amount = shield_generator.getInt(path + "particle-circle.timer.amount");
-            final int rows = shield_generator.getInt(path + "particle-circle.timer.rows");
-            final int r = shield_generator.getInt(path + "particle-circle.timer.rgb.r");
-            final int g = shield_generator.getInt(path + "particle-circle.timer.rgb.g");
-            final int b = shield_generator.getInt(path + "particle-circle.timer.rgb.b");
-            playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-                if (!cooldown.contains(uuid) && droneHolder.getAmmo() > 0) {
-                    plugin.calculateManager.sphere(armorStand.getLocation().add(0, 0.4, 0), radius, rows, r, g, b, size, amount);
+        final FileConfiguration particleFile = plugin.particles.get;
+        if (shield_generator.contains(path + "particle.1")) {
+            String customParticle = shield_generator.getString(path + "particle.1");
+            if (particleFile.contains(customParticle)) {
+                final ArmorStand armorStand = playerConnect.head;
+                final int delay = particleFile.getInt(customParticle + ".delay");
+                final int size = particleFile.getInt(customParticle + ".size");
+                final int amount = particleFile.getInt(customParticle + ".amount");
+                final int r = particleFile.getInt(customParticle + ".rgb.r");
+                final int g = particleFile.getInt(customParticle + ".rgb.g");
+                final int b = particleFile.getInt(customParticle + ".rgb.b");
+                final int yOffset = particleFile.getInt(customParticle + ".y-offset");
+                playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+                    if (!cooldown.contains(uuid) && droneHolder.getAmmo() > 0) {
+                        plugin.particleManager.displayParticle(customParticle, particleFile.getString(customParticle + ".particle"), armorStand.getLocation().add(0, yOffset, 0), r, g, b, size, amount);
+                    }
+                }, 0, delay).getTaskId();
+            }
+        }
+    }
+
+    public void onEntity(EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof Player) {
+            final String entityUUID = e.getEntity().getUniqueId().toString();
+            if (plugin.list().contains(entityUUID)) {
+                final PlayerConnect playerConnect = plugin.get(entityUUID);
+                final String drone = "shield_generator";
+                if (playerConnect.getActive().equalsIgnoreCase(drone)) {
+                    final DroneHolder droneHolder = plugin.getDroneHolder(entityUUID, drone);
+                    if (!plugin.shieldGenerator.cooldown.contains(entityUUID)) {
+                        if (droneHolder.getAmmo() > 0) {
+                            plugin.shieldGenerator.cooldown.add(entityUUID);
+                            playerConnect.setRegen(false);
+                            final FileConfiguration shield_generator = plugin.droneFiles.get(drone);
+                            final String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".";
+                            final double finalDamage = e.getFinalDamage();
+                            final double randomReduce = plugin.randomDouble(shield_generator.getDouble(path + "min"), shield_generator.getDouble(path + "max"));
+                            final double reducedDamage = finalDamage - finalDamage * randomReduce;
+                            e.setDamage(reducedDamage);
+                            if (e.getDamager() instanceof Player) {
+                                shieldGeneratorRun(shield_generator, path + "run.player", playerConnect.head.getLocation(), e.getEntity().getName(), String.valueOf(plugin.calculateManager.getProcentFromDouble(randomReduce)));
+                            } else if (e.getDamager() instanceof Monster) {
+                                shieldGeneratorRun(shield_generator, path + "run.monster", playerConnect.head.getLocation(), e.getEntity().getName(), String.valueOf(plugin.calculateManager.getProcentFromDouble(randomReduce)));
+                            }
+                            if (shield_generator.contains(path + "particle.2")) {
+                                String customParticle = shield_generator.getString(path + "particle.2");
+                                final FileConfiguration particleFile = plugin.particles.get;
+                                if (particleFile.contains(customParticle)) {
+                                    final int delay = particleFile.getInt(customParticle + ".delay");
+                                    final int size = particleFile.getInt(customParticle + ".size");
+                                    final int amount = particleFile.getInt(customParticle + ".amount");
+                                    final int r = particleFile.getInt(customParticle + ".rgb.r");
+                                    final int g = particleFile.getInt(customParticle + ".rgb.g");
+                                    final int b = particleFile.getInt(customParticle + ".rgb.b");
+                                    final int yOffset = particleFile.getInt(customParticle + ".y-offset");
+                                    plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                                        plugin.particleManager.displayParticle(customParticle, particleFile.getString(customParticle + ".particle"), playerConnect.head.getLocation().add(0, yOffset, 0), r, g, b, size, amount);
+                                    }, delay);
+                                }
+                            }
+                            plugin.droneManager.takeAmmo(playerConnect, droneHolder, shield_generator, path, e.getEntity().getName());
+                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                                plugin.shieldGenerator.cooldown.remove(entityUUID);
+                                playerConnect.setRegen(true);
+                            }, shield_generator.getLong(path + "cooldown") * 20);
+                        }
+                    }
                 }
-            }, 0, shield_generator.getInt(path + "particle-circle.timer.delay")).getTaskId();
+            }
+        }
+    }
+
+    private void shieldGeneratorRun(FileConfiguration file, String path, Location location, String targetName, String reduce) {
+        final String world = location.getWorld().getName();
+        final String x = String.valueOf(location.getBlockX());
+        final String y = String.valueOf(location.getBlockX());
+        final String z = String.valueOf(location.getBlockX());
+        for (String command : file.getStringList(path)) {
+            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
+                    .replace("{world}", world)
+                    .replace("{x}", x)
+                    .replace("{y}", y)
+                    .replace("{z}", z)
+                    .replace("{damage}", reduce)
+                    .replace("{target}", targetName));
         }
     }
 }

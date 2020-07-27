@@ -74,27 +74,10 @@ default:
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
 
-    # Particle sphere remove this section to disable this, remove inside or outside for only one
-    particle-circle:
-      timer:
-        delay: 20
-        rows: 10
-        amount: 1
-        size: 1
-        radius: 3.8
-        rgb:
-          r: 255
-          g: 125
-          b: 0
-      ability:
-        rows: 10
-        amount: 1
-        size: 1
-        radius: 3.8
-        rgb:
-          r: 255
-          g: 0
-          b: 0
+    # Particles
+    particle:
+      1: shield_generator
+      2: shield_generator_ability
 
     # Every x amount of ammo used -1 health
     wear-and-tear: 15
@@ -138,26 +121,9 @@ default:
       delay: 12
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
-    particle-circle:
-      timer:
-        delay: 20
-        rows: 10
-        amount: 1
-        size: 1
-        radius: 3.8
-        rgb:
-          r: 255
-          g: 125
-          b: 0
-      ability:
-        rows: 10
-        amount: 1
-        size: 1
-        radius: 3.8
-        rgb:
-          r: 255
-          g: 0
-          b: 0
+    particle:
+      1: shield_generator
+      2: shield_generator_ability
     wear-and-tear: 18
     run:
       player:
@@ -194,26 +160,9 @@ default:
       delay: 10
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
-    particle-circle:
-      timer:
-        delay: 20
-        rows: 10
-        amount: 1
-        size: 1
-        radius: 3.8
-        rgb:
-          r: 255
-          g: 125
-          b: 0
-      ability:
-        rows: 10
-        amount: 1
-        size: 1
-        radius: 3.8
-        rgb:
-          r: 255
-          g: 0
-          b: 0
+    particle:
+      1: shield_generator
+      2: shield_generator_ability
     wear-and-tear: 20
     run:
       player:
@@ -250,26 +199,9 @@ default:
       delay: 8
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
-    particle-circle:
-      timer:
-        delay: 20
-        rows: 10
-        amount: 1
-        size: 1
-        radius: 3.8
-        rgb:
-          r: 255
-          g: 125
-          b: 0
-      ability:
-        rows: 10
-        amount: 1
-        size: 1
-        radius: 3.8
-        rgb:
-          r: 255
-          g: 0
-          b: 0
+    particle:
+      1: shield_generator
+      2: shield_generator_ability
     wear-and-tear: 25
     run:
       player:

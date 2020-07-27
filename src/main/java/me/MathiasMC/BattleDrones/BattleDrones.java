@@ -8,10 +8,7 @@ import me.MathiasMC.BattleDrones.data.Database;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import me.MathiasMC.BattleDrones.drones.*;
-import me.MathiasMC.BattleDrones.files.Config;
-import me.MathiasMC.BattleDrones.files.DronesFolder;
-import me.MathiasMC.BattleDrones.files.GUIFolder;
-import me.MathiasMC.BattleDrones.files.Language;
+import me.MathiasMC.BattleDrones.files.*;
 import me.MathiasMC.BattleDrones.gui.Menu;
 import me.MathiasMC.BattleDrones.listeners.*;
 import me.MathiasMC.BattleDrones.managers.*;
@@ -51,6 +48,7 @@ public class BattleDrones extends JavaPlugin {
     public TextUtils textUtils;
     public Config config;
     public Language language;
+    public Particles particles;
 
     public DronesFolder dronesFolder;
     public GUIFolder guiFolder;
@@ -60,6 +58,7 @@ public class BattleDrones extends JavaPlugin {
     public CalculateManager calculateManager;
     public DroneManager droneManager;
     public AIManager aiManager;
+    public ParticleManager particleManager;
 
     public Laser laser;
     public Rocket rocket;
@@ -105,6 +104,7 @@ public class BattleDrones extends JavaPlugin {
         textUtils = new TextUtils(this);
         config = new Config(this);
         language = new Language(this);
+        particles = new Particles(this);
         armorStandManager = new ArmorStandManager(this);
         guiManager = new GUIManager(this);
         laser = new Laser(this);
@@ -118,6 +118,7 @@ public class BattleDrones extends JavaPlugin {
         calculateManager = new CalculateManager(this);
         droneManager = new DroneManager(this);
         aiManager = new AIManager(this);
+        particleManager = new ParticleManager(this);
         worldGuard = new WorldGuard(this);
         database = new Database(this);
         if (database.set()) {
@@ -151,6 +152,7 @@ public class BattleDrones extends JavaPlugin {
                     textUtils.info("Vault found");
                 }
             }
+            particleManager.load();
         } else {
             textUtils.error("Disabling plugin cannot connect to database");
             getServer().getPluginManager().disablePlugin(this);
@@ -311,7 +313,8 @@ public class BattleDrones extends JavaPlugin {
         }, interval * 1200, interval * 1200);
     }
 
-    private void addHeads() {
+    public void addHeads() {
+        drone_heads.clear();
         for (String head : config.get.getConfigurationSection("heads").getKeys(false)) {
             drone_heads.put(head, setTexture(config.get.getString("heads." + head)));
         }

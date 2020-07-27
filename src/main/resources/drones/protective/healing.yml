@@ -75,14 +75,8 @@ default:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
 
     # Particle line
-    particle-line:
-      space: 0.4
-      amount: 3
-      size: 1
-      rgb:
-        r: 0
-        g: 255
-        b: 0
+    particle:
+      1: healing
 
     # Every x amount of ammo used -1 health
     wear-and-tear: 15
@@ -126,14 +120,8 @@ default:
       delay: 12
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
-    particle-line:
-      space: 0.4
-      amount: 3
-      size: 1
-      rgb:
-        r: 0
-        g: 255
-        b: 0
+    particle:
+      1: healing
     wear-and-tear: 18
     run:
       player:
@@ -170,14 +158,8 @@ default:
       delay: 10
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
-    particle-line:
-      space: 0.4
-      amount: 3
-      size: 1
-      rgb:
-        r: 0
-        g: 255
-        b: 0
+    particle:
+      1: healing
     wear-and-tear: 20
     run:
       player:

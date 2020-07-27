@@ -27,13 +27,18 @@ public class MachineGun {
         final String path = group + "." + droneHolder.getLevel() + ".";
         final ArmorStand armorStand = playerConnect.head;
         final double minDamage = machine_gun.getDouble(path + "min");
-        final double distance = machine_gun.getDouble(path + "particle-line.length");
-        final double space = machine_gun.getDouble(path + "particle-line.space");
-        final int r = machine_gun.getInt(path + "particle-line.rgb.r");
-        final int g = machine_gun.getInt(path + "particle-line.rgb.g");
-        final int b = machine_gun.getInt(path + "particle-line.rgb.b");
-        final int amount = machine_gun.getInt(path + "particle-line.amount");
-        final int size = machine_gun.getInt(path + "particle-line.size");
+        final FileConfiguration particleFile = plugin.particles.get;
+        final String customParticle = machine_gun.getString(path + "particle.1");
+        final String particleType = particleFile.getString(customParticle + ".particle");
+        final double distance = particleFile.getDouble(customParticle + ".distance");
+        final int size = particleFile.getInt(customParticle + ".size");
+        final int amount = particleFile.getInt(customParticle + ".amount");
+        final int r = particleFile.getInt(customParticle + ".rgb.r");
+        final int g = particleFile.getInt(customParticle + ".rgb.g");
+        final int b = particleFile.getInt(customParticle + ".rgb.b");
+        final int delay = particleFile.getInt(customParticle + ".delay");
+        final double yOffset = particleFile.getDouble(customParticle + ".y-offset");
+        final double space = particleFile.getDouble(customParticle + ".space");
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             double damage = minDamage;
             final LivingEntity target = plugin.drone_targets.get(uuid);
@@ -42,7 +47,12 @@ public class MachineGun {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
                     if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
-                        plugin.calculateManager.burst(armorStand.getEyeLocation().add(0, 0.4, 0), targetLocation, distance, space, r, g, b, amount, size);
+                        if (customParticle != null) {
+                            Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
+                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                            plugin.particleManager.line(particleType, armorstand, targetLocation, distance, space, r, g, b, amount, size);
+                            }, delay);
+                        }
                         if (plugin.randomChance() <= machine_gun.getDouble(path + "accuracy")) {
                             damage = plugin.randomDouble(damage, machine_gun.getDouble(path + "max"));
                         }

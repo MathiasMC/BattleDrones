@@ -94,42 +94,11 @@ default:
       # Regen (health) every (x amount of seconds) (0 to disable)
       delay: 14
 
-    # Particles when rocket explode
-    particle-explode:
-      particle: EXPLOSION_NORMAL
-      points: 12
-      radius: 1.6
-      random-radius: 2
-      amount: 6
-      speed: 0.01
-      x-offset: 0
-      y-offset: -1
-      z-offset: 0
-
-    # Particle sphere remove this section to disable this, remove inside or outside for only one
-    particle-circle:
-      outside:
-        rows: 5
-        tick: 7
-        delay: 5
-        amount: 1
-        size: 1
-        radius: 0.5
-        rgb:
-          r: 50
-          g: 50
-          b: 50
-      inside:
-        rows: 5
-        tick: 7
-        delay: 5
-        amount: 1
-        size: 1
-        radius: 0.2
-        rgb:
-          r: 255
-          g: 50
-          b: 50
+    # Particles
+    particle:
+      1: rocket-explode
+      2: rocket-outside
+      3: rocket-inside
 
 
     # Commands when damaged
@@ -193,39 +162,10 @@ default:
     regen:
       health: 1
       delay: 12
-    particle-explode:
-      particle: EXPLOSION_NORMAL
-      points: 12
-      radius: 1.6
-      random-radius: 2
-      amount: 6
-      speed: 0.01
-      x-offset: 0
-      y-offset: -1
-      z-offset: 0
-    particle-circle:
-      outside:
-        rows: 5
-        tick: 7
-        delay: 5
-        amount: 1
-        size: 1
-        radius: 0.5
-        rgb:
-          r: 50
-          g: 50
-          b: 50
-      inside:
-        rows: 5
-        tick: 7
-        delay: 5
-        amount: 1
-        size: 1
-        radius: 0.2
-        rgb:
-          r: 255
-          g: 50
-          b: 50
+    particle:
+      1: rocket-explode
+      2: rocket-outside
+      3: rocket-inside
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     wear-and-tear: 4
@@ -277,39 +217,10 @@ default:
     regen:
       health: 2
       delay: 10
-    particle-explode:
-      particle: EXPLOSION_NORMAL
-      points: 12
-      radius: 1.6
-      random-radius: 2
-      amount: 6
-      speed: 0.01
-      x-offset: 0
-      y-offset: -1
-      z-offset: 0
-    particle-circle:
-      outside:
-        rows: 5
-        tick: 7
-        delay: 5
-        amount: 1
-        size: 1
-        radius: 0.5
-        rgb:
-          r: 50
-          g: 50
-          b: 50
-      inside:
-        rows: 5
-        tick: 7
-        delay: 5
-        amount: 1
-        size: 1
-        radius: 0.2
-        rgb:
-          r: 255
-          g: 50
-          b: 50
+    particle:
+      1: rocket-explode
+      2: rocket-outside
+      3: rocket-inside
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     wear-and-tear: 6

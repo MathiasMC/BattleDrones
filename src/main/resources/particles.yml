@@ -1,0 +1,109 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+shield_generator:
+  type: sphere
+  particle: REDSTONE
+  radius: 3.8
+  distance: 10
+  amount: 1
+  size: 1
+  rgb:
+    r: 255
+    g: 125
+    b: 0
+  y-offset: 0.4
+  delay: 20
+shield_generator_ability:
+  type: sphere
+  particle: REDSTONE
+  radius: 3.8
+  distance: 10
+  amount: 1
+  size: 1
+  rgb:
+    r: 255
+    g: 0
+    b: 0
+  y-offset: 0.4
+  delay: 0
+laser:
+  type: line
+  particle: REDSTONE
+  space: 0.4
+  amount: 3
+  size: 1
+  rgb:
+    r: 188
+    g: 31
+    b: 31
+  y-offset: 0.4
+  delay: 0
+healing:
+  type: line
+  particle: REDSTONE
+  space: 0.4
+  amount: 3
+  size: 1
+  rgb:
+    r: 0
+    g: 255
+    b: 0
+  y-offset: 0.4
+  delay: 0
+machine_gun:
+  type: line
+  particle: REDSTONE
+  space: 0.2
+  distance: 0.8
+  amount: 3
+  size: 1
+  rgb:
+    r: 105
+    g: 105
+    b: 105
+  y-offset: 0.4
+  delay: 0
+rocket-explode:
+  type: circle
+  particle: EXPLOSION_NORMAL
+  distance: 12
+  radius: 1.6
+  amount: 6
+  rgb:
+    r: 255
+    g: 0
+    b: 0
+  y-offset: -1
+rocket-outside:
+  type: sphere
+  particle: FLAME
+  radius: 0.1
+  distance: 2
+  amount: 1
+  size: 1
+  rgb:
+    r: 0
+    g: 0
+    b: 0
+  y-offset: 0.7
+  tick: 2
+  delay: 4
+rocket-inside:
+  type: sphere
+  particle: CAMPFIRE_COSY_SMOKE
+  radius: 0.2
+  distance: 2
+  amount: 1
+  size: 1
+  rgb:
+    r: 255
+    g: 0
+    b: 0
+  y-offset: 0.7
+  tick: 2
+  delay: 7

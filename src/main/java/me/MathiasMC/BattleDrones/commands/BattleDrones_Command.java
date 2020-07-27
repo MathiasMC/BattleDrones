@@ -59,6 +59,9 @@ public class BattleDrones_Command implements CommandExecutor {
                             plugin.language.load();
                             plugin.guiFolder.load();
                             plugin.dronesFolder.load();
+                            plugin.particles.load();
+                            plugin.particleManager.load();
+                            plugin.addHeads();
                             for (String message : plugin.language.get.getStringList("battledrones.reload.message")) {
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                             }

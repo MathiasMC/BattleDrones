@@ -21,20 +21,20 @@ public class WorldGuard {
 
     public boolean inRegion(Entity entity) {
         if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            final Location location = BukkitAdapter.adapt(entity.getLocation());
-            final RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
-            final RegionQuery query = container.createQuery();
-            final ApplicableRegionSet set = query.getApplicableRegions(location);
             final List<String> list = plugin.config.get.getStringList("worldguard");
             if (list.isEmpty()) {
                 return true;
             }
+            final Location location = BukkitAdapter.adapt(entity.getLocation());
+            final RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
+            final RegionQuery query = container.createQuery();
+            final ApplicableRegionSet set = query.getApplicableRegions(location);
             for (ProtectedRegion region : set) {
                 if (list.contains(region.getId())) {
-                    return true;
+                    return false;
                 }
             }
-            return false;
+            return true;
         }
         return true;
     }
