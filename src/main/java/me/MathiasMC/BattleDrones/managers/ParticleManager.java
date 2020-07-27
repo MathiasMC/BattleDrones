@@ -23,7 +23,6 @@ public class ParticleManager {
 
     public void load() {
         lib.clear();
-        plugin.textUtils.info(lib.size() + " LIB");
         for (String particle : plugin.particles.get.getConfigurationSection("").getKeys(false)) {
             if (plugin.particles.get.getString(particle + ".type").equalsIgnoreCase("sphere")) {
                 Set<double[]> set = new LinkedHashSet<>();
