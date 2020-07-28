@@ -65,6 +65,7 @@ public class BattleDrones extends JavaPlugin {
     public MachineGun machineGun;
     public ShieldGenerator shieldGenerator;
     public Healing healing;
+    public Flamethrower flamethrower;
 
     public InternalPlaceholders internalPlaceholders;
 
@@ -101,6 +102,7 @@ public class BattleDrones extends JavaPlugin {
         drones.add("machine_gun");
         drones.add("shield_generator");
         drones.add("healing");
+        drones.add("flamethrower");
         textUtils = new TextUtils(this);
         config = new Config(this);
         language = new Language(this);
@@ -112,6 +114,7 @@ public class BattleDrones extends JavaPlugin {
         machineGun = new MachineGun(this);
         shieldGenerator = new ShieldGenerator(this);
         healing = new Healing(this);
+        flamethrower = new Flamethrower(this);
         internalPlaceholders = new InternalPlaceholders(this);
         dronesFolder = new DronesFolder(this);
         guiFolder = new GUIFolder(this);

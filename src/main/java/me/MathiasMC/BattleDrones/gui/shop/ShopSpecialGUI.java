@@ -12,11 +12,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Objects;
 
-public class ShopEnergyGUI extends GUI {
+public class ShopSpecialGUI extends GUI {
 
-    private final FileConfiguration file = BattleDrones.call.guiFiles.get("shop_energy");
+    private final FileConfiguration file = BattleDrones.call.guiFiles.get("shop_special");
 
-    public ShopEnergyGUI(Menu playerMenu) {
+    public ShopSpecialGUI(Menu playerMenu) {
         super(playerMenu);
     }
 
@@ -35,10 +35,10 @@ public class ShopEnergyGUI extends GUI {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
             final Player player = playerMenu.getPlayer();
-            if (file.getStringList(slot + ".OPTIONS").contains("DRONE_LASER_BUY")) {
-                if (player.hasPermission("battledrones.shop.laser")) {
+            if (file.getStringList(slot + ".OPTIONS").contains("DRONE_FLAMETHROWER_BUY")) {
+                if (player.hasPermission("battledrones.shop.flamethrower")) {
                     final PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
-                    final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "laser");
+                    final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "flamethrower");
                     if (droneHolder.getUnlocked() != 1) {
                         final long coins = playerConnect.getCoins();
                         final long cost = file.getLong(slot + ".COST");
@@ -50,7 +50,7 @@ public class ShopEnergyGUI extends GUI {
                                 playerConnect.setCoins(coins - cost);
                             }
                             droneHolder.setUnlocked(1);
-                            droneHolder.setHealth(BattleDrones.call.droneFiles.get("laser").getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
+                            droneHolder.setHealth(BattleDrones.call.droneFiles.get("flamethrower").getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
                             droneHolder.save();
                             for (String command : file.getStringList(slot + ".SHOP-COMMANDS.BOUGHT")) {
                                 BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
@@ -73,7 +73,6 @@ public class ShopEnergyGUI extends GUI {
             } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 new ShopGUI(BattleDrones.call.getPlayerMenu(player)).open();
             }
-            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
         }
     }
 

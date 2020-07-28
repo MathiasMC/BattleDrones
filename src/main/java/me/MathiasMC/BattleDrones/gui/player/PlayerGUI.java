@@ -47,9 +47,13 @@ public class PlayerGUI extends GUI {
                 BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "shield_generator");
                 BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "healing");
                 new ProtectiveGUI(BattleDrones.call.getPlayerMenu(player)).open();
+            } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYER_SPECIAL")) {
+                BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "flamethrower");
+                new SpecialGUI(BattleDrones.call.getPlayerMenu(player)).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_SHOP")) {
                 new ShopGUI(BattleDrones.call.getPlayerMenu(player)).open();
             }
+            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
         }
     }
 

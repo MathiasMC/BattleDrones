@@ -5,7 +5,6 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -13,12 +12,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Random;
 
 public class CalculateManager {
 
@@ -131,57 +128,5 @@ public class CalculateManager {
             case "&r" : return ChatColor.RESET;
             default: return ChatColor.WHITE;
         }
-    }
-
-    public void line(Location start, Location end, FileConfiguration file, String path) {
-        final double distance = start.distance(end);
-        final Vector p1Vector = start.toVector();
-        final World world = start.getWorld();
-        final double space = file.getDouble(path + "particle-line.space");
-        final int r = file.getInt(path + "particle-line.rgb.r");
-        final int g = file.getInt(path + "particle-line.rgb.g");
-        final int b = file.getInt(path + "particle-line.rgb.b");
-        final int amount = file.getInt(path + "particle-line.amount");
-        final int size = file.getInt(path + "particle-line.size");
-        final Vector vector = end.toVector().clone().subtract(p1Vector).normalize().multiply(space);
-        double length = 0;
-        for (; length < distance; p1Vector.add(vector)) {
-            Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
-            start.getWorld().spawnParticle(Particle.REDSTONE, p1Vector.toLocation(world), amount, 0, 0, 0, 0F, dustOptions);
-            length += space;
-        }
-    }
-
-    public void sphere(Location location, double r, double rows, int RGB_R, int RGB_G, int RGB_B, int sizeParticle, int amountParticle) {
-        for (double phi = 0; phi <= Math.PI; phi += Math.PI / rows) {
-            for (double theta = 0; theta <= 2 * Math.PI; theta += Math.PI / rows) {
-                double x = r * Math.cos(theta) * Math.sin(phi);
-                double y = r * Math.cos(phi) + 0.3;
-                double z = r * Math.sin(theta) * Math.sin(phi);
-                location.add(x, y, z);
-                Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(RGB_R, RGB_G, RGB_B), sizeParticle);
-                location.getWorld().spawnParticle(Particle.REDSTONE, location, amountParticle, 0, 0, 0, 0F, dustOptions);
-                location.subtract(x, y, z);
-            }
-        }
-    }
-
-    public void burst(Location start, Location end, double distance, double space, int r, int g, int b, int amount, int size) {
-        final Vector p1 = start.toVector();
-        final Vector vector = end.toVector().clone().subtract(p1).normalize().multiply(space);
-        double length = 0;
-        for (; length < distance; p1.add(vector)) {
-            Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
-            start.getWorld().spawnParticle(Particle.REDSTONE, p1.toLocation(start.getWorld()), amount, 0, 0, 0, 0F, dustOptions);
-            length += space;
-        }
-    }
-
-    public Location randomLocation(Location location, double radius) {
-        Random rand = new Random();
-        double angle = rand.nextDouble() * 360;
-        double x = location.getX() + (rand.nextDouble() * radius * Math.cos(Math.toRadians(angle)));
-        double z = location.getZ() + (rand.nextDouble() * radius * Math.sin(Math.toRadians(angle)));
-        return new Location(location.getWorld(), x, location.getY(), z);
     }
 }

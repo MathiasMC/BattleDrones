@@ -15,6 +15,7 @@ public class DronesFolder {
     final File rocket;
     final File shield_generator;
     final File healing;
+    final File flamethrower;
 
     public DronesFolder(final BattleDrones plugin) {
         this.plugin = plugin;
@@ -37,6 +38,10 @@ public class DronesFolder {
         File folderProtective = new File(folder + File.separator + "protective");
         if (!folderProtective.exists()) {
             folderProtective.mkdir();
+        }
+        File folderSpecial = new File(folder + File.separator + "special");
+        if (!folderSpecial.exists()) {
+            folderSpecial.mkdir();
         }
         laser = new File(folderEnergy, "laser.yml");
         if (!laser.exists()) {
@@ -83,6 +88,15 @@ public class DronesFolder {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
         }
+        flamethrower = new File(folderSpecial, "flamethrower.yml");
+        if (!flamethrower.exists()) {
+            try {
+                flamethrower.createNewFile();
+                plugin.copy("drones/special/flamethrower.yml", flamethrower);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
         load();
     }
 
@@ -92,5 +106,6 @@ public class DronesFolder {
         plugin.droneFiles.put("machine_gun", YamlConfiguration.loadConfiguration(machine_gun));
         plugin.droneFiles.put("shield_generator", YamlConfiguration.loadConfiguration(shield_generator));
         plugin.droneFiles.put("healing", YamlConfiguration.loadConfiguration(healing));
+        plugin.droneFiles.put("flamethrower", YamlConfiguration.loadConfiguration(flamethrower));
     }
 }

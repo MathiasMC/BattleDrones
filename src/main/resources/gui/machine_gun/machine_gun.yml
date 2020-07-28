@@ -97,7 +97,7 @@ settings:
     - '&7damage: &b{min_max} &7> &b{min_max_next}'
     - '&7Range: &b{range} &7> &b{range_next}'
     - '&7Firerate: &b{firerate} &7> &b{firerate_next}'
-    - '&7Accuracy: &b{accuracy} &7> &b{accuracy_next}'
+    - '&7Accuracy: &b{accuracy}% &7> &b{accuracy_next}%'
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec &7> &b{regen_health_next} HP/{regen_delay_next} sec'
     - '&7Max ammo slots: &b{max_ammo_slots} &7> &b{max_ammo_slots_next}'
     - '&7Cost: &b{cost}'
@@ -115,7 +115,7 @@ settings:
     - '&7Ammo: &b{ammo}'
     - '&7Range: &b{range}'
     - '&7Firerate: &b{firerate}'
-    - '&7Accuracy: &b{accuracy}'
+    - '&7Accuracy: &b{accuracy}%'
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec'
     - '&7Max ammo slots: &b{max_ammo_slots}'
   MATERIAL: BOOK

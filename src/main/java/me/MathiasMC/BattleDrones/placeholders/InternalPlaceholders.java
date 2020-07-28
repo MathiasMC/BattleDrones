@@ -24,6 +24,8 @@ public class InternalPlaceholders {
             return "Shield Generator";
         } else if (active.equalsIgnoreCase("healing")) {
             return "Healing";
+        } else if (active.equalsIgnoreCase("flamethrower")) {
+            return "Flamethrower";
         }
         return "";
     }

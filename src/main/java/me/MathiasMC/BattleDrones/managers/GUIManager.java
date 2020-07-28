@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GUIManager {
 
@@ -40,6 +41,20 @@ public class GUIManager {
                 itemMeta.setLore(list);
                 itemStack.setItemMeta(itemMeta);
                 inventory.setItem(Integer.parseInt(key), itemStack);
+            }
+        }
+    }
+
+    public void dispatchCommand(FileConfiguration file, int slot, Player player) {
+        if (file.contains(slot + ".COMMANDS")) {
+            if (player.hasPermission(Objects.requireNonNull(file.getString(slot + ".COMMANDS.PERMISSION")))) {
+                for (String command : file.getStringList(slot + ".COMMANDS.LIST")) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
+                }
+            } else {
+                for (String command : file.getStringList(slot + ".COMMANDS.NO-PERMISSION")) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
+                }
             }
         }
     }

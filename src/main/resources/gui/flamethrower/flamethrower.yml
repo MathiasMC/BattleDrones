@@ -1,5 +1,5 @@
 settings:
-  name: '&dYour drones > Laser'
+  name: '&dYour drones > Flamethrower'
   size: 54
   upgrade:
     NAME: '&6Upgrade'
@@ -96,9 +96,8 @@ settings:
     - '&7Level: &b{level} &7> &b{level_next}'
     - '&7damage: &b{min_max} &7> &b{min_max_next}'
     - '&7Range: &b{range} &7> &b{range_next}'
-    - '&7Firerate: &b{firerate} &7> &b{firerate_next}'
-    - '&7Accuracy: &b{accuracy}% &7> &b{accuracy_next}%'
-    - '&7Knockback: &b{knockback} &7> &b{knockback_next}'
+    - '&7Set fire chance: &b{setfire_chance} &7> &b{setfire_chance_next}%'
+    - '&7Burning time: &b{burning_time} &7> &b{burning_time_next}'
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec &7> &b{regen_health_next} HP/{regen_delay_next} sec'
     - '&7Max ammo slots: &b{max_ammo_slots} &7> &b{max_ammo_slots_next}'
     - '&7Cost: &b{cost}'
@@ -115,9 +114,8 @@ settings:
     - '&7Damage: &b{min_max}'
     - '&7Ammo: &b{ammo}'
     - '&7Range: &b{range}'
-    - '&7Firerate: &b{firerate}'
-    - '&7Accuracy: &b{accuracy}%'
-    - '&7Knockback: &b{knockback}'
+    - '&7Set fire chance: &b{setfire_chance}%'
+    - '&7Burning time: &b{burning_time}'
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec'
     - '&7Max ammo slots: &b{max_ammo_slots}'
   MATERIAL: BOOK

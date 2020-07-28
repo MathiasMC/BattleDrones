@@ -72,6 +72,9 @@ public class ExplodeGUI extends GUI {
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
             new PlayerGUI(BattleDrones.call.getPlayerMenu(player)).open();
         }
+        if (file.contains(String.valueOf(slot))) {
+            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
+        }
     }
 
     @Override

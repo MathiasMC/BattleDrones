@@ -1,0 +1,209 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+
+gui:
+  NAME: '&6Flamethrower drone'
+  LORES:
+    - '&f-----------------'
+    - '&fDrone armed with'
+    - '&fspecial weapons.'
+    - ' '
+    - '&fLMB &7- &aActivate'
+    - '&fRMB &7- &cDeactivate'
+    - '&fMiddle click &7- Open drone menu'
+  AMOUNT: 1
+  POSITION: 20
+  SPAWN-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6Flamethrower Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  REMOVE-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Flamethrower Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  PERMISSION:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this flamethrower drone.'
+  WAIT:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Flamethrower Drone &cright now try again later.'
+  WAIT-SECONDS: 20
+
+  # Ammo used by this drone and it must match (/bd give ammo)
+  AMMO:
+    NAME: '&6Flamethrower Ammo'
+    LORES:
+      - '&fThis is your drone ammo'
+    MATERIAL: FLINT
+
+default:
+  1:
+
+    # Custom head from config.yml
+    head: flamethrower-1
+
+    # Damage between min, max
+    min: 0.5
+    max: 3
+
+    # How far to look for entity´s
+    range: 10
+
+    # Delay 20 = 1 second
+    cooldown: 25
+
+    # Projectile speed (ticks)
+    projectile-speed: 2
+
+    # Projectile space (if radius 1 = 0.0-0.99 / if radius 2 = 0.0-1.99)
+    projectile-space: 0.9
+
+    # Projectile check radius for target entity
+    projectile-radius: 1
+
+    # 0.00-1.00, Chance to set to fire the target
+    setfire-chance: 0.45
+
+    # Defines how many time the target will burn, seconds.
+    burning-time: 3
+
+    # cost: amount (this is not needed for level 1)
+
+    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    max-ammo-slots: 2
+
+    # Health
+    health: 50
+
+    # Regen drone
+    regen:
+
+      # Amount of health to add
+      health: 1
+
+      # Regen (health) every (x amount of seconds) (0 to disable)
+      delay: 14
+
+    # Commands when damaged
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+
+    # Particle line
+    particle:
+      1: flamethrower
+
+    # Every x amount of ammo used -1 health
+    wear-and-tear: 12
+
+    # This section is run every time the drone shoots
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+
+    # Upgrade commands
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your flamethrower drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour flamethrower drone is at the max level already!'
+
+    messages:
+      name:
+        searching: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e1&7)'
+        target: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e1&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  2:
+    head: flamethrower-2
+    min: 0.5
+    max: 5
+    range: 11
+    cooldown: 23
+    projectile-speed: 1
+    projectile-space: 0.9
+    projectile-radius: 1
+    setfire-chance: 0.55
+    burning-time: 5
+    cost: 1000
+    max-ammo-slots: 4
+    health: 65
+    regen:
+      health: 1
+      delay: 12
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    particle:
+      1: flamethrower
+    wear-and-tear: 14
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your flamethrower drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour flamethrower drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e2&7)'
+        target: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e2&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  3:
+    head: flamethrower-3
+    min: 0.5
+    max: 8
+    range: 12
+    cooldown: 19
+    projectile-speed: 1
+    projectile-space: 1.3
+    projectile-radius: 2
+    setfire-chance: 0.55
+    burning-time: 8
+    cost: 2000
+    max-ammo-slots: 6
+    health: 75
+    regen:
+      health: 1
+      delay: 10
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    particle:
+      1: flamethrower
+    wear-and-tear: 16
+    run:
+      player:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your flamethrower drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour flamethrower drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e3&7)'
+        target: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e3&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'

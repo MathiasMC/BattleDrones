@@ -15,12 +15,14 @@ public class GUIFolder {
     final File shop_kinetic;
     final File shop_explode;
     final File shop_protective;
+    final File shop_special;
 
     final File player;
     final File player_energy;
     final File player_kinetic;
     final File player_explode;
     final File player_protective;
+    final File player_special;
 
     final File laser;
     final File laser_whitelist;
@@ -41,6 +43,10 @@ public class GUIFolder {
     final File healing;
     final File healing_whitelist;
     final File healing_ammo;
+
+    final File flamethrower;
+    final File flamethrower_whitelist;
+    final File flamethrower_ammo;
 
     public GUIFolder(final BattleDrones plugin) {
         this.plugin = plugin;
@@ -75,6 +81,10 @@ public class GUIFolder {
         File folderHealing = new File(folder + File.separator + "healing");
         if (!folderHealing.exists()) {
             folderHealing.mkdir();
+        }
+        File folderFlamethrower = new File(folder + File.separator + "flamethrower");
+        if (!folderFlamethrower.exists()) {
+            folderFlamethrower.mkdir();
         }
         shop = new File(folderShop, "shop.yml");
         if (!shop.exists()) {
@@ -121,6 +131,15 @@ public class GUIFolder {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
         }
+        shop_special = new File(folderShop, "special.yml");
+        if (!shop_special.exists()) {
+            try {
+                shop_special.createNewFile();
+                plugin.copy("gui/shop/special.yml", shop_special);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
         player = new File(folderPlayer, "player.yml");
         if (!player.exists()) {
             try {
@@ -162,6 +181,15 @@ public class GUIFolder {
             try {
                 player_protective.createNewFile();
                 plugin.copy("gui/player/protective.yml", player_protective);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        player_special = new File(folderPlayer, "special.yml");
+        if (!player_special.exists()) {
+            try {
+                player_special.createNewFile();
+                plugin.copy("gui/player/special.yml", player_special);
             } catch (IOException exception) {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
@@ -301,6 +329,33 @@ public class GUIFolder {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
         }
+        flamethrower = new File(folderFlamethrower, "flamethrower.yml");
+        if (!flamethrower.exists()) {
+            try {
+                flamethrower.createNewFile();
+                plugin.copy("gui/flamethrower/flamethrower.yml", flamethrower);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        flamethrower_whitelist = new File(folderFlamethrower, "whitelist.yml");
+        if (!flamethrower_whitelist.exists()) {
+            try {
+                flamethrower_whitelist.createNewFile();
+                plugin.copy("gui/flamethrower/whitelist.yml", flamethrower_whitelist);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        flamethrower_ammo = new File(folderFlamethrower, "ammo.yml");
+        if (!flamethrower_ammo.exists()) {
+            try {
+                flamethrower_ammo.createNewFile();
+                plugin.copy("gui/flamethrower/ammo.yml", flamethrower_ammo);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
         load();
     }
 
@@ -310,12 +365,14 @@ public class GUIFolder {
         plugin.guiFiles.put("shop_kinetic", YamlConfiguration.loadConfiguration(shop_kinetic));
         plugin.guiFiles.put("shop_explode", YamlConfiguration.loadConfiguration(shop_explode));
         plugin.guiFiles.put("shop_protective", YamlConfiguration.loadConfiguration(shop_protective));
+        plugin.guiFiles.put("shop_special", YamlConfiguration.loadConfiguration(shop_special));
 
         plugin.guiFiles.put("player", YamlConfiguration.loadConfiguration(player));
         plugin.guiFiles.put("player_energy", YamlConfiguration.loadConfiguration(player_energy));
         plugin.guiFiles.put("player_kinetic", YamlConfiguration.loadConfiguration(player_kinetic));
         plugin.guiFiles.put("player_explode", YamlConfiguration.loadConfiguration(player_explode));
         plugin.guiFiles.put("player_protective", YamlConfiguration.loadConfiguration(player_protective));
+        plugin.guiFiles.put("player_special", YamlConfiguration.loadConfiguration(player_special));
 
         plugin.guiFiles.put("laser", YamlConfiguration.loadConfiguration(laser));
         plugin.guiFiles.put("laser_whitelist", YamlConfiguration.loadConfiguration(laser_whitelist));
@@ -336,5 +393,9 @@ public class GUIFolder {
         plugin.guiFiles.put("healing", YamlConfiguration.loadConfiguration(healing));
         plugin.guiFiles.put("healing_whitelist", YamlConfiguration.loadConfiguration(healing_whitelist));
         plugin.guiFiles.put("healing_ammo", YamlConfiguration.loadConfiguration(healing_ammo));
+
+        plugin.guiFiles.put("flamethrower", YamlConfiguration.loadConfiguration(flamethrower));
+        plugin.guiFiles.put("flamethrower_whitelist", YamlConfiguration.loadConfiguration(flamethrower_whitelist));
+        plugin.guiFiles.put("flamethrower_ammo", YamlConfiguration.loadConfiguration(flamethrower_ammo));
     }
 }

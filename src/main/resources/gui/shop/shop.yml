@@ -208,7 +208,14 @@ settings:
   MATERIAL: CHEST
   AMOUNT: 1
 33:
-  NAME: ' '
-  LORES: []
-  MATERIAL: CHEST
+  NAME: '&6Special weapons'
+  LORES:
+    - '&f-----------------'
+    - '&fDrones armed with'
+    - '&fspecial weapons.'
+    - ' '
+    - '&7Click to open category'
+  MATERIAL: ENDER_CHEST
   AMOUNT: 1
+  OPTIONS:
+    - DRONE_SHOP_SPECIAL

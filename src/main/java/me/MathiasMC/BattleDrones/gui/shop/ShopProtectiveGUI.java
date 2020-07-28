@@ -90,6 +90,7 @@ public class ShopProtectiveGUI extends GUI {
             } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 new ShopGUI(BattleDrones.call.getPlayerMenu(player)).open();
             }
+            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
         }
     }
 

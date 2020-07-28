@@ -1,5 +1,5 @@
 settings:
-  name: '&dYour drones'
+  name: '&dYour drones > Special'
   size: 54
 0:
   NAME: ' '
@@ -22,12 +22,10 @@ settings:
   MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
 4:
-  NAME: '&6Drone shop'
+  NAME: ' '
   LORES: []
-  MATERIAL: RED_STAINED_GLASS_PANE
+  MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_SHOP
 5:
   NAME: ' '
   LORES: []
@@ -91,8 +89,10 @@ settings:
 45:
   NAME: ' '
   LORES: []
-  MATERIAL: BLACK_STAINED_GLASS_PANE
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
+  OPTIONS:
+    - BACK
 46:
   NAME: ' '
   LORES: []
@@ -135,87 +135,72 @@ settings:
   MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
 20:
-  NAME: '&6Energy weapons'
+  NAME: '&cNo drone'
   LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fenergy weapons.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: REDSTONE_BLOCK
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_ENERGY
 21:
-  NAME: '&6Kinetic weapons'
+  NAME: '&cNo drone'
   LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fkinetic weapons.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: IRON_BLOCK
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_KINETIC
 22:
-  NAME: '&6Explode weapons'
+  NAME: '&cNo drone'
   LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fexplode weapons.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: TNT
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_EXPLODE
 23:
-  NAME: '&6Protective'
+  NAME: '&cNo drone'
   LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fprotective systems.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: SHIELD
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_PROTECTIVE
 24:
-  NAME: ' '
-  LORES: []
-  MATERIAL: CHEST
+  NAME: '&cNo drone'
+  LORES:
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
 29:
-  NAME: ' '
-  LORES: []
-  MATERIAL: CHEST
+  NAME: '&cNo drone'
+  LORES:
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
 30:
-  NAME: ' '
-  LORES: []
-  MATERIAL: CHEST
+  NAME: '&cNo drone'
+  LORES:
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
 31:
-  NAME: ' '
-  LORES: []
-  MATERIAL: CHEST
+  NAME: '&cNo drone'
+  LORES:
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
 32:
-  NAME: ' '
-  LORES: []
-  MATERIAL: CHEST
+  NAME: '&cNo drone'
+  LORES:
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
 33:
-  NAME: '&6Special weapons'
+  NAME: '&cNo drone'
   LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fspecial weapons.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: ENDER_CHEST
+    - '&7You do not have'
+    - '&7any drone here'
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_SPECIAL

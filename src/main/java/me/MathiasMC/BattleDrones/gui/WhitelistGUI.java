@@ -60,6 +60,7 @@ public class WhitelistGUI extends GUI {
                     }
                 }
             }
+            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
         }
         final ItemStack itemStack = e.getCurrentItem();
         if (itemStack != null && itemStack.getType().equals(Material.PLAYER_HEAD) && itemStack.getItemMeta() != null && e.isRightClick()) {

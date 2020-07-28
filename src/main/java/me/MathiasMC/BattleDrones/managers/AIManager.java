@@ -28,7 +28,10 @@ public class AIManager {
         final EulerAngle eulerAngle = new EulerAngle(0, 0, 0);
         final int radius = file.getInt(group + "." + drone_level + ".range");
         playerConnect.AItaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-            final LivingEntity target = plugin.armorStandManager.getClose(player, radius, monsters, animals, players, exclude, reverseExclude, hpCheck);
+            LivingEntity target = plugin.armorStandManager.getClose(player, radius, monsters, animals, players, exclude, reverseExclude, hpCheck);
+            if (target != null && !head.hasLineOfSight(target)) {
+                target = null;
+            }
             if (plugin.drone_targets.get(uuid) != target) {
                 plugin.drone_targets.put(uuid, target);
             }

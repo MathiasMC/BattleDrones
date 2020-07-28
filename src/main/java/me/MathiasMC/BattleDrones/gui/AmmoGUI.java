@@ -45,6 +45,7 @@ public class AmmoGUI extends GUI {
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
             }
+            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
         }
         if (e.getClickedInventory() == null) {
             return;

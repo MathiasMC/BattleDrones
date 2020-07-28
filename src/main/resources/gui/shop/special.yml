@@ -1,5 +1,5 @@
 settings:
-  name: '&dYour drones'
+  name: '&dDrone shop > Special'
   size: 54
 0:
   NAME: ' '
@@ -22,12 +22,10 @@ settings:
   MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
 4:
-  NAME: '&6Drone shop'
+  NAME: ' '
   LORES: []
-  MATERIAL: RED_STAINED_GLASS_PANE
+  MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_SHOP
 5:
   NAME: ' '
   LORES: []
@@ -91,8 +89,10 @@ settings:
 45:
   NAME: ' '
   LORES: []
-  MATERIAL: BLACK_STAINED_GLASS_PANE
+  MATERIAL: RED_STAINED_GLASS_PANE
   AMOUNT: 1
+  OPTIONS:
+    - BACK
 46:
   NAME: ' '
   LORES: []
@@ -135,53 +135,42 @@ settings:
   MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
 20:
-  NAME: '&6Energy weapons'
+  NAME: '&6Flamethrower drone'
   LORES:
     - '&f-----------------'
     - '&fDrones armed with'
-    - '&fenergy weapons.'
+    - '&fspecial weapons.'
     - ' '
-    - '&7Click to open category'
-  MATERIAL: REDSTONE_BLOCK
+    - '&7Cost: 100 coin(s)'
+  HEAD: flamethrower-1
   AMOUNT: 1
   OPTIONS:
-    - DRONE_PLAYER_ENERGY
+    - DRONE_FLAMETHROWER_BUY
+  SHOP-COMMANDS:
+    BOUGHT:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Flamethrower Drone&a!'
+    COINS:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
+    HAVE:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
+    PERMISSION:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this flamethrower drone.'
+  COST: 100
 21:
-  NAME: '&6Kinetic weapons'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fkinetic weapons.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: IRON_BLOCK
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_KINETIC
 22:
-  NAME: '&6Explode weapons'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fexplode weapons.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: TNT
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_EXPLODE
 23:
-  NAME: '&6Protective'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fprotective systems.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: SHIELD
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_PROTECTIVE
 24:
   NAME: ' '
   LORES: []
@@ -208,14 +197,7 @@ settings:
   MATERIAL: CHEST
   AMOUNT: 1
 33:
-  NAME: '&6Special weapons'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fspecial weapons.'
-    - ' '
-    - '&7Click to open category'
-  MATERIAL: ENDER_CHEST
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_PLAYER_SPECIAL
