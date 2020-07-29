@@ -69,12 +69,21 @@ public class GUIManager {
     public void dispatchCommand(FileConfiguration file, int slot, Player player) {
         if (file.contains(slot + ".COMMANDS")) {
             if (player.hasPermission(Objects.requireNonNull(file.getString(slot + ".COMMANDS.PERMISSION")))) {
-                for (String command : file.getStringList(slot + ".COMMANDS.LIST")) {
-                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
+                if (file.contains(slot + ".COMMANDS.CONSOLE")) {
+                    for (String command : file.getStringList(slot + ".COMMANDS.CONSOLE")) {
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
+                    }
+                }
+                if (file.contains(slot + ".COMMANDS.PLAYER")) {
+                    for (String command : file.getStringList(slot + ".COMMANDS.PLAYER")) {
+                        player.performCommand(command.replace("{player}", player.getName()));
+                    }
                 }
             } else {
-                for (String command : file.getStringList(slot + ".COMMANDS.NO-PERMISSION")) {
-                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
+                if (file.contains(slot + ".COMMANDS.NO-PERMISSION")) {
+                    for (String command : file.getStringList(slot + ".COMMANDS.NO-PERMISSION")) {
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
+                    }
                 }
             }
         }
