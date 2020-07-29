@@ -18,8 +18,9 @@ import java.util.Objects;
 public class AmmoGUI extends GUI {
 
     private final FileConfiguration file;
-
     private final String drone;
+    private final Player player = playerMenu.getPlayer();
+    private final String uuid = playerMenu.getUuid();
 
     public AmmoGUI(Menu playerMenu, String drone) {
         super(playerMenu);
@@ -41,7 +42,6 @@ public class AmmoGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
-            final Player player = playerMenu.getPlayer();
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
             }
@@ -55,8 +55,7 @@ public class AmmoGUI extends GUI {
             if (itemStack == null) { return; }
             final ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta == null) { return; }
-            final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), drone);
-            Player player = playerMenu.getPlayer();
+            final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
             final ArrayList<String> lores = new ArrayList<>();
             FileConfiguration droneFile = BattleDrones.call.droneFiles.get(drone);
             final String ammoName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(droneFile.getString("gui.AMMO.NAME"))));
@@ -70,7 +69,7 @@ public class AmmoGUI extends GUI {
                 }
             }
             if (ChatColor.stripColor(itemMeta.getDisplayName()).equals(ammoName) || Objects.equals(getLores, lores)) {
-                final PlayerConnect playerConnect = BattleDrones.call.get(player.getUniqueId().toString());
+                final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
                 final int ammo = droneHolder.getAmmo();
                 if (ammo < (droneFile.getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".max-ammo-slots") * 64)) {
                     droneHolder.setAmmo(ammo + itemStack.getAmount());
@@ -92,7 +91,7 @@ public class AmmoGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, playerMenu.getPlayer());
+        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
         final FileConfiguration droneFile = BattleDrones.call.droneFiles.get(drone);
         final ItemStack itemStack = BattleDrones.call.getItemStack(droneFile.getString("gui.AMMO.MATERIAL"), 64);
         final ItemMeta itemMeta = itemStack.getItemMeta();
@@ -106,7 +105,7 @@ public class AmmoGUI extends GUI {
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(droneFile.getString("gui.AMMO.NAME"))));
         itemMeta.setLore(lores);
         itemStack.setItemMeta(itemMeta);
-        int ammo = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), drone).getAmmo();
+        int ammo = BattleDrones.call.getDroneHolder(uuid, drone).getAmmo();
         for (int i = 0; i < inventory.getSize(); i++) {
             if (inventory.getItem(i) == null) {
                 if (ammo > 64) {

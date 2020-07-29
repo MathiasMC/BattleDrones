@@ -60,13 +60,13 @@ default:
     projectile-space: 0.9
 
     # Projectile check radius for target entity
-    projectile-radius: 1
+    projectile-radius: 1.1
 
     # 0.00-1.00, Chance to set to fire the target
     setfire-chance: 0.45
 
-    # Defines how many time the target will burn, seconds.
-    burning-time: 3
+    # Defines how many long the target will burn, ticks.
+    burning-time: 60
 
     # cost: amount (this is not needed for level 1)
 
@@ -129,9 +129,9 @@ default:
     cooldown: 23
     projectile-speed: 1
     projectile-space: 0.9
-    projectile-radius: 1
+    projectile-radius: 1.0
     setfire-chance: 0.55
-    burning-time: 5
+    burning-time: 100
     cost: 1000
     max-ammo-slots: 4
     health: 65
@@ -172,9 +172,9 @@ default:
     cooldown: 19
     projectile-speed: 1
     projectile-space: 1.3
-    projectile-radius: 2
+    projectile-radius: 2.1
     setfire-chance: 0.55
-    burning-time: 8
+    burning-time: 160
     cost: 2000
     max-ammo-slots: 6
     health: 75

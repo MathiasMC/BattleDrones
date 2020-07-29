@@ -26,7 +26,7 @@ public class AIManager {
         final ArmorStand head = playerConnect.head;
         final ArmorStand name = playerConnect.name;
         final EulerAngle eulerAngle = new EulerAngle(0, 0, 0);
-        final int radius = file.getInt(group + "." + drone_level + ".range");
+        final double radius = file.getDouble(group + "." + drone_level + ".range");
         playerConnect.AItaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             LivingEntity target = plugin.armorStandManager.getClose(player, radius, monsters, animals, players, exclude, reverseExclude, hpCheck);
             if (target != null && !head.hasLineOfSight(target)) {

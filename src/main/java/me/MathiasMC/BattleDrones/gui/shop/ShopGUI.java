@@ -14,6 +14,7 @@ import java.util.Objects;
 public class ShopGUI extends GUI {
 
     private final FileConfiguration file = BattleDrones.call.guiFiles.get("shop");
+    private final Player player = playerMenu.getPlayer();
 
     public ShopGUI(Menu playerMenu) {
         super(playerMenu);
@@ -36,7 +37,6 @@ public class ShopGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
-            final Player player = playerMenu.getPlayer();
             if (file.getStringList(slot + ".OPTIONS").contains("DRONE_SHOP_ENERGY")) {
                 BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "laser");
                 new ShopEnergyGUI(BattleDrones.call.getPlayerMenu(player)).open();
@@ -62,6 +62,6 @@ public class ShopGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, playerMenu.getPlayer());
+        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
     }
 }

@@ -72,7 +72,7 @@ public class Flamethrower {
             int timer = 0;
             final World world = start.getWorld();
             final double damage = plugin.randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max"));
-            final int radius = file.getInt(path + "projectile-radius");
+            final double radius = file.getDouble(path + "projectile-radius");
             final double chance = file.getDouble(path + "setfire-chance");
             final int burnTime = file.getInt(path + "burning-time");
             @Override
@@ -81,7 +81,7 @@ public class Flamethrower {
                 List<Entity> nearby = (List<Entity>) world.getNearbyEntities(location, radius, radius, radius);
                 if (nearby.contains(target)) {
                     if (plugin.randomChance() <= chance) {
-                        target.setFireTicks(burnTime * 20);
+                        target.setFireTicks(burnTime);
                     }
                     target.damage(damage);
                     this.cancel();

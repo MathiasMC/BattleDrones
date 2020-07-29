@@ -45,6 +45,9 @@ exclude: []
 # Vault (Use vault economy instead of build in coins system)
 vault: false
 
+# Look for armorstands that is a drone on startup and remove it
+cleanup: true
+
 # Drone count (How many drones can be active at the same time)
 drone-amount: 10
 

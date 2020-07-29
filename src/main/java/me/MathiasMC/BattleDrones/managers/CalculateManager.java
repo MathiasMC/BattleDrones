@@ -34,12 +34,16 @@ public class CalculateManager {
         }
         AttributeInstance armor = livingEntity.getAttribute(Attribute.GENERIC_ARMOR);
         AttributeInstance toughness = livingEntity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
-        if (armor != null && toughness != null) {
-            double dialed = dialed(damage, armor.getValue(), toughness.getValue(), resistance, e);
-            livingEntity.damage(dialed);
-        } else {
-            livingEntity.damage(damage);
+        double armorValue = 0;
+        if (armor != null) {
+            armorValue = armor.getValue();
         }
+        double toughnessValue = 0;
+        if (toughness != null) {
+            toughnessValue = toughness.getValue();
+        }
+        double dialed = dialed(damage, armorValue, toughnessValue, resistance, e);
+        livingEntity.damage(dialed);
     }
 
     private int getEnchant(PlayerInventory inv) {
@@ -64,7 +68,7 @@ public class CalculateManager {
     }
 
 
-    public String getHealthBar(long current, long max) {
+    public String getHealthBar(int current, int max) {
         char xp = (char) Integer.parseInt(plugin.config.get.getString("health.health.symbol").substring(2), 16);
         char none = (char) Integer.parseInt(plugin.config.get.getString("health.none.symbol").substring(2), 16);
         ChatColor xpColor = getChatColor(plugin.config.get.getString("health.health.color"));
@@ -78,7 +82,7 @@ public class CalculateManager {
         }
     }
 
-    public String getHealthBarPlaceholder(long current, long max) {
+    public String getHealthBarPlaceholder(int current, int max) {
         char xp = (char) Integer.parseInt(plugin.config.get.getString("health-placeholder.health.symbol").substring(2), 16);
         char none = (char) Integer.parseInt(plugin.config.get.getString("health-placeholder.none.symbol").substring(2), 16);
         ChatColor xpColor = getChatColor(plugin.config.get.getString("health-placeholder.health.color"));
@@ -92,14 +96,14 @@ public class CalculateManager {
         }
     }
 
-    public long getPercent(long current, long max) {
+    public int getPercent(int current, int max) {
         double percent = ((double) current / (double) max) * 100;
-        return Math.round(percent);
+        return (int) Math.round(percent);
     }
 
-    public long getProcentFromDouble(double current) {
+    public int getProcentFromDouble(double current) {
         double percent = current * 100;
-        return Math.round(percent);
+        return (int) Math.round(percent);
     }
 
     public ChatColor getChatColor(String colorCode){

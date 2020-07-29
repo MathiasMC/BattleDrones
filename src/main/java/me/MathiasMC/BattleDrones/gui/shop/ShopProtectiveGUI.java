@@ -15,6 +15,8 @@ import java.util.Objects;
 public class ShopProtectiveGUI extends GUI {
 
     private final FileConfiguration file = BattleDrones.call.guiFiles.get("shop_protective");
+    private final Player player = playerMenu.getPlayer();
+    private final String uuid = playerMenu.getUuid();
 
     public ShopProtectiveGUI(Menu playerMenu) {
         super(playerMenu);
@@ -34,15 +36,14 @@ public class ShopProtectiveGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
-            final Player player = playerMenu.getPlayer();
             if (file.getStringList(slot + ".OPTIONS").contains("DRONE_SHIELD_GENERATOR_BUY") || file.getStringList(slot + ".OPTIONS").contains("DRONE_HEALING_BUY")) {
-                final PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
+                final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
                 DroneHolder droneHolder = null;
                 String drone = "";
                 if (file.getStringList(slot + ".OPTIONS").contains("DRONE_SHIELD_GENERATOR_BUY")) {
                     if (player.hasPermission("battledrones.shop.shield.generator")) {
                         drone = "shield_generator";
-                        droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "shield_generator");
+                        droneHolder = BattleDrones.call.getDroneHolder(uuid, "shield_generator");
                     } else {
                         for (String command : file.getStringList(slot + ".SHOP-COMMANDS.PERMISSION")) {
                             BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
@@ -51,7 +52,7 @@ public class ShopProtectiveGUI extends GUI {
                 } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_HEALING_BUY")) {
                     if (player.hasPermission("battledrones.shop.healing")) {
                         drone = "healing";
-                        droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "healing");
+                        droneHolder = BattleDrones.call.getDroneHolder(uuid, "healing");
                     } else {
                         for (String command : file.getStringList(slot + ".SHOP-COMMANDS.PERMISSION")) {
                             BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
@@ -96,6 +97,6 @@ public class ShopProtectiveGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, playerMenu.getPlayer());
+        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
     }
 }

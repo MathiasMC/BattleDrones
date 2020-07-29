@@ -20,8 +20,6 @@ public class Rocket {
         this.plugin = plugin;
     }
 
-    public final HashSet<ArmorStand> rockets = new HashSet<>();
-
     public void shot(final Player player) {
         final String drone = "rocket";
         final String uuid = player.getUniqueId().toString();
@@ -70,7 +68,7 @@ public class Rocket {
                     if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
                             ArmorStand rock = plugin.armorStandManager.getArmorStand(armorStand.getLocation(), false, true);
                             rock.setHelmet(plugin.drone_heads.get(rocket.getString(path + "rocket-head")));
-                            rockets.add(rock);
+                            plugin.projectiles.add(rock);
                             line(location, targetLocation, rocket.getDouble(path + "rocket-speed"), rock, target, rocket, path, armorStand.getHeadPose(), player
                                     ,customParticle_1, delay_1, size_1, amount_1, r_1, g_1, b_1, yOffset_1, particleType_1
                                     ,customParticle_2, delay_2, size_2, amount_2, r_2, g_2, b_2, yOffset_2, particleType_2, tick_2
@@ -114,7 +112,7 @@ public class Rocket {
                 rocket.remove(player);
                 if (timer > (file.getLong(path + "rocket-time") * 20) || rocket.size() > 0 || armorStand.getTargetBlock(null, 1).getType() != Material.AIR) {
                     this.cancel();
-                    ArrayList<LivingEntity> livingEntities = plugin.armorStandManager.getEntityAround(armorStand, file.getInt(path + "rocket-radius"),  1, 1, 1, exclude, false);
+                    ArrayList<LivingEntity> livingEntities = plugin.armorStandManager.getEntityAround(armorStand, file.getDouble(path + "rocket-radius"),  1, 1, 1, exclude, false);
                     for (LivingEntity livingEntity : livingEntities) {
                         plugin.calculateManager.damage(livingEntity, plugin.randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max")));
                     }

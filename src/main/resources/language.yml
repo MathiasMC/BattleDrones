@@ -29,11 +29,14 @@ battledrones:
       - '&7&l> &f/battledrones shop'
       - '&7&l> &f/battledrones menu'
       - '&7&l> &f/battledrones save'
+      - '&7&l> &f/battledrones activate <droneType> <player - console>'
+      - '&7&l> &f/battledrones deactivate <all, player, droneType> <waitSeconds>'
       - '&7&l> &f/battledrones unlock <droneType> <player>'
       - '&7&l> &f/battledrones lock <droneType> <player>'
       - '&7&l> &f/battledrones group set <player> <groupName>'
       - '&7&l> &f/battledrones group reset <player>'
       - '&7&l> &f/battledrones message <player> <text>'
+      - '&7&l> &f/battledrones broadcast <null/permission> <text>'
       - '&7&l> &f/battledrones coins set/add/remove <player> <amount>'
       - '&7&l> &f/battledrones give ammo <droneType> <player> <amount>'
       - '&7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
@@ -50,11 +53,47 @@ battledrones:
       - '&7[&dBattleDrones&7] &cUsage: /battledrones <player> <text>'
     online:
       - '&7[&dBattleDrones&7] &cThe player is not online!'
+  broadcast:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones broadcast <null/permission> <text>'
   save:
     permission:
       - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
     message:
       - '&7[&dBattleDrones&7] &aSaved cached data to the database!'
+  activate:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones activate <droneType> <player - console>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    valid:
+      - '&7[&dBattleDrones&7] &cThe drone {drone} is not valid!'
+    unlocked:
+      - '&7[&dBattleDrones&7] &cYou have not unlocked this drone!'
+  deactivate:
+    permission:
+      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones deactivate'
+    own:
+      - '&7[&dBattleDrones&7] &aYou have removed your drone.'
+    player:
+      - '&7[&dBattleDrones&7] &cYour drones has been removed for &6{amount} &cseconds.'
+    other:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones deactivate <all, player, droneType> <waitSeconds>'
+      online:
+        - '&7[&dBattleDrones&7] &cThe player is not online!'
+      number:
+        - '&7[&dBattleDrones&7] &cSomething is wrong with the numbers!'
+      all:
+        - 'bd broadcast null &7[&dBattleDrones&7] &cAll drones have been deactivated for &6{amount} &cseconds.'
+      all-drone:
+        - 'bd broadcast null &7[&dBattleDrones&7] &cAll &6{drone} &cdrones have been deactivated for &6{amount} &cseconds.'
   shop:
     permission:
       - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'

@@ -13,6 +13,7 @@ import me.MathiasMC.BattleDrones.gui.Menu;
 import me.MathiasMC.BattleDrones.listeners.*;
 import me.MathiasMC.BattleDrones.managers.*;
 import me.MathiasMC.BattleDrones.placeholders.InternalPlaceholders;
+import me.MathiasMC.BattleDrones.placeholders.MVdWPlaceholderAPI;
 import me.MathiasMC.BattleDrones.placeholders.PlaceholderAPI;
 import me.MathiasMC.BattleDrones.support.WorldGuard;
 import me.MathiasMC.BattleDrones.utils.MetricsLite;
@@ -25,6 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -71,19 +73,17 @@ public class BattleDrones extends JavaPlugin {
 
     private final Map<String, PlayerConnect> playerConnect = new HashMap<>();
     private final Map<String, HashMap<String, DroneHolder>> droneHolder = new HashMap<>();
-    public final HashMap<Player, Menu> playerMenu = new HashMap<>();
+    private final HashMap<Player, Menu> playerMenu = new HashMap<>();
+
     public final HashMap<String, FileConfiguration> droneFiles = new HashMap<>();
     public final HashMap<String, FileConfiguration> guiFiles = new HashMap<>();
     public final HashMap<String, String> drone_whitelist = new HashMap<>();
-    public HashMap<String, ItemStack> drone_heads = new HashMap<>();
-
-    public HashMap<String, LivingEntity> drone_targets = new HashMap<>();
-
-    public HashSet<String> drone_players = new HashSet<>();
-
-    public ArrayList<String> drones = new ArrayList<>();
-
-    public HashSet<String> drone_amount = new HashSet<>();
+    public final HashMap<String, ItemStack> drone_heads = new HashMap<>();
+    public final HashMap<String, LivingEntity> drone_targets = new HashMap<>();
+    public final HashSet<String> drone_players = new HashSet<>();
+    public final ArrayList<String> drones = new ArrayList<>();
+    public final HashSet<String> drone_amount = new HashSet<>();
+    public final HashSet<ArmorStand> projectiles = new HashSet<>();
 
     public WorldGuard worldGuard;
 
@@ -97,32 +97,40 @@ public class BattleDrones extends JavaPlugin {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
+
         drones.add("laser");
         drones.add("rocket");
         drones.add("machine_gun");
         drones.add("shield_generator");
         drones.add("healing");
         drones.add("flamethrower");
+
         textUtils = new TextUtils(this);
         config = new Config(this);
         language = new Language(this);
         particles = new Particles(this);
+
+        dronesFolder = new DronesFolder(this);
+        guiFolder = new GUIFolder(this);
+
         armorStandManager = new ArmorStandManager(this);
         guiManager = new GUIManager(this);
+        calculateManager = new CalculateManager(this);
+        droneManager = new DroneManager(this);
+        aiManager = new AIManager(this);
+        particleManager = new ParticleManager(this);
+
+        internalPlaceholders = new InternalPlaceholders(this);
+
         laser = new Laser(this);
         rocket = new Rocket(this);
         machineGun = new MachineGun(this);
         shieldGenerator = new ShieldGenerator(this);
         healing = new Healing(this);
         flamethrower = new Flamethrower(this);
-        internalPlaceholders = new InternalPlaceholders(this);
-        dronesFolder = new DronesFolder(this);
-        guiFolder = new GUIFolder(this);
-        calculateManager = new CalculateManager(this);
-        droneManager = new DroneManager(this);
-        aiManager = new AIManager(this);
-        particleManager = new ParticleManager(this);
+
         worldGuard = new WorldGuard(this);
+
         database = new Database(this);
         if (database.set()) {
             database.loadOnlinePlayers();
@@ -136,7 +144,6 @@ public class BattleDrones extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
             getCommand("battledrones").setExecutor(new BattleDrones_Command(this));
             addHeads();
-            PlaceholderAPI();
             if (config.get.getBoolean("save.use")) {
                 saveSchedule();
             }
@@ -156,6 +163,17 @@ public class BattleDrones extends JavaPlugin {
                 }
             }
             particleManager.load();
+            if (config.get.getBoolean("cleanup")) {
+                droneManager.cleanUP();
+            }
+            if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                new PlaceholderAPI(this).register();
+                textUtils.info("PlaceholderAPI (found)");
+            }
+            if (getServer().getPluginManager().getPlugin("MVdWPlaceholderAPI") != null) {
+                new MVdWPlaceholderAPI().register(this);
+                textUtils.info("MVdWPlaceholderAPI (found)");
+            }
         } else {
             textUtils.error("Disabling plugin cannot connect to database");
             getServer().getPluginManager().disablePlugin(this);
@@ -165,7 +183,7 @@ public class BattleDrones extends JavaPlugin {
     @Override
     public void onDisable() {
         for (String uuid : list()) {
-            get(uuid).remove();
+            get(uuid).stopDrone();
         }
         try {
             database.close();
@@ -266,13 +284,6 @@ public class BattleDrones extends JavaPlugin {
             return false;
         }
         return true;
-    }
-
-    private void PlaceholderAPI() {
-        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPI(this).register();
-            textUtils.info("PlaceholderAPI (found) adding placeholders");
-        }
     }
 
     public double randomDouble(final double min, final double max) {

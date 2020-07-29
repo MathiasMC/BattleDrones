@@ -11,15 +11,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class SpecialGUI extends GUI {
 
     private final FileConfiguration file = BattleDrones.call.guiFiles.get("player_special");
+    private final Player player = playerMenu.getPlayer();
+    private final String uuid = playerMenu.getUuid();
 
     public SpecialGUI(Menu playerMenu) {
         super(playerMenu);
@@ -38,33 +38,21 @@ public class SpecialGUI extends GUI {
     @Override
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
-        final Player player = playerMenu.getPlayer();
-        final String uuid = playerMenu.getUuid();
-        final PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
-        final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "flamethrower");
-        final FileConfiguration laser = BattleDrones.call.droneFiles.get("flamethrower");
+        final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
+        final String flamethrowerDrone = "flamethrower";
+        final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, flamethrowerDrone);
+        final FileConfiguration laser = BattleDrones.call.droneFiles.get(flamethrowerDrone);
         if (laser.getInt("gui.POSITION") == slot && droneHolder.getUnlocked() == 1) {
             if (player.hasPermission("battledrones.player.flamethrower")) {
                 if (e.isLeftClick()) {
-                    if (!BattleDrones.call.drone_players.contains(uuid)) {
-                        if (BattleDrones.call.drone_amount.size() < BattleDrones.call.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount")) {
-                            BattleDrones.call.droneManager.runCommands(player, playerConnect, laser, "gui.SPAWN-COMMANDS", false);
-                            playerConnect.stopDrone();
-                            spawnFlamethrower(player, droneHolder, laser);
-                            BattleDrones.call.droneManager.waitSchedule(uuid, laser);
-                        } else {
-                            BattleDrones.call.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
-                        }
-                    } else {
-                        BattleDrones.call.droneManager.wait(player, laser);
-                    }
+                    BattleDrones.call.droneManager.spawnDrone(player, flamethrowerDrone, false, false);
                 } else if (e.isRightClick()) {
                     BattleDrones.call.droneManager.runCommands(player, playerConnect, laser, "gui.REMOVE-COMMANDS", false);
                     playerConnect.stopDrone();
                     playerConnect.saveDrone(droneHolder);
                     playerConnect.save();
                 } else if (e.getClick().equals(ClickType.MIDDLE)) {
-                    new DroneMenu(BattleDrones.call.getPlayerMenu(player), "flamethrower").open();
+                    new DroneMenu(BattleDrones.call.getPlayerMenu(player), flamethrowerDrone).open();
                 }
             } else {
                 BattleDrones.call.droneManager.runCommands(player, playerConnect, laser, "gui.PERMISSION", true);
@@ -76,41 +64,13 @@ public class SpecialGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, playerMenu.getPlayer());
-        final PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
-        final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "flamethrower");
-        if (droneHolder.getUnlocked() == 1) {
-            final FileConfiguration laser = BattleDrones.call.droneFiles.get("flamethrower");
-            final ItemStack itemStack = BattleDrones.call.drone_heads.get(laser.getString(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".head"));
-            final ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemMeta == null) {
-                return;
-            }
-            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(laser.getString("gui.NAME"))));
-            final ArrayList<String> lores = new ArrayList<>();
-            for (String lore : laser.getStringList("gui.LORES")) {
-                lores.add(ChatColor.translateAlternateColorCodes('&', lore));
-            }
-            itemMeta.setLore(lores);
-            itemStack.setItemMeta(itemMeta);
-            inventory.setItem(laser.getInt("gui.POSITION"), itemStack);
+        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
+        final String flamethrowerDrone = "flamethrower";
+        final DroneHolder flamethrower = BattleDrones.call.getDroneHolder(uuid, flamethrowerDrone);
+        final HashMap<String, Integer> drones = new HashMap<>();
+        if (flamethrower.getUnlocked() == 1) {
+            drones.put(flamethrowerDrone, flamethrower.getLevel());
         }
-    }
-
-    private void spawnFlamethrower(Player player, DroneHolder droneHolder, FileConfiguration file) {
-        PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
-        playerConnect.spawn(player, file.getString(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".head"));
-        BattleDrones.call.aiManager.defaultAI(player,
-                playerConnect,
-                file,
-                droneHolder.getLevel(),
-                droneHolder.getMonsters(),
-                droneHolder.getAnimals(),
-                droneHolder.getPlayers(),
-                droneHolder.getExclude(),
-                false, false, true);
-        BattleDrones.call.flamethrower.shot(player);
-        playerConnect.setActive("flamethrower");
-        BattleDrones.call.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
+        BattleDrones.call.guiManager.setDrones(uuid, drones, inventory);
     }
 }

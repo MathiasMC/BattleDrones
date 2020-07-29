@@ -17,8 +17,9 @@ import java.util.Objects;
 public class WhitelistGUI extends GUI {
 
     private final FileConfiguration file;
-
     private final String drone;
+    private final Player player = playerMenu.getPlayer();
+    private final String uuid = playerMenu.getUuid();
 
     public WhitelistGUI(Menu playerMenu, String drone) {
         super(playerMenu);
@@ -39,12 +40,10 @@ public class WhitelistGUI extends GUI {
     @Override
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
-        final Player player = playerMenu.getPlayer();
         if (file.contains(String.valueOf(slot))) {
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_WHITELIST_ADD")) {
-                final String uuid = playerMenu.getUuid();
                 if (!BattleDrones.call.drone_whitelist.containsKey(uuid)) {
                     player.closeInventory();
                     for (String command : BattleDrones.call.language.get.getStringList("gui.whitelist.time")) {
@@ -77,8 +76,8 @@ public class WhitelistGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, playerMenu.getPlayer());
-        List<String> players = BattleDrones.call.getDroneHolder(playerMenu.getPlayer().getUniqueId().toString(), drone).getExclude();
+        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
+        List<String> players = BattleDrones.call.getDroneHolder(uuid, drone).getExclude();
         int index = 0;
         int set = 0;
         for (ItemStack itemStack : inventory.getContents()) {

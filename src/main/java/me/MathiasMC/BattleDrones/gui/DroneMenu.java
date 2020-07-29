@@ -18,8 +18,9 @@ import java.util.Objects;
 public class DroneMenu extends GUI {
 
     private final FileConfiguration file;
-
     private final String drone;
+    private final Player player = playerMenu.getPlayer();
+    private final String uuid = playerMenu.getUuid();
 
     public DroneMenu(Menu playerMenu, String drone) {
         super(playerMenu);
@@ -41,9 +42,8 @@ public class DroneMenu extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
-            Player player = playerMenu.getPlayer();
-            PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
-            DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), drone);
+            PlayerConnect playerConnect = BattleDrones.call.get(uuid);
+            DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 if (drone.equalsIgnoreCase("laser")) {
                     new EnergyGUI(BattleDrones.call.getPlayerMenu(player)).open();
@@ -117,7 +117,7 @@ public class DroneMenu extends GUI {
 
     @Override
     public void setItems() {
-        DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), drone);
+        DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
         setPlayerGUI(BattleDrones.call.droneFiles.get(drone),
                 BattleDrones.call.guiFiles.get(drone),
                 BattleDrones.call.get(playerMenu.getUuid()).getGroup(),
@@ -132,7 +132,7 @@ public class DroneMenu extends GUI {
         );
     }
 
-    public void setPlayerGUI(FileConfiguration file, FileConfiguration gui, String group, Inventory inventory, long health, int monsters, int animals, int players, long drone_level, long drone_ammo, long WhitelistSize) {
+    public void setPlayerGUI(FileConfiguration file, FileConfiguration gui, String group, Inventory inventory, int health, int monsters, int animals, int players, int drone_level, int drone_ammo, int WhitelistSize) {
         final String path = group + "." + drone_level + ".";
         final String path_next = group + "." + (drone_level + 1);
         final String level = String.valueOf(drone_level);
@@ -272,8 +272,8 @@ public class DroneMenu extends GUI {
                     return;
                 }
                 itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(gui.getString(key + ".NAME"))
-                        .replace("{health}", BattleDrones.call.calculateManager.getHealthBar(health, file.getLong(path + "health")))
-                        .replace("{health_percentage}", String.valueOf(BattleDrones.call.calculateManager.getPercent(health, file.getLong(path + "health"))))
+                        .replace("{health}", BattleDrones.call.calculateManager.getHealthBar(health, file.getInt(path + "health")))
+                        .replace("{health_percentage}", String.valueOf(BattleDrones.call.calculateManager.getPercent(health, file.getInt(path + "health"))))
                         .replace("{max_ammo_slots}", max_ammo_slots)
                         .replace("{level}", level)
                         .replace("{cost}", cost_next)
@@ -315,8 +315,8 @@ public class DroneMenu extends GUI {
                 ArrayList<String> list = new ArrayList<>();
                 for (String lores : gui.getStringList(key + ".LORES")) {
                     list.add(ChatColor.translateAlternateColorCodes('&', lores
-                            .replace("{health}", BattleDrones.call.calculateManager.getHealthBar(health, file.getLong(path + "health")))
-                            .replace("{health_percentage}", String.valueOf(BattleDrones.call.calculateManager.getPercent(health, file.getLong(path + "health"))))
+                            .replace("{health}", BattleDrones.call.calculateManager.getHealthBar(health, file.getInt(path + "health")))
+                            .replace("{health_percentage}", String.valueOf(BattleDrones.call.calculateManager.getPercent(health, file.getInt(path + "health"))))
                             .replace("{max_ammo_slots}", max_ammo_slots)
                             .replace("{level}", level)
                             .replace("{cost}", cost_next)

@@ -14,6 +14,7 @@ import java.util.Objects;
 public class PlayerGUI extends GUI {
 
     private final FileConfiguration file = BattleDrones.call.guiFiles.get("player");
+    private final Player player = playerMenu.getPlayer();
 
     public PlayerGUI(Menu playerMenu) {
         super(playerMenu);
@@ -33,7 +34,6 @@ public class PlayerGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
-            final Player player = playerMenu.getPlayer();
             if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYER_ENERGY")) {
                 BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "laser");
                 new EnergyGUI(BattleDrones.call.getPlayerMenu(player)).open();
@@ -59,6 +59,6 @@ public class PlayerGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, playerMenu.getPlayer());
+        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
     }
 }

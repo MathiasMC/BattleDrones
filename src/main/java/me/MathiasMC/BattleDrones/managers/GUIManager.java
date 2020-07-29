@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class GUIManager {
@@ -42,6 +43,26 @@ public class GUIManager {
                 itemStack.setItemMeta(itemMeta);
                 inventory.setItem(Integer.parseInt(key), itemStack);
             }
+        }
+    }
+
+    public void setDrones(String uuid, HashMap<String, Integer> drones, Inventory inventory) {
+        final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
+        for (String drone : drones.keySet()) {
+            final FileConfiguration file = BattleDrones.call.droneFiles.get(drone);
+            final ItemStack itemStack = BattleDrones.call.drone_heads.get(file.getString(playerConnect.getGroup() + "." + drones.get(drone) + ".head"));
+            final ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta == null) {
+                return;
+            }
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString("gui.NAME"))));
+            final ArrayList<String> lores = new ArrayList<>();
+            for (String lore : file.getStringList("gui.LORES")) {
+                lores.add(ChatColor.translateAlternateColorCodes('&', lore));
+            }
+            itemMeta.setLore(lores);
+            itemStack.setItemMeta(itemMeta);
+            inventory.setItem(file.getInt("gui.POSITION"), itemStack);
         }
     }
 

@@ -44,7 +44,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         }
         final String uuid = player.getUniqueId().toString();
         if(identifier.equals("active")){
-            return plugin.internalPlaceholders.getActiveDrone(plugin.get(uuid));
+            return plugin.internalPlaceholders.getActiveDrone(plugin.get(uuid).getActive());
         }
         if(identifier.equals("coins")){
             return String.valueOf(plugin.get(uuid).getCoins());
@@ -53,19 +53,22 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             return plugin.get(uuid).getGroup();
         }
         if(identifier.equals("health")){
-            return String.valueOf(plugin.internalPlaceholders.getDroneHealth(plugin.get(uuid), uuid));
+            return String.valueOf(plugin.internalPlaceholders.getDroneHealth(uuid));
         }
         if(identifier.equals("health_max")){
-            return String.valueOf(plugin.internalPlaceholders.getDroneMaxHealth(plugin.get(uuid), uuid));
+            return String.valueOf(plugin.internalPlaceholders.getDroneMaxHealth(uuid));
+        }
+        if(identifier.equals("health_percent")){
+            return String.valueOf(plugin.calculateManager.getPercent(plugin.internalPlaceholders.getDroneHealth(uuid), plugin.internalPlaceholders.getDroneMaxHealth(uuid)));
         }
         if(identifier.equals("health_bar")){
-            return String.valueOf(plugin.internalPlaceholders.getDroneHealthBar(plugin.get(uuid), uuid));
+            return plugin.internalPlaceholders.getDroneHealthBar(uuid);
         }
         if(identifier.equals("ammo")){
-            return String.valueOf(plugin.internalPlaceholders.getDroneAmmo(plugin.get(uuid), uuid));
+            return String.valueOf(plugin.internalPlaceholders.getDroneAmmo(uuid));
         }
         if(identifier.equals("ammo_max")){
-            return String.valueOf(plugin.internalPlaceholders.getDroneMaxAmmo(plugin.get(uuid), uuid));
+            return String.valueOf(plugin.internalPlaceholders.getDroneMaxAmmo(uuid));
         }
         return null;
     }

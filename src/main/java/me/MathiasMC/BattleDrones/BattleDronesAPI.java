@@ -32,23 +32,27 @@ public class BattleDronesAPI {
         return BattleDrones.call.drone_heads.get(name);
     }
 
-    public int getDroneHealth(PlayerConnect playerConnect, String uuid) {
-        return BattleDrones.call.internalPlaceholders.getDroneHealth(playerConnect, uuid);
+    public int getDroneHealth(String uuid) {
+        return BattleDrones.call.internalPlaceholders.getDroneHealth(uuid);
     }
 
-    public int getDroneMaxHealth(PlayerConnect playerConnect, String uuid) {
-        return BattleDrones.call.internalPlaceholders.getDroneMaxHealth(playerConnect, uuid);
+    public int getDroneMaxHealth(String uuid) {
+        return BattleDrones.call.internalPlaceholders.getDroneMaxHealth(uuid);
     }
 
-    public int getDroneAmmo(PlayerConnect playerConnect, String uuid) {
-        return BattleDrones.call.internalPlaceholders.getDroneAmmo(playerConnect, uuid);
+    public int getDroneHealthPercent(String uuid) {
+        return BattleDrones.call.calculateManager.getPercent(BattleDrones.call.internalPlaceholders.getDroneHealth(uuid), BattleDrones.call.internalPlaceholders.getDroneMaxHealth(uuid));
     }
 
-    public int getDroneMaxAmmo(PlayerConnect playerConnect, String uuid) {
-        return BattleDrones.call.internalPlaceholders.getDroneMaxAmmo(playerConnect, uuid);
+    public int getDroneAmmo(String uuid) {
+        return BattleDrones.call.internalPlaceholders.getDroneAmmo(uuid);
     }
 
-    public String getDroneHealthBar(PlayerConnect playerConnect, String uuid) {
-        return BattleDrones.call.internalPlaceholders.getDroneHealthBar(playerConnect, uuid);
+    public int getDroneMaxAmmo(String uuid) {
+        return BattleDrones.call.internalPlaceholders.getDroneMaxAmmo(uuid);
+    }
+
+    public String getDroneHealthBar(String uuid) {
+        return BattleDrones.call.internalPlaceholders.getDroneHealthBar(uuid);
     }
 }

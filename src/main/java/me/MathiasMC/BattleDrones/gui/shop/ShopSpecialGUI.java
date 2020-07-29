@@ -15,6 +15,8 @@ import java.util.Objects;
 public class ShopSpecialGUI extends GUI {
 
     private final FileConfiguration file = BattleDrones.call.guiFiles.get("shop_special");
+    private final Player player = playerMenu.getPlayer();
+    private final String uuid = playerMenu.getUuid();
 
     public ShopSpecialGUI(Menu playerMenu) {
         super(playerMenu);
@@ -34,11 +36,10 @@ public class ShopSpecialGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
-            final Player player = playerMenu.getPlayer();
             if (file.getStringList(slot + ".OPTIONS").contains("DRONE_FLAMETHROWER_BUY")) {
                 if (player.hasPermission("battledrones.shop.flamethrower")) {
-                    final PlayerConnect playerConnect = BattleDrones.call.get(playerMenu.getUuid());
-                    final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(playerMenu.getUuid(), "flamethrower");
+                    final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
+                    final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, "flamethrower");
                     if (droneHolder.getUnlocked() != 1) {
                         final long coins = playerConnect.getCoins();
                         final long cost = file.getLong(slot + ".COST");
@@ -78,6 +79,6 @@ public class ShopSpecialGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, playerMenu.getPlayer());
+        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
     }
 }

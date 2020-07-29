@@ -74,7 +74,7 @@ public class PlayerConnect {
         if (name != null) {
             name.remove();
         }
-        for (ArmorStand armorStand : BattleDrones.call.rocket.rockets) {
+        for (ArmorStand armorStand : BattleDrones.call.projectiles) {
             armorStand.remove();
         }
         head = null;
