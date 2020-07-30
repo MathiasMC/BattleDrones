@@ -113,7 +113,7 @@ settings:
     - '&7Health: &b{health} {health_percentage}%'
     - '&7Level: &b{level}'
     - '&7Damage: &b{min_max}'
-    - '&7Ammo: &b{ammo}'
+    - '&7Ammo: &b{ammo} {ammo_bar} {ammo_percentage}%'
     - '&7Range: &b{range}'
     - '&7Firerate: &b{firerate}'
     - '&7Accuracy: &b{accuracy}%'

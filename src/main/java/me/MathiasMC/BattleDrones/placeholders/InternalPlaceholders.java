@@ -50,7 +50,7 @@ public class InternalPlaceholders {
         final PlayerConnect playerConnect = plugin.get(uuid);
         if (playerConnect.hasActive()  && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
-            return plugin.calculateManager.getHealthBarPlaceholder(droneHolder.getHealth(), plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
+            return plugin.calculateManager.getBar(droneHolder.getHealth(), plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"), "health", "-placeholder");
         }
         return "";
     }
@@ -71,5 +71,14 @@ public class InternalPlaceholders {
             return droneHolder.getAmmo();
         }
         return 0;
+    }
+
+    public String getDroneAmmoBar(String uuid) {
+        final PlayerConnect playerConnect = plugin.get(uuid);
+        if (playerConnect.hasActive()  && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
+            DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
+            return plugin.calculateManager.getBar(droneHolder.getAmmo(), plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".max-ammo-slots") * 64, "ammo", "-placeholder");
+        }
+        return "";
     }
 }

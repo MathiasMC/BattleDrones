@@ -90,7 +90,7 @@ settings:
     - '&7Health: &b{health} {health_percentage}%'
     - '&7Level: &b{level}'
     - '&7Damage off: &b{shield_generator_damage} %'
-    - '&7Ammo: &b{ammo}'
+    - '&7Ammo: &b{ammo} {ammo_bar} {ammo_percentage}%'
     - '&7Detection Range: &b{range}'
     - '&7Cooldown: &b{cooldown} sec'
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec'

@@ -47,6 +47,14 @@ public class MVdWPlaceholderAPI {
                     }
                     return String.valueOf(plugin.internalPlaceholders.getDroneMaxHealth(offlinePlayer.getUniqueId().toString()));
                 });
+        PlaceholderAPI.registerPlaceholder(plugin, "battledrones_health_bar",
+                event -> {
+                    OfflinePlayer offlinePlayer = event.getPlayer();
+                    if (offlinePlayer == null) {
+                        return "Player needed!";
+                    }
+                    return plugin.internalPlaceholders.getDroneHealthBar(offlinePlayer.getUniqueId().toString());
+                });
         PlaceholderAPI.registerPlaceholder(plugin, "battledrones_health_percent",
                 event -> {
                     OfflinePlayer offlinePlayer = event.getPlayer();
@@ -55,14 +63,6 @@ public class MVdWPlaceholderAPI {
                     }
                     final String uuid = offlinePlayer.getUniqueId().toString();
                     return String.valueOf(plugin.calculateManager.getPercent(plugin.internalPlaceholders.getDroneHealth(uuid), plugin.internalPlaceholders.getDroneMaxHealth(uuid)));
-                });
-        PlaceholderAPI.registerPlaceholder(plugin, "battledrones_health_bar",
-                event -> {
-                    OfflinePlayer offlinePlayer = event.getPlayer();
-                    if (offlinePlayer == null) {
-                        return "Player needed!";
-                    }
-                    return plugin.internalPlaceholders.getDroneHealthBar(offlinePlayer.getUniqueId().toString());
                 });
         PlaceholderAPI.registerPlaceholder(plugin, "battledrones_ammo",
                 event -> {
@@ -79,6 +79,23 @@ public class MVdWPlaceholderAPI {
                         return "Player needed!";
                     }
                     return String.valueOf(plugin.internalPlaceholders.getDroneMaxAmmo(offlinePlayer.getUniqueId().toString()));
+                });
+        PlaceholderAPI.registerPlaceholder(plugin, "battledrones_ammo_bar",
+                event -> {
+                    OfflinePlayer offlinePlayer = event.getPlayer();
+                    if (offlinePlayer == null) {
+                        return "Player needed!";
+                    }
+                    return plugin.internalPlaceholders.getDroneAmmoBar(offlinePlayer.getUniqueId().toString());
+                });
+        PlaceholderAPI.registerPlaceholder(plugin, "battledrones_ammo_percent",
+                event -> {
+                    OfflinePlayer offlinePlayer = event.getPlayer();
+                    if (offlinePlayer == null) {
+                        return "Player needed!";
+                    }
+                    final String uuid = offlinePlayer.getUniqueId().toString();
+                    return String.valueOf(plugin.calculateManager.getPercent(plugin.internalPlaceholders.getDroneAmmo(uuid), plugin.internalPlaceholders.getDroneMaxAmmo(uuid)));
                 });
     }
 }

@@ -186,75 +186,77 @@ public class DroneManager {
 
 
     public void spawnDrone(Player player, String drone, boolean bypass, boolean bypassChecks) {
-        String uuid = player.getUniqueId().toString();
-        FileConfiguration file = plugin.droneFiles.get(drone);
-        if (!plugin.drone_players.contains(player.getUniqueId().toString()) || player.hasPermission("battledrones.bypass.activate") || bypassChecks) {
-            plugin.droneManager.waitSchedule(uuid, file);
-            plugin.loadDroneHolder(uuid, drone);
-            DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
-            if (droneHolder.getUnlocked() == 1) {
-                PlayerConnect playerConnect = plugin.get(uuid);
-                if (plugin.drone_amount.size() < plugin.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount") || bypassChecks) {
-                    plugin.droneManager.runCommands(player, playerConnect, file, "gui.SPAWN-COMMANDS", bypass);
-                    playerConnect.stopDrone();
-                    playerConnect.spawn(player, file.getString(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".head"));
-                    if (drone.equalsIgnoreCase("shield_generator")) {
-                        plugin.aiManager.defaultAI(player,
-                                playerConnect,
-                                file,
-                                droneHolder.getLevel(),
-                                droneHolder.getMonsters(),
-                                0,
-                                droneHolder.getPlayers(),
-                                droneHolder.getExclude(),
-                                false, false, true);
-                    } else if (drone.equalsIgnoreCase("healing")) {
-                        plugin.aiManager.defaultAI(player,
-                                playerConnect,
-                                file,
-                                droneHolder.getLevel(),
-                                droneHolder.getMonsters(),
-                                droneHolder.getAnimals(),
-                                1,
-                                droneHolder.getExclude(),
-                                true, true, true);
+        if (plugin.locationSupport.inLocation(player)) {
+            String uuid = player.getUniqueId().toString();
+            FileConfiguration file = plugin.droneFiles.get(drone);
+            if (!plugin.drone_players.contains(player.getUniqueId().toString()) || player.hasPermission("battledrones.bypass.activate") || bypassChecks) {
+                plugin.droneManager.waitSchedule(uuid, file);
+                plugin.loadDroneHolder(uuid, drone);
+                DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
+                if (droneHolder.getUnlocked() == 1) {
+                    PlayerConnect playerConnect = plugin.get(uuid);
+                    if (plugin.drone_amount.size() < plugin.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount") || bypassChecks) {
+                        plugin.droneManager.runCommands(player, playerConnect, file, "gui.SPAWN-COMMANDS", bypass);
+                        playerConnect.stopDrone();
+                        playerConnect.spawn(player, file.getString(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".head"));
+                        if (drone.equalsIgnoreCase("shield_generator")) {
+                            plugin.aiManager.defaultAI(player,
+                                    playerConnect,
+                                    file,
+                                    droneHolder.getLevel(),
+                                    droneHolder.getMonsters(),
+                                    0,
+                                    droneHolder.getPlayers(),
+                                    droneHolder.getExclude(),
+                                    false, false, true);
+                        } else if (drone.equalsIgnoreCase("healing")) {
+                            plugin.aiManager.defaultAI(player,
+                                    playerConnect,
+                                    file,
+                                    droneHolder.getLevel(),
+                                    droneHolder.getMonsters(),
+                                    droneHolder.getAnimals(),
+                                    1,
+                                    droneHolder.getExclude(),
+                                    true, true, true);
+                        } else {
+                            plugin.aiManager.defaultAI(player,
+                                    playerConnect,
+                                    file,
+                                    droneHolder.getLevel(),
+                                    droneHolder.getMonsters(),
+                                    droneHolder.getAnimals(),
+                                    droneHolder.getPlayers(),
+                                    droneHolder.getExclude(),
+                                    false, false, true);
+                        }
+                        if (drone.equalsIgnoreCase("laser")) {
+                            plugin.laser.shot(player);
+                        } else if (drone.equalsIgnoreCase("rocket")) {
+                            plugin.rocket.shot(player);
+                        } else if (drone.equalsIgnoreCase("machine_gun")) {
+                            plugin.machineGun.shot(player);
+                        } else if (drone.equalsIgnoreCase("shield_generator")) {
+                            plugin.shieldGenerator.shot(player);
+                        } else if (drone.equalsIgnoreCase("healing")) {
+                            plugin.healing.shot(player);
+                        } else if (drone.equalsIgnoreCase("flamethrower")) {
+                            plugin.flamethrower.shot(player);
+                        }
+                        playerConnect.setActive(drone);
+                        playerConnect.setRegen(true);
+                        plugin.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
                     } else {
-                        plugin.aiManager.defaultAI(player,
-                                playerConnect,
-                                file,
-                                droneHolder.getLevel(),
-                                droneHolder.getMonsters(),
-                                droneHolder.getAnimals(),
-                                droneHolder.getPlayers(),
-                                droneHolder.getExclude(),
-                                false, false, true);
+                        plugin.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
                     }
-                    if (drone.equalsIgnoreCase("laser")) {
-                        plugin.laser.shot(player);
-                    } else if (drone.equalsIgnoreCase("rocket")) {
-                        plugin.rocket.shot(player);
-                    } else if (drone.equalsIgnoreCase("machine_gun")) {
-                        plugin.machineGun.shot(player);
-                    } else if (drone.equalsIgnoreCase("shield_generator")) {
-                        plugin.shieldGenerator.shot(player);
-                    } else if (drone.equalsIgnoreCase("healing")) {
-                        plugin.healing.shot(player);
-                    } else if (drone.equalsIgnoreCase("flamethrower")) {
-                        plugin.flamethrower.shot(player);
-                    }
-                    playerConnect.setActive(drone);
-                    playerConnect.setRegen(true);
-                    plugin.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
                 } else {
-                    plugin.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
+                    for (String message : plugin.language.get.getStringList("battledrones.activate.unlocked")) {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                    }
                 }
             } else {
-                for (String message : plugin.language.get.getStringList("battledrones.activate.unlocked")) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
+                plugin.droneManager.wait(player, file);
             }
-        } else {
-            plugin.droneManager.wait(player, file);
         }
     }
 }

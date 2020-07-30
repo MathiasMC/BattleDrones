@@ -136,7 +136,7 @@ public class DroneMenu extends GUI {
         final String path = group + "." + drone_level + ".";
         final String path_next = group + "." + (drone_level + 1);
         final String level = String.valueOf(drone_level);
-        final String ammo = String.valueOf(drone_ammo);
+        final int ammo = drone_ammo;
         final String max_ammo_slots = file.getString(path + "max-ammo-slots");
         final String min_max = file.getString(path + "min") + "-" + file.getString(path + "max");
         final String range = file.getString(path + "range");
@@ -272,12 +272,14 @@ public class DroneMenu extends GUI {
                     return;
                 }
                 itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(gui.getString(key + ".NAME"))
-                        .replace("{health}", BattleDrones.call.calculateManager.getHealthBar(health, file.getInt(path + "health")))
+                        .replace("{health}", BattleDrones.call.calculateManager.getBar(health, file.getInt(path + "health"), "health", ""))
                         .replace("{health_percentage}", String.valueOf(BattleDrones.call.calculateManager.getPercent(health, file.getInt(path + "health"))))
                         .replace("{max_ammo_slots}", max_ammo_slots)
                         .replace("{level}", level)
                         .replace("{cost}", cost_next)
-                        .replace("{ammo}", ammo)
+                        .replace("{ammo}", String.valueOf(ammo))
+                        .replace("{ammo_bar}", BattleDrones.call.calculateManager.getBar(ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
+                        .replace("{ammo_percentage}", String.valueOf((BattleDrones.call.calculateManager.getPercent(ammo, file.getInt(path + "max-ammo-slots") * 64))))
                         .replace("{min_max}", min_max)
                         .replace("{shield_generator_damage}", shield_generator_damage)
                         .replace("{range}", range)
@@ -315,12 +317,14 @@ public class DroneMenu extends GUI {
                 ArrayList<String> list = new ArrayList<>();
                 for (String lores : gui.getStringList(key + ".LORES")) {
                     list.add(ChatColor.translateAlternateColorCodes('&', lores
-                            .replace("{health}", BattleDrones.call.calculateManager.getHealthBar(health, file.getInt(path + "health")))
+                            .replace("{health}", BattleDrones.call.calculateManager.getBar(health, file.getInt(path + "health"), "health", ""))
                             .replace("{health_percentage}", String.valueOf(BattleDrones.call.calculateManager.getPercent(health, file.getInt(path + "health"))))
                             .replace("{max_ammo_slots}", max_ammo_slots)
                             .replace("{level}", level)
                             .replace("{cost}", cost_next)
-                            .replace("{ammo}", ammo)
+                            .replace("{ammo}", String.valueOf(ammo))
+                            .replace("{ammo_bar}", BattleDrones.call.calculateManager.getBar(ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
+                            .replace("{ammo_percentage}", String.valueOf((BattleDrones.call.calculateManager.getPercent(ammo, file.getInt(path + "max-ammo-slots") * 64))))
                             .replace("{min_max}", min_max)
                             .replace("{shield_generator_damage}", shield_generator_damage)
                             .replace("{range}", range)

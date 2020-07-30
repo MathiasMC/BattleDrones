@@ -40,6 +40,10 @@ public class BattleDronesAPI {
         return BattleDrones.call.internalPlaceholders.getDroneMaxHealth(uuid);
     }
 
+    public String getDroneHealthBar(String uuid) {
+        return BattleDrones.call.internalPlaceholders.getDroneHealthBar(uuid);
+    }
+
     public int getDroneHealthPercent(String uuid) {
         return BattleDrones.call.calculateManager.getPercent(BattleDrones.call.internalPlaceholders.getDroneHealth(uuid), BattleDrones.call.internalPlaceholders.getDroneMaxHealth(uuid));
     }
@@ -52,7 +56,11 @@ public class BattleDronesAPI {
         return BattleDrones.call.internalPlaceholders.getDroneMaxAmmo(uuid);
     }
 
-    public String getDroneHealthBar(String uuid) {
-        return BattleDrones.call.internalPlaceholders.getDroneHealthBar(uuid);
+    public String getDroneAmmoBar(String uuid) {
+        return BattleDrones.call.internalPlaceholders.getDroneAmmoBar(uuid);
+    }
+
+    public int getDroneAmmoPercent(String uuid) {
+        return BattleDrones.call.calculateManager.getPercent(BattleDrones.call.internalPlaceholders.getDroneAmmo(uuid), BattleDrones.call.internalPlaceholders.getDroneMaxAmmo(uuid));
     }
 }

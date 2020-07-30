@@ -35,7 +35,7 @@ public class PlayerInteract implements Listener {
                     if (getEntityLook(e.getPlayer(), entity)) {
                         e.setCancelled(true);
                         if (!e.getPlayer().getUniqueId().toString().equalsIgnoreCase(key)) {
-                            if (!plugin.worldGuard.inRegion(entity)) {
+                            if (!plugin.locationSupport.inWorldGuardRegion(entity)) {
                                 return;
                             }
                             final PlayerConnect playerConnect = plugin.get(key);

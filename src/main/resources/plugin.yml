@@ -4,7 +4,7 @@ name: ${project.name}
 author: MathiasMC
 description: ${project.description}
 api-version: 1.15
-softdepend: [PlaceholderAPI, MVdWPlaceholderAPI, WorldGuard, Vault]
+softdepend: [PlaceholderAPI, MVdWPlaceholderAPI, WorldGuard, Vault, IridiumSkyblock]
 commands:
   battledrones:
     description: BattleDrones main command

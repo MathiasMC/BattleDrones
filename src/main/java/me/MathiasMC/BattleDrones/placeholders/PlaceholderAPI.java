@@ -58,17 +58,23 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         if(identifier.equals("health_max")){
             return String.valueOf(plugin.internalPlaceholders.getDroneMaxHealth(uuid));
         }
-        if(identifier.equals("health_percent")){
-            return String.valueOf(plugin.calculateManager.getPercent(plugin.internalPlaceholders.getDroneHealth(uuid), plugin.internalPlaceholders.getDroneMaxHealth(uuid)));
-        }
         if(identifier.equals("health_bar")){
             return plugin.internalPlaceholders.getDroneHealthBar(uuid);
+        }
+        if(identifier.equals("health_percent")){
+            return String.valueOf(plugin.calculateManager.getPercent(plugin.internalPlaceholders.getDroneHealth(uuid), plugin.internalPlaceholders.getDroneMaxHealth(uuid)));
         }
         if(identifier.equals("ammo")){
             return String.valueOf(plugin.internalPlaceholders.getDroneAmmo(uuid));
         }
         if(identifier.equals("ammo_max")){
             return String.valueOf(plugin.internalPlaceholders.getDroneMaxAmmo(uuid));
+        }
+        if(identifier.equals("ammo_bar")){
+            return plugin.internalPlaceholders.getDroneAmmoBar(uuid);
+        }
+        if(identifier.equals("ammo_percent")){
+            return String.valueOf(plugin.calculateManager.getPercent(plugin.internalPlaceholders.getDroneAmmo(uuid), plugin.internalPlaceholders.getDroneMaxAmmo(uuid)));
         }
         return null;
     }

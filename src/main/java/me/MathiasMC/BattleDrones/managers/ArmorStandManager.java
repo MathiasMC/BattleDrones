@@ -53,7 +53,7 @@ public class ArmorStandManager {
     }
 
     public ArrayList<LivingEntity> getEntityAround(Entity entity, double radius, int monsters, int animal, int player, List<String> excludePlayers, boolean reverseExclude) {
-        if (!plugin.worldGuard.inRegion(entity)) {
+        if (!plugin.locationSupport.inWorldGuardRegion(entity)) {
             return new ArrayList<>();
         }
         final ArrayList<LivingEntity> list = new ArrayList<>();

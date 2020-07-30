@@ -67,28 +67,13 @@ public class CalculateManager {
         return decimalFormat.format(20 / firerate);
     }
 
-
-    public String getHealthBar(int current, int max) {
-        char xp = (char) Integer.parseInt(plugin.config.get.getString("health.health.symbol").substring(2), 16);
-        char none = (char) Integer.parseInt(plugin.config.get.getString("health.none.symbol").substring(2), 16);
-        ChatColor xpColor = getChatColor(plugin.config.get.getString("health.health.color"));
-        ChatColor noneColor = getChatColor(plugin.config.get.getString("health.none.color"));
-        int bars = plugin.config.get.getInt("health.amount");
-        int progressBars = (int) (bars * getPercent(current, max) / 100);
-        try {
-            return Strings.repeat("" + xpColor + xp, progressBars) + Strings.repeat("" + noneColor + none, bars - progressBars);
-        } catch (Exception exception) {
-            return "";
-        }
-    }
-
-    public String getHealthBarPlaceholder(int current, int max) {
-        char xp = (char) Integer.parseInt(plugin.config.get.getString("health-placeholder.health.symbol").substring(2), 16);
-        char none = (char) Integer.parseInt(plugin.config.get.getString("health-placeholder.none.symbol").substring(2), 16);
-        ChatColor xpColor = getChatColor(plugin.config.get.getString("health-placeholder.health.color"));
-        ChatColor noneColor = getChatColor(plugin.config.get.getString("health-placeholder.none.color"));
-        int bars = plugin.config.get.getInt("health-placeholder.amount");
-        int progressBars = (int) (bars * getPercent(current, max) / 100);
+    public String getBar(int current, int max, String path, String extra) {
+        char xp = (char) Integer.parseInt(plugin.config.get.getString(path + extra + "." + path + ".symbol").substring(2), 16);
+        char none = (char) Integer.parseInt(plugin.config.get.getString(path + extra + ".none.symbol").substring(2), 16);
+        ChatColor xpColor = getChatColor(plugin.config.get.getString(path + extra + "." + path + ".color"));
+        ChatColor noneColor = getChatColor(plugin.config.get.getString(path + extra + ".none.color"));
+        int bars = plugin.config.get.getInt(path + extra + ".amount");
+        int progressBars = (bars * getPercent(current, max) / 100);
         try {
             return Strings.repeat("" + xpColor + xp, progressBars) + Strings.repeat("" + noneColor + none, bars - progressBars);
         } catch (Exception exception) {
@@ -97,6 +82,9 @@ public class CalculateManager {
     }
 
     public int getPercent(int current, int max) {
+        if (current > max) {
+            return 100;
+        }
         double percent = ((double) current / (double) max) * 100;
         return (int) Math.round(percent);
     }

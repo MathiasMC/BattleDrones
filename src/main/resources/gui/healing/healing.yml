@@ -91,7 +91,7 @@ settings:
     - '&7Level: &b{level}'
     - '&7Given Health: &b{min_max}'
     - '&7Cooldown: &b{cooldown} sec'
-    - '&7Ammo: &b{ammo}'
+    - '&7Ammo: &b{ammo} {ammo_bar} {ammo_percentage}%'
     - '&7Range: &b{range}'
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec'
     - '&7Max ammo slots: &b{max_ammo_slots}'
