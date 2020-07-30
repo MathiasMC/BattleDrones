@@ -60,10 +60,23 @@ public class ArmorStandManager {
         final List<String> entityList = plugin.config.get.getStringList("exclude");
         for (Entity currentEntity : entity.getNearbyEntities(radius, radius, radius)) {
             if (!entityList.contains(currentEntity.getName().toLowerCase())) {
-                if (monsters == 1 && currentEntity instanceof org.bukkit.entity.Monster) {
+                if (monsters == 1 && currentEntity instanceof org.bukkit.entity.Monster
+                        || currentEntity instanceof Slime
+                        || currentEntity instanceof Phantom
+                        || currentEntity instanceof IronGolem
+                        || currentEntity instanceof Ghast
+                        || currentEntity instanceof Shulker) {
                     list.add((LivingEntity) currentEntity);
                 }
-                if (animal == 1 && currentEntity instanceof org.bukkit.entity.Animals) {
+                if (animal == 1 && currentEntity instanceof org.bukkit.entity.Animals
+                        || currentEntity instanceof Villager
+                        || currentEntity instanceof WanderingTrader
+                        || currentEntity instanceof Dolphin
+                        || currentEntity instanceof PufferFish
+                        || currentEntity instanceof Squid
+                        || currentEntity instanceof TropicalFish
+                        || currentEntity instanceof Bat
+                        || currentEntity instanceof Cod) {
                     list.add((LivingEntity) currentEntity);
                 }
                 if (player == 1 && currentEntity instanceof org.bukkit.entity.Player) {

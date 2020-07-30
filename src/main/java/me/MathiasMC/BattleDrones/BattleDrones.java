@@ -4,6 +4,7 @@ import com.google.common.io.ByteStreams;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.MathiasMC.BattleDrones.commands.BattleDrones_Command;
+import me.MathiasMC.BattleDrones.commands.BattleDrones_TabComplete;
 import me.MathiasMC.BattleDrones.data.Database;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
@@ -143,6 +144,7 @@ public class BattleDrones extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new EntityDamageByEntity(this), this);
             getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
             getCommand("battledrones").setExecutor(new BattleDrones_Command(this));
+            getCommand("battledrones").setTabCompleter(new BattleDrones_TabComplete(this));
             addHeads();
             if (config.get.getBoolean("save.use")) {
                 saveSchedule();

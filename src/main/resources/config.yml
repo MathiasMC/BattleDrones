@@ -40,7 +40,11 @@ worldguard: []
 better-block-check: false
 
 # Exclude entity´s (Example silverfish) (entity´s in this list will not be attacked)
-exclude: []
+exclude:
+  - villager
+  - vindicator
+  - iron_golem
+  - silverfish
 
 # Vault (Use vault economy instead of build in coins system)
 vault: false

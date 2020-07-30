@@ -46,9 +46,22 @@ public class DroneManager {
     public void checkShot(LivingEntity target, FileConfiguration file, Location location, String path, String type) {
         if (target instanceof Player) {
             shotCommands(file, path + type + ".player", location, target.getName());
-        } else if (target instanceof Monster) {
+        } else if (target instanceof Monster
+                || target instanceof Slime
+                || target instanceof Phantom
+                || target instanceof IronGolem
+                || target instanceof Ghast
+                || target instanceof Shulker) {
             shotCommands(file, path + type + ".monster", location, target.getName());
-        } else if (target instanceof Animals) {
+        } else if (target instanceof Animals
+                || target instanceof Villager
+                || target instanceof WanderingTrader
+                || target instanceof Dolphin
+                || target instanceof PufferFish
+                || target instanceof Squid
+                || target instanceof TropicalFish
+                || target instanceof Bat
+                || target instanceof Cod) {
             shotCommands(file, path + type + ".animal", location, target.getName());
         }
     }
