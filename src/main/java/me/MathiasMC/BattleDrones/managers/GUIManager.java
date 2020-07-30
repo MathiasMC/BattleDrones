@@ -27,9 +27,19 @@ public class GUIManager {
             if (!key.equalsIgnoreCase("settings")) {
                 ItemStack itemStack;
                 if (!file.contains(key + ".HEAD")) {
-                    itemStack = plugin.getItemStack(file.getString(key + ".MATERIAL"), file.getInt(key + ".AMOUNT"));
+                    final String material = file.getString(key + ".MATERIAL");
+                    itemStack = plugin.getItemStack(material, file.getInt(key + ".AMOUNT"));
+                    if (itemStack == null) {
+                        plugin.textUtils.gui(player, "gui", material);
+                        return;
+                    }
                 } else {
-                    itemStack = plugin.drone_heads.get(file.getString(key + ".HEAD"));
+                    final String material = file.getString(key + ".HEAD");
+                    itemStack = plugin.drone_heads.get(material);
+                    if (itemStack == null) {
+                        plugin.textUtils.gui(player, "head", material);
+                        return;
+                    }
                 }
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(plugin.replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', file.getString(key + ".NAME")

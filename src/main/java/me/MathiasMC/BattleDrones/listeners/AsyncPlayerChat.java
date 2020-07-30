@@ -29,6 +29,7 @@ public class AsyncPlayerChat implements Listener {
                     if (!player.getName().toLowerCase().equalsIgnoreCase(message)) {
                         players.add(message);
                         droneHolder.setExclude(players);
+                        droneHolder.save();
                         plugin.getServer().getScheduler().runTask(plugin, () -> {
                             for (String command : plugin.language.get.getStringList("gui.whitelist.add")) {
                                 BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));

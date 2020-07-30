@@ -61,7 +61,8 @@ public class DroneManager {
                 || target instanceof Squid
                 || target instanceof TropicalFish
                 || target instanceof Bat
-                || target instanceof Cod) {
+                || target instanceof Cod
+                || target instanceof Salmon) {
             shotCommands(file, path + type + ".animal", location, target.getName());
         }
     }
@@ -199,37 +200,7 @@ public class DroneManager {
                         plugin.droneManager.runCommands(player, playerConnect, file, "gui.SPAWN-COMMANDS", bypass);
                         playerConnect.stopDrone();
                         playerConnect.spawn(player, file.getString(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".head"));
-                        if (drone.equalsIgnoreCase("shield_generator")) {
-                            plugin.aiManager.defaultAI(player,
-                                    playerConnect,
-                                    file,
-                                    droneHolder.getLevel(),
-                                    droneHolder.getMonsters(),
-                                    0,
-                                    droneHolder.getPlayers(),
-                                    droneHolder.getExclude(),
-                                    false, false, true);
-                        } else if (drone.equalsIgnoreCase("healing")) {
-                            plugin.aiManager.defaultAI(player,
-                                    playerConnect,
-                                    file,
-                                    droneHolder.getLevel(),
-                                    droneHolder.getMonsters(),
-                                    droneHolder.getAnimals(),
-                                    1,
-                                    droneHolder.getExclude(),
-                                    true, true, true);
-                        } else {
-                            plugin.aiManager.defaultAI(player,
-                                    playerConnect,
-                                    file,
-                                    droneHolder.getLevel(),
-                                    droneHolder.getMonsters(),
-                                    droneHolder.getAnimals(),
-                                    droneHolder.getPlayers(),
-                                    droneHolder.getExclude(),
-                                    false, false, true);
-                        }
+                        startAI(player, playerConnect, droneHolder, file, drone);
                         if (drone.equalsIgnoreCase("laser")) {
                             plugin.laser.shot(player);
                         } else if (drone.equalsIgnoreCase("rocket")) {
@@ -257,6 +228,40 @@ public class DroneManager {
             } else {
                 plugin.droneManager.wait(player, file);
             }
+        }
+    }
+
+    public void startAI(Player player, PlayerConnect playerConnect, DroneHolder droneHolder, FileConfiguration file, String drone) {
+        if (drone.equalsIgnoreCase("shield_generator")) {
+            plugin.aiManager.defaultAI(player,
+                    playerConnect,
+                    file,
+                    droneHolder.getLevel(),
+                    droneHolder.getMonsters(),
+                    0,
+                    droneHolder.getPlayers(),
+                    droneHolder.getExclude(),
+                    false, false, true);
+        } else if (drone.equalsIgnoreCase("healing")) {
+            plugin.aiManager.defaultAI(player,
+                    playerConnect,
+                    file,
+                    droneHolder.getLevel(),
+                    droneHolder.getMonsters(),
+                    droneHolder.getAnimals(),
+                    1,
+                    droneHolder.getExclude(),
+                    true, true, true);
+        } else {
+            plugin.aiManager.defaultAI(player,
+                    playerConnect,
+                    file,
+                    droneHolder.getLevel(),
+                    droneHolder.getMonsters(),
+                    droneHolder.getAnimals(),
+                    droneHolder.getPlayers(),
+                    droneHolder.getExclude(),
+                    false, false, true);
         }
     }
 }

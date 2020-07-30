@@ -69,6 +69,7 @@ public class WhitelistGUI extends GUI {
             if (players.contains(name)) {
                 players.remove(name);
                 droneHolder.setExclude(players);
+                droneHolder.save();
                 new WhitelistGUI(BattleDrones.call.getPlayerMenu(player), drone).open();
             }
         }
@@ -84,6 +85,10 @@ public class WhitelistGUI extends GUI {
             if (itemStack == null) {
                 if (players.size() > index) {
                     final ItemStack itemStackS = BattleDrones.call.drone_heads.get("whitelist");
+                    if (itemStackS == null) {
+                        BattleDrones.call.textUtils.gui(player, "head", "whitelist");
+                        return;
+                    }
                     final ItemMeta itemMeta = itemStackS.getItemMeta();
                     if (itemMeta == null) { return; }
                     itemMeta.setDisplayName(BattleDrones.call.calculateManager.getChatColor(Objects.requireNonNull(BattleDrones.call.language.get.getString("gui.whitelist.name-color"))) + players.get(index));

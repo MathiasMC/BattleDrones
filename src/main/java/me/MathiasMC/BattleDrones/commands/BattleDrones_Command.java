@@ -637,22 +637,27 @@ public class BattleDrones_Command implements CommandExecutor {
                                             if (plugin.isInt(args[4]) && Integer.parseInt(args[4]) > 0 && Integer.parseInt(args[4]) < 65) {
                                                 if (plugin.drones.contains(args[2])) {
                                                     FileConfiguration file = plugin.droneFiles.get(args[2]);
-                                                    ItemStack itemStack = plugin.getItemStack(file.getString("gui.AMMO.MATERIAL"), Integer.parseInt(args[4]));
-                                                    ItemMeta itemMeta = itemStack.getItemMeta();
-                                                    itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', file.getString("gui.AMMO.NAME")));
-                                                    ArrayList<String> lores = new ArrayList<>();
-                                                    for (String lore : file.getStringList("gui.AMMO.LORES")) {
-                                                        lores.add(ChatColor.translateAlternateColorCodes('&', lore));
-                                                    }
-                                                    itemMeta.setLore(lores);
-                                                    itemStack.setItemMeta(itemMeta);
-                                                    if (target.getInventory().firstEmpty() == -1) {
-                                                        target.getWorld().dropItem(target.getLocation().add(0, 1, 0), itemStack);
-                                                    } else {
-                                                        target.getInventory().addItem(itemStack);
-                                                    }
-                                                    for (String message : plugin.language.get.getStringList("battledrones.give.ammo.message")) {
-                                                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.replace("{amount}", args[4]).replace("{player}", target.getName()).replace("{drone}", args[2])));
+                                                    final String material = file.getString("gui.AMMO.MATERIAL");
+                                                    try {
+                                                        ItemStack itemStack = plugin.getItemStack(material, Integer.parseInt(args[4]));
+                                                        ItemMeta itemMeta = itemStack.getItemMeta();
+                                                        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', file.getString("gui.AMMO.NAME")));
+                                                        ArrayList<String> lores = new ArrayList<>();
+                                                        for (String lore : file.getStringList("gui.AMMO.LORES")) {
+                                                            lores.add(ChatColor.translateAlternateColorCodes('&', lore));
+                                                        }
+                                                        itemMeta.setLore(lores);
+                                                        itemStack.setItemMeta(itemMeta);
+                                                        if (target.getInventory().firstEmpty() == -1) {
+                                                            target.getWorld().dropItem(target.getLocation().add(0, 1, 0), itemStack);
+                                                        } else {
+                                                            target.getInventory().addItem(itemStack);
+                                                        }
+                                                        for (String message : plugin.language.get.getStringList("battledrones.give.ammo.message")) {
+                                                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.replace("{amount}", args[4]).replace("{player}", target.getName()).replace("{drone}", args[2])));
+                                                        }
+                                                    } catch (NullPointerException e) {
+                                                        plugin.textUtils.gui(sender, "ammo", material);
                                                     }
                                                 } else {
                                                     for (String message : plugin.language.get.getStringList("battledrones.give.ammo.usage")) {

@@ -44,6 +44,8 @@ public class DroneMenu extends GUI {
         if (file.contains(String.valueOf(slot))) {
             PlayerConnect playerConnect = BattleDrones.call.get(uuid);
             DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
+            final FileConfiguration droneFile = BattleDrones.call.droneFiles.get(drone);
+            boolean updateAI = false;
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 if (drone.equalsIgnoreCase("laser")) {
                     new EnergyGUI(BattleDrones.call.getPlayerMenu(player)).open();
@@ -63,6 +65,7 @@ public class DroneMenu extends GUI {
                     droneHolder.setMonsters(1);
                 }
                 new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                updateAI = true;
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_ANIMALS")) {
                 if (droneHolder.getAnimals() == 1) {
                     droneHolder.setAnimals(0);
@@ -70,6 +73,7 @@ public class DroneMenu extends GUI {
                     droneHolder.setAnimals(1);
                 }
                 new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                updateAI = true;
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYERS")) {
                 if (droneHolder.getPlayers() == 1) {
                     droneHolder.setPlayers(0);
@@ -77,6 +81,7 @@ public class DroneMenu extends GUI {
                     droneHolder.setPlayers(1);
                 }
                 new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                updateAI = true;
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_WHITELIST")) {
                 new WhitelistGUI(BattleDrones.call.getPlayerMenu(player), drone).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_AMMO")) {
@@ -95,6 +100,10 @@ public class DroneMenu extends GUI {
                             playerConnect.setCoins(coins - cost);
                         }
                         droneHolder.setLevel((droneHolder.getLevel() + 1));
+                        if (BattleDrones.call.config.get.getBoolean("update-upgrade") && playerConnect.hasActive()) {
+                            playerConnect.stopDrone();
+                            BattleDrones.call.droneManager.spawnDrone(player, drone, true, true);
+                        }
                         for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.levelup")) {
                             BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
                         }
@@ -109,6 +118,12 @@ public class DroneMenu extends GUI {
                     for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.max")) {
                         BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
                     }
+                }
+            }
+            if (BattleDrones.call.config.get.getBoolean("update-toggle") && updateAI) {
+                if (playerConnect.hasActive()) {
+                    playerConnect.stopAI();
+                    BattleDrones.call.droneManager.startAI(player, playerConnect, droneHolder, droneFile, drone);
                 }
             }
             BattleDrones.call.guiManager.dispatchCommand(file, slot, player);

@@ -38,7 +38,7 @@ battledrones:
       - '&7&l> &f/battledrones message <player> <text>'
       - '&7&l> &f/battledrones broadcast <null/permission> <text>'
       - '&7&l> &f/battledrones coins set/add/remove <player> <amount>'
-      - '&7&l> &f/battledrones give ammo <droneType> <player> <amount>'
+      - '&7&l> &f/battledrones give ammo <droneType> <player> <1-64>'
       - '&7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
       - '&c&m---------------------------------------------'
   reload:
@@ -192,7 +192,7 @@ battledrones:
       - '&7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
     ammo:
       usage:
-        - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <amount>'
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <1-64>'
       message:
         - '&7[&dBattleDrones&7] &aAdded &6{amount} {drone} &aammo to &6{player}'
 gui:

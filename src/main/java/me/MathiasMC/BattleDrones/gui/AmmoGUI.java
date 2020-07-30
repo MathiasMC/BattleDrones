@@ -93,7 +93,12 @@ public class AmmoGUI extends GUI {
     public void setItems() {
         BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
         final FileConfiguration droneFile = BattleDrones.call.droneFiles.get(drone);
-        final ItemStack itemStack = BattleDrones.call.getItemStack(droneFile.getString("gui.AMMO.MATERIAL"), 64);
+        final String material = droneFile.getString("gui.AMMO.MATERIAL");
+        final ItemStack itemStack = BattleDrones.call.getItemStack(material, 64);
+        if (itemStack == null) {
+            BattleDrones.call.textUtils.gui(player, "ammo", material);
+            return;
+        }
         final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {
             return;

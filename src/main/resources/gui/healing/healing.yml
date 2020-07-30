@@ -79,7 +79,6 @@ settings:
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec &7> &b{regen_health_next} HP/{regen_delay_next} sec'
     - '&7Max ammo slots: &b{max_ammo_slots} &7> &b{max_ammo_slots_next}'
     - '&7Cost: &b{cost}'
-    - '&7Require respawn: &bYes'
   MATERIAL: EMERALD
   AMOUNT: 1
   OPTIONS:

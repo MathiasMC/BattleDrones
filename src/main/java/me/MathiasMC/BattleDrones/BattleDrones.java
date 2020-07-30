@@ -143,6 +143,7 @@ public class BattleDrones extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
             getServer().getPluginManager().registerEvents(new EntityDamageByEntity(this), this);
             getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
+            getServer().getPluginManager().registerEvents(new PlayerTeleport(this), this);
             getCommand("battledrones").setExecutor(new BattleDrones_Command(this));
             getCommand("battledrones").setTabCompleter(new BattleDrones_TabComplete(this));
             addHeads();

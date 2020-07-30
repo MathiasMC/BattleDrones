@@ -110,7 +110,8 @@ public class Rocket {
                 final Location armorStandLocation = armorStand.getLocation();
                 ArrayList<LivingEntity> rocket = plugin.armorStandManager.getEntityAround(armorStand, 1,  1, 1, 1, exclude, false);
                 rocket.remove(player);
-                if (timer > (file.getLong(path + "rocket-time") * 20) || rocket.size() > 0 || armorStand.getTargetBlock(null, 1).getType() != Material.AIR) {
+                Material targetMaterial = armorStand.getTargetBlock(null, 1).getType();
+                if (timer > (file.getLong(path + "rocket-time") * 20) || rocket.size() > 0 || targetMaterial != Material.AIR && targetMaterial != Material.WATER && targetMaterial != Material.LAVA) {
                     this.cancel();
                     ArrayList<LivingEntity> livingEntities = plugin.armorStandManager.getEntityAround(armorStand, file.getDouble(path + "rocket-radius"),  1, 1, 1, exclude, false);
                     for (LivingEntity livingEntity : livingEntities) {

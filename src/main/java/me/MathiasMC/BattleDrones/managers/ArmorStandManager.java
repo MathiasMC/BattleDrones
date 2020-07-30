@@ -76,7 +76,8 @@ public class ArmorStandManager {
                         || currentEntity instanceof Squid
                         || currentEntity instanceof TropicalFish
                         || currentEntity instanceof Bat
-                        || currentEntity instanceof Cod) {
+                        || currentEntity instanceof Cod
+                        || currentEntity instanceof Salmon) {
                     list.add((LivingEntity) currentEntity);
                 }
                 if (player == 1 && currentEntity instanceof org.bukkit.entity.Player) {

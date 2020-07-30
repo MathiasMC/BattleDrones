@@ -84,6 +84,12 @@ vault: false
 # Look for armorstands that is a drone on startup and remove it
 cleanup: true
 
+# Update drone on upgrade
+update-upgrade: true
+
+# Update toggles on click
+update-toggle: true
+
 # Drone count (How many drones can be active at the same time)
 drone-amount: 10
 
@@ -92,12 +98,17 @@ save:
   use: true
   interval: 60
 
-# Player death
+# Player death (if section is removed the drone will not be removed) [] (to disable commands)
 player-death-commands:
   - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you died.'
 
+# Player change world (if section is removed the drone will not be removed) [] (to disable commands)
 player-world-change-commands:
   - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you changed world.'
+
+# Player teleport (if section is removed the drone will not be removed) [] (to disable commands)
+player-teleport-commands:
+  - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you teleported.'
 
 # Custom heads for drones, gui - (base64 textures find one on minecraft-heads.com) (whitelist, cannot be removed) (Check if the head belongs somewhere before removing)
 heads:

@@ -2,6 +2,8 @@ package me.MathiasMC.BattleDrones.utils;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 import java.util.logging.Logger;
 
@@ -43,5 +45,9 @@ public class TextUtils {
         info(prefix + " version: " + plugin.getDescription().getVersion());
         info("Please report this error to me on spigot");
         info("(!) " + prefix + " (!)");
+    }
+
+    public void gui(CommandSender target, String itemType, String material) {
+        target.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cAn error has occurred, " + itemType + " item &7" + material + " &cis not found."));
     }
 }

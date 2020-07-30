@@ -54,7 +54,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     commands.add("message");
                 } else if (args.length > 1 && args[0].equalsIgnoreCase("message")) {
                     if (args.length == 2) {
-                        commands.add(player.getName());
+                        commands.addAll(getPlayers(args[1]));
                     } else if (args.length == 3) {
                         commands.add("text");
                     }
@@ -69,7 +69,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                         commands.add("add");
                         commands.add("remove");
                     } else if (args.length == 3) {
-                        commands.add(player.getName());
+                        commands.addAll(getPlayers(args[2]));
                     } else if (args.length == 4) {
                         commands.add("amount");
                     }
@@ -81,9 +81,9 @@ public class BattleDrones_TabComplete implements TabCompleter {
                 } else if (args.length == 2 || args.length == 3) {
                     if (args[0].equalsIgnoreCase("unlock")) {
                         if (args.length == 2) {
-                            commands.add("droneType");
+                            commands.addAll(plugin.drones);
                         } else {
-                            commands.add(player.getName());
+                            commands.addAll(getPlayers(args[2]));
                         }
                     }
                 }
@@ -94,9 +94,9 @@ public class BattleDrones_TabComplete implements TabCompleter {
                 } else if (args.length == 2 || args.length == 3) {
                     if (args[0].equalsIgnoreCase("lock")) {
                         if (args.length == 2) {
-                            commands.add("droneType");
+                            commands.addAll(plugin.drones);
                         } else {
-                            commands.add(player.getName());
+                            commands.addAll(getPlayers(args[2]));
                         }
                     }
                 }
@@ -120,7 +120,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     } else if (args.length == 8) {
                         commands.add("pitch");
                     } else if (args.length == 9) {
-                        commands.add(player.getName());
+                        commands.addAll(getPlayers(args[8]));
                     }
                 }
             }
@@ -132,7 +132,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                         commands.add("set");
                         commands.add("reset");
                     } else if (args.length == 3) {
-                        commands.add(player.getName());
+                        commands.addAll(getPlayers(args[2]));
                     } else if (args.length == 4) {
                         if (args[1].equalsIgnoreCase("set")) {
                             commands.add("group");
@@ -149,9 +149,9 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     } else if (args.length == 3) {
                         commands.addAll(plugin.drones);
                     } else if (args.length == 4) {
-                        commands.add(player.getName());
+                        commands.addAll(getPlayers(args[3]));
                     } else if (args.length == 5) {
-                        commands.add("amount");
+                        commands.add("64");
                     }
                 }
             }
@@ -182,7 +182,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     if (player.hasPermission("battledrones.command.deactivate.other")) {
                         if (args.length == 2) {
                             commands.add("all");
-                            commands.add(player.getName());
+                            commands.addAll(getPlayers(args[1]));
                             commands.addAll(plugin.drones);
                         } else if (args.length == 3) {
                             commands.add("seconds");
@@ -195,5 +195,18 @@ public class BattleDrones_TabComplete implements TabCompleter {
             return list;
         }
         return null;
+    }
+
+    private List<String> getPlayers(String startsWith) {
+        final List<String> list = new ArrayList<>();
+        for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+            if (onlinePlayer.isOnline()) {
+                final String name = onlinePlayer.getName();
+                if (name.startsWith(startsWith)) {
+                    list.add(name);
+                }
+            }
+        }
+        return list;
     }
 }
