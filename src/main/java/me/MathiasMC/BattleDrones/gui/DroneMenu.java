@@ -17,6 +17,7 @@ import java.util.Objects;
 
 public class DroneMenu extends GUI {
 
+    private final BattleDrones plugin = BattleDrones.call;
     private final FileConfiguration file;
     private final String drone;
     private final Player player = playerMenu.getPlayer();
@@ -25,7 +26,7 @@ public class DroneMenu extends GUI {
     public DroneMenu(Menu playerMenu, String drone) {
         super(playerMenu);
         this.drone = drone;
-        file = BattleDrones.call.guiFiles.get(drone);
+        file = plugin.guiFiles.get(drone);
     }
 
     @Override
@@ -42,21 +43,21 @@ public class DroneMenu extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
-            PlayerConnect playerConnect = BattleDrones.call.get(uuid);
-            DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
-            final FileConfiguration droneFile = BattleDrones.call.droneFiles.get(drone);
+            PlayerConnect playerConnect = plugin.get(uuid);
+            DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
+            final FileConfiguration droneFile = plugin.droneFiles.get(drone);
             boolean updateAI = false;
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 if (drone.equalsIgnoreCase("laser")) {
-                    new EnergyGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                    new EnergyGUI(plugin.getPlayerMenu(player)).open();
                 } else if (drone.equalsIgnoreCase("machine_gun")) {
-                    new KineticGUI(BattleDrones.call.getPlayerMenu(player)).open();
-                } else if (drone.equalsIgnoreCase("rocket")) {
-                    new ExplodeGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                    new KineticGUI(plugin.getPlayerMenu(player)).open();
+                } else if (drone.equalsIgnoreCase("rocket") || drone.equalsIgnoreCase("faf_missile") || drone.equalsIgnoreCase("mortar")) {
+                    new ExplodeGUI(plugin.getPlayerMenu(player)).open();
                 } else if (drone.equalsIgnoreCase("shield_generator") || drone.equalsIgnoreCase("healing")) {
-                    new ProtectiveGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                    new ProtectiveGUI(plugin.getPlayerMenu(player)).open();
                 } else if (drone.equalsIgnoreCase("flamethrower")) {
-                    new SpecialGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                    new SpecialGUI(plugin.getPlayerMenu(player)).open();
                 }
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_MONSTERS")) {
                 if (droneHolder.getMonsters() == 1) {
@@ -64,7 +65,7 @@ public class DroneMenu extends GUI {
                 } else {
                     droneHolder.setMonsters(1);
                 }
-                new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new DroneMenu(plugin.getPlayerMenu(player), drone).open();
                 updateAI = true;
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_ANIMALS")) {
                 if (droneHolder.getAnimals() == 1) {
@@ -72,7 +73,7 @@ public class DroneMenu extends GUI {
                 } else {
                     droneHolder.setAnimals(1);
                 }
-                new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new DroneMenu(plugin.getPlayerMenu(player), drone).open();
                 updateAI = true;
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYERS")) {
                 if (droneHolder.getPlayers() == 1) {
@@ -80,62 +81,63 @@ public class DroneMenu extends GUI {
                 } else {
                     droneHolder.setPlayers(1);
                 }
-                new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new DroneMenu(plugin.getPlayerMenu(player), drone).open();
                 updateAI = true;
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_WHITELIST")) {
-                new WhitelistGUI(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new WhitelistGUI(plugin.getPlayerMenu(player), drone).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_AMMO")) {
-                new AmmoGUI(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new AmmoGUI(plugin.getPlayerMenu(player), drone).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_UPGRADE")) {
-                FileConfiguration file = BattleDrones.call.droneFiles.get(drone);
+                FileConfiguration file = plugin.droneFiles.get(drone);
                 String path = playerConnect.getGroup() + "." + (droneHolder.getLevel() + 1);
                 if (file.contains(path)) {
                     long coins = playerConnect.getCoins();
                     long cost = file.getLong(path + ".cost");
-                    if (!BattleDrones.call.config.get.getBoolean("vault") && coins >= cost ||
-                            BattleDrones.call.config.get.getBoolean("vault") &&
-                                    BattleDrones.call.getEconomy() != null &&
-                                    BattleDrones.call.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
-                        if (!BattleDrones.call.config.get.getBoolean("vault")) {
+                    if (!plugin.config.get.getBoolean("vault") && coins >= cost ||
+                            plugin.config.get.getBoolean("vault") &&
+                                    plugin.getEconomy() != null &&
+                                    plugin.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
+                        if (!plugin.config.get.getBoolean("vault")) {
                             playerConnect.setCoins(coins - cost);
                         }
                         droneHolder.setLevel((droneHolder.getLevel() + 1));
-                        if (BattleDrones.call.config.get.getBoolean("update-upgrade") && playerConnect.hasActive()) {
+                        if (plugin.config.get.getBoolean("update-upgrade") && playerConnect.hasActive()) {
                             playerConnect.stopDrone();
-                            BattleDrones.call.droneManager.spawnDrone(player, drone, true, true);
+                            plugin.droneManager.spawnDrone(player, drone, true, true);
                         }
                         for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.levelup")) {
-                            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                         }
                         droneHolder.save();
-                        new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                        new DroneMenu(plugin.getPlayerMenu(player), drone).open();
                     } else {
                         for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.enough")) {
-                            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                         }
                     }
                 } else {
                     for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.max")) {
-                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
             }
-            if (BattleDrones.call.config.get.getBoolean("update-toggle") && updateAI) {
+            if (plugin.config.get.getBoolean("update-toggle") && updateAI) {
                 if (playerConnect.hasActive()) {
                     playerConnect.stopAI();
-                    BattleDrones.call.droneManager.startAI(player, playerConnect, droneHolder, droneFile, drone);
+                    playerConnect.stopFindTargetAI();
+                    plugin.droneManager.startAI(player, playerConnect, droneHolder, droneFile, drone);
                 }
             }
-            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
+            plugin.guiManager.dispatchCommand(file, slot, player);
         }
     }
 
     @Override
     public void setItems() {
-        DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
-        setPlayerGUI(BattleDrones.call.droneFiles.get(drone),
-                BattleDrones.call.guiFiles.get(drone),
-                BattleDrones.call.get(playerMenu.getUuid()).getGroup(),
+        DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
+        setPlayerGUI(plugin.droneFiles.get(drone),
+                plugin.guiFiles.get(drone),
+                plugin.get(playerMenu.getUuid()).getGroup(),
                 inventory,
                 droneHolder.getHealth(),
                 droneHolder.getMonsters(),
@@ -159,16 +161,16 @@ public class DroneMenu extends GUI {
         String cooldown = "";
         if (file.contains(path + "cooldown")) {
             cooldown = file.getString(path + "cooldown");
-            firerate = BattleDrones.call.calculateManager.getFirerate(file.getDouble(path + "cooldown"));
+            firerate = plugin.calculateManager.getFirerate(file.getDouble(path + "cooldown"));
         }
-        String shield_generator_damage = BattleDrones.call.calculateManager.getProcentFromDouble(file.getDouble(path + "min")) + "-" + BattleDrones.call.calculateManager.getProcentFromDouble(file.getDouble(path + "max"));
-        String accuracy = "";
-        if (file.contains(path + "accuracy")) {
-            accuracy = String.valueOf(BattleDrones.call.calculateManager.getProcentFromDouble(file.getDouble(path + "accuracy")));
+        String shield_generator_damage = plugin.calculateManager.getProcentFromDouble(file.getDouble(path + "min")) + "-" + plugin.calculateManager.getProcentFromDouble(file.getDouble(path + "max"));
+        String chance = "";
+        if (file.contains(path + "chance")) {
+            chance = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path + "chance")));
         }
         String setfire_chance = "";
         if (file.contains(path + "setfire-chance")) {
-            setfire_chance = String.valueOf(BattleDrones.call.calculateManager.getProcentFromDouble(file.getDouble(path + "setfire-chance")));
+            setfire_chance = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path + "setfire-chance")));
         }
         String burning_time = "";
         if (file.contains(path + "burning-time")) {
@@ -199,7 +201,7 @@ public class DroneMenu extends GUI {
         String firerate_next = "";
         String cooldown_next = "";
         String shield_generator_damage_next = "";
-        String accuracy_next = "";
+        String chance_next = "";
         String setfire_chance_next = "";
         String burning_time_next = "";
         String rocket_speed_next = "";
@@ -213,17 +215,17 @@ public class DroneMenu extends GUI {
         if (file.contains(path_next)) {
             level_next = String.valueOf((drone_level + 1));
             min_max_next = file.getString(path_next + ".min") + "-" + file.getString(path_next + ".max");
-            shield_generator_damage_next = BattleDrones.call.calculateManager.getProcentFromDouble(file.getDouble(path_next + "min")) + "-" + BattleDrones.call.calculateManager.getProcentFromDouble(file.getDouble(path_next + "max"));
+            shield_generator_damage_next = plugin.calculateManager.getProcentFromDouble(file.getDouble(path_next + "min")) + "-" + plugin.calculateManager.getProcentFromDouble(file.getDouble(path_next + "max"));
             range_next = file.getString(path_next + ".range");
             if (file.contains(path_next + ".cooldown")) {
                 cooldown_next = file.getString(path_next + ".cooldown");
-                firerate_next = BattleDrones.call.calculateManager.getFirerate(file.getDouble(path_next + ".cooldown"));
+                firerate_next = plugin.calculateManager.getFirerate(file.getDouble(path_next + ".cooldown"));
             }
-            if (file.contains(path_next + ".accuracy")) {
-                accuracy_next = String.valueOf(BattleDrones.call.calculateManager.getProcentFromDouble(file.getDouble(path_next + ".accuracy")));
+            if (file.contains(path_next + ".chance")) {
+                chance_next = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path_next + ".chance")));
             }
             if (file.contains(path_next + ".setfire-chance")) {
-                setfire_chance_next = String.valueOf(BattleDrones.call.calculateManager.getProcentFromDouble(file.getDouble(path_next + ".setfire-chance")));
+                setfire_chance_next = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path_next + ".setfire-chance")));
             }
             if (file.contains(path_next + ".burning-time")) {
                 burning_time_next = file.getString(path_next + ".burning-time");
@@ -247,12 +249,12 @@ public class DroneMenu extends GUI {
             regen_seconds_next = file.getString(path_next + ".regen.delay");
             cost_next = file.getString(path_next + ".cost");
         }
-        String mobs_current = BattleDrones.call.language.get.getString("gui.drone.disabled");
-        String animals_current = BattleDrones.call.language.get.getString("gui.drone.disabled");
-        String players_current = BattleDrones.call.language.get.getString("gui.drone.disabled");
+        String mobs_current = plugin.language.get.getString("gui.drone.disabled");
+        String animals_current = plugin.language.get.getString("gui.drone.disabled");
+        String players_current = plugin.language.get.getString("gui.drone.disabled");
         if (gui.contains("settings.monsters")) {
             if (monsters == 1) {
-                mobs_current = BattleDrones.call.language.get.getString("gui.drone.enabled");
+                mobs_current = plugin.language.get.getString("gui.drone.enabled");
                 setItemStack(inventory, gui, "settings.monsters.enabled");
             } else {
                 setItemStack(inventory, gui, "settings.monsters.disabled");
@@ -260,7 +262,7 @@ public class DroneMenu extends GUI {
         }
         if (gui.contains("settings.animals")) {
             if (animals == 1) {
-                animals_current = BattleDrones.call.language.get.getString("gui.drone.enabled");
+                animals_current = plugin.language.get.getString("gui.drone.enabled");
                 setItemStack(inventory, gui, "settings.animals.enabled");
             } else {
                 setItemStack(inventory, gui, "settings.animals.disabled");
@@ -268,7 +270,7 @@ public class DroneMenu extends GUI {
         }
         if (gui.contains("settings.players")) {
             if (players == 1) {
-                players_current = BattleDrones.call.language.get.getString("gui.drone.enabled");
+                players_current = plugin.language.get.getString("gui.drone.enabled");
                 setItemStack(inventory, gui, "settings.players.enabled");
             } else {
                 setItemStack(inventory, gui, "settings.players.disabled");
@@ -278,29 +280,29 @@ public class DroneMenu extends GUI {
             if (!key.equalsIgnoreCase("settings")) {
                 ItemStack itemStack;
                 if (!gui.contains(key + ".HEAD")) {
-                    itemStack = BattleDrones.call.getItemStack(gui.getString(key + ".MATERIAL"), gui.getInt(key + ".AMOUNT"));
+                    itemStack = plugin.getItemStack(gui.getString(key + ".MATERIAL"), gui.getInt(key + ".AMOUNT"));
                 } else {
-                    itemStack = BattleDrones.call.drone_heads.get(gui.getString(key + ".HEAD"));
+                    itemStack = plugin.drone_heads.get(gui.getString(key + ".HEAD"));
                 }
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 if (itemMeta == null) {
                     return;
                 }
                 itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(gui.getString(key + ".NAME"))
-                        .replace("{health}", BattleDrones.call.calculateManager.getBar(health, file.getInt(path + "health"), "health", ""))
-                        .replace("{health_percentage}", String.valueOf(BattleDrones.call.calculateManager.getPercent(health, file.getInt(path + "health"))))
+                        .replace("{health}", plugin.calculateManager.getBar(health, file.getInt(path + "health"), "health", ""))
+                        .replace("{health_percentage}", String.valueOf(plugin.calculateManager.getPercent(health, file.getInt(path + "health"))))
                         .replace("{max_ammo_slots}", max_ammo_slots)
                         .replace("{level}", level)
                         .replace("{cost}", cost_next)
                         .replace("{ammo}", String.valueOf(ammo))
-                        .replace("{ammo_bar}", BattleDrones.call.calculateManager.getBar(ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
-                        .replace("{ammo_percentage}", String.valueOf((BattleDrones.call.calculateManager.getPercent(ammo, file.getInt(path + "max-ammo-slots") * 64))))
+                        .replace("{ammo_bar}", plugin.calculateManager.getBar(ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
+                        .replace("{ammo_percentage}", String.valueOf((plugin.calculateManager.getPercent(ammo, file.getInt(path + "max-ammo-slots") * 64))))
                         .replace("{min_max}", min_max)
                         .replace("{shield_generator_damage}", shield_generator_damage)
                         .replace("{range}", range)
                         .replace("{firerate}", firerate)
                         .replace("{cooldown}", cooldown)
-                        .replace("{accuracy}", accuracy)
+                        .replace("{chance}", chance)
                         .replace("{setfire_chance}", setfire_chance)
                         .replace("{burning_time}", burning_time)
                         .replace("{knockback}", knockback)
@@ -316,7 +318,7 @@ public class DroneMenu extends GUI {
                         .replace("{range_next}", range_next)
                         .replace("{firerate_next}", firerate_next)
                         .replace("{cooldown_next}", cooldown_next)
-                        .replace("{accuracy_next}", accuracy_next)
+                        .replace("{chance_next}", chance_next)
                         .replace("{setfire_chance_next}", setfire_chance_next)
                         .replace("{burning_time_next}", burning_time_next)
                         .replace("{knockback_next}", knockback_next)
@@ -332,20 +334,20 @@ public class DroneMenu extends GUI {
                 ArrayList<String> list = new ArrayList<>();
                 for (String lores : gui.getStringList(key + ".LORES")) {
                     list.add(ChatColor.translateAlternateColorCodes('&', lores
-                            .replace("{health}", BattleDrones.call.calculateManager.getBar(health, file.getInt(path + "health"), "health", ""))
-                            .replace("{health_percentage}", String.valueOf(BattleDrones.call.calculateManager.getPercent(health, file.getInt(path + "health"))))
+                            .replace("{health}", plugin.calculateManager.getBar(health, file.getInt(path + "health"), "health", ""))
+                            .replace("{health_percentage}", String.valueOf(plugin.calculateManager.getPercent(health, file.getInt(path + "health"))))
                             .replace("{max_ammo_slots}", max_ammo_slots)
                             .replace("{level}", level)
                             .replace("{cost}", cost_next)
                             .replace("{ammo}", String.valueOf(ammo))
-                            .replace("{ammo_bar}", BattleDrones.call.calculateManager.getBar(ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
-                            .replace("{ammo_percentage}", String.valueOf((BattleDrones.call.calculateManager.getPercent(ammo, file.getInt(path + "max-ammo-slots") * 64))))
+                            .replace("{ammo_bar}", plugin.calculateManager.getBar(ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
+                            .replace("{ammo_percentage}", String.valueOf((plugin.calculateManager.getPercent(ammo, file.getInt(path + "max-ammo-slots") * 64))))
                             .replace("{min_max}", min_max)
                             .replace("{shield_generator_damage}", shield_generator_damage)
                             .replace("{range}", range)
                             .replace("{firerate}", firerate)
                             .replace("{cooldown}", cooldown)
-                            .replace("{accuracy}", accuracy)
+                            .replace("{chance}", chance)
                             .replace("{setfire_chance}", setfire_chance)
                             .replace("{burning_time}", burning_time)
                             .replace("{knockback}", knockback)
@@ -361,7 +363,7 @@ public class DroneMenu extends GUI {
                             .replace("{range_next}", range_next)
                             .replace("{firerate_next}", firerate_next)
                             .replace("{cooldown_next}", cooldown_next)
-                            .replace("{accuracy_next}", accuracy_next)
+                            .replace("{chance_next}", chance_next)
                             .replace("{setfire_chance_next}", setfire_chance_next)
                             .replace("{burning_time_next}", burning_time_next)
                             .replace("{knockback_next}", knockback_next)
@@ -391,9 +393,9 @@ public class DroneMenu extends GUI {
     public void setItemStack(Inventory inventory, FileConfiguration file, String path) {
         ItemStack itemStack;
         if (!file.contains(path + ".HEAD")) {
-            itemStack = BattleDrones.call.getItemStack(file.getString(path + ".MATERIAL"), file.getInt(path + ".AMOUNT"));
+            itemStack = plugin.getItemStack(file.getString(path + ".MATERIAL"), file.getInt(path + ".AMOUNT"));
         } else {
-            itemStack = BattleDrones.call.drone_heads.get(file.getString(path + ".HEAD"));
+            itemStack = plugin.drone_heads.get(file.getString(path + ".HEAD"));
         }
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {

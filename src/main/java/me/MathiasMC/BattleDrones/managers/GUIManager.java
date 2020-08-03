@@ -1,11 +1,17 @@
 package me.MathiasMC.BattleDrones.managers;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
+import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import me.MathiasMC.BattleDrones.gui.DroneMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -51,6 +57,7 @@ public class GUIManager {
                 }
                 itemMeta.setLore(list);
                 itemStack.setItemMeta(itemMeta);
+                plugin.guiManager.glow(itemStack, file, key + ".OPTIONS");
                 inventory.setItem(Integer.parseInt(key), itemStack);
             }
         }
@@ -95,6 +102,68 @@ public class GUIManager {
                         plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
+            }
+        }
+    }
+
+    public void glow(ItemStack itemStack, FileConfiguration file, String path) {
+        if (file.contains(path) && file.getStringList(path).contains("GLOW")) {
+            itemStack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 0);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemStack.setItemMeta(itemMeta);
+        }
+    }
+
+    public void playerGUI(InventoryClickEvent e, Player player, PlayerConnect playerConnect, DroneHolder droneHolder, String drone, FileConfiguration file, String permission) {
+        if (player.hasPermission("battledrones.player." + permission)) {
+            if (e.isLeftClick()) {
+                BattleDrones.call.droneManager.spawnDrone(player, drone, false, false);
+            } else if (e.isRightClick()) {
+                BattleDrones.call.droneManager.runCommands(player, playerConnect, file, "gui.REMOVE-COMMANDS", false);
+                playerConnect.stopDrone();
+                playerConnect.saveDrone(droneHolder);
+                playerConnect.save();
+            } else if (e.getClick().equals(ClickType.MIDDLE)) {
+                new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+            }
+        } else {
+            BattleDrones.call.droneManager.runCommands(player, playerConnect, file, "gui.PERMISSION", true);
+        }
+    }
+
+    public void shopGUI(int slot, Player player, String uuid, PlayerConnect playerConnect, FileConfiguration file, String drone, String permission) {
+        if (player.hasPermission("battledrones.shop." + permission)) {
+            final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
+            if (droneHolder.getUnlocked() != 1) {
+                final long coins = playerConnect.getCoins();
+                final long cost = file.getLong(slot + ".COST");
+                if (!BattleDrones.call.config.get.getBoolean("vault") && coins >= cost ||
+                        BattleDrones.call.config.get.getBoolean("vault") &&
+                                BattleDrones.call.getEconomy() != null &&
+                                BattleDrones.call.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
+                    if (!BattleDrones.call.config.get.getBoolean("vault")) {
+                        playerConnect.setCoins(coins - cost);
+                    }
+                    droneHolder.setUnlocked(1);
+                    droneHolder.setHealth(BattleDrones.call.droneFiles.get(drone).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
+                    droneHolder.save();
+                    for (String command : file.getStringList(slot + ".SHOP-COMMANDS.BOUGHT")) {
+                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                    }
+                } else {
+                    for (String command : file.getStringList(slot + ".SHOP-COMMANDS.COINS")) {
+                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                    }
+                }
+            } else {
+                for (String command : file.getStringList(slot + ".SHOP-COMMANDS.HAVE")) {
+                    BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                }
+            }
+        } else {
+            for (String command : file.getStringList(slot + ".SHOP-COMMANDS.PERMISSION")) {
+                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
             }
         }
     }

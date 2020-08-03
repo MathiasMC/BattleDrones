@@ -16,6 +16,8 @@ public class DronesFolder {
     final File shield_generator;
     final File healing;
     final File flamethrower;
+    final File faf_missile;
+    final File mortar;
 
     public DronesFolder(final BattleDrones plugin) {
         this.plugin = plugin;
@@ -97,6 +99,24 @@ public class DronesFolder {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
         }
+        faf_missile = new File(folderExplode, "faf_missile.yml");
+        if (!faf_missile.exists()) {
+            try {
+                faf_missile.createNewFile();
+                plugin.copy("drones/explode/faf_missile.yml", faf_missile);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        mortar = new File(folderExplode, "mortar.yml");
+        if (!mortar.exists()) {
+            try {
+                mortar.createNewFile();
+                plugin.copy("drones/explode/mortar.yml", mortar);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
         load();
     }
 
@@ -107,5 +127,7 @@ public class DronesFolder {
         plugin.droneFiles.put("shield_generator", YamlConfiguration.loadConfiguration(shield_generator));
         plugin.droneFiles.put("healing", YamlConfiguration.loadConfiguration(healing));
         plugin.droneFiles.put("flamethrower", YamlConfiguration.loadConfiguration(flamethrower));
+        plugin.droneFiles.put("faf_missile", YamlConfiguration.loadConfiguration(faf_missile));
+        plugin.droneFiles.put("mortar", YamlConfiguration.loadConfiguration(mortar));
     }
 }

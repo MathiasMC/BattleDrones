@@ -6,195 +6,228 @@
 #           contact me on spigot          #
 #                                         #
 
-battledrones:
-  command:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    unknown:
-      - '&7[&dBattleDrones&7] &cUnknown sub command &f{command}'
-    message:
-      - '&c&m---------------------------------------------'
-      - '&7&l> &dBattleDrones created by &eMathiasMC'
-      - '&7&l> &bVersion: &e{version}'
-      - '&7&l> &f/battledrones help for list of commands'
-      - '&7&l> &2Any ideas for the plugin or need help?'
-      - '&7&l> &2Contact me on spigot'
-      - '&c&m---------------------------------------------'
-  help:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    message:
-      - '&c&m---------------------------------------------'
-      - '&7&l> &f/battledrones reload'
-      - '&7&l> &f/battledrones shop'
-      - '&7&l> &f/battledrones menu'
-      - '&7&l> &f/battledrones save'
-      - '&7&l> &f/battledrones activate <droneType> <player - console>'
-      - '&7&l> &f/battledrones deactivate <all, player, droneType> <waitSeconds>'
-      - '&7&l> &f/battledrones unlock <droneType> <player>'
-      - '&7&l> &f/battledrones lock <droneType> <player>'
-      - '&7&l> &f/battledrones group set <player> <groupName>'
-      - '&7&l> &f/battledrones group reset <player>'
-      - '&7&l> &f/battledrones message <player> <text>'
-      - '&7&l> &f/battledrones broadcast <null/permission> <text>'
-      - '&7&l> &f/battledrones coins set/add/remove <player> <amount>'
-      - '&7&l> &f/battledrones give ammo <droneType> <player> <1-64>'
-      - '&7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
-      - '&c&m---------------------------------------------'
-  reload:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    message:
-      - '&7[&dBattleDrones&7] &eReloaded all configs!'
+command:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  unknown:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUnknown sub command &f{command}'
   message:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+    - 'battledrones message {player} &c&m---------------------------------------------'
+    - 'battledrones message {player} &7&l> &dBattleDrones created by &eMathiasMC'
+    - 'battledrones message {player} &7&l> &bVersion: &e{version}'
+    - 'battledrones message {player} &7&l> &f/battledrones help for list of commands'
+    - 'battledrones message {player} &7&l> &2Any ideas for the plugin or need help?'
+    - 'battledrones message {player} &7&l> &2Contact me on spigot'
+    - 'battledrones message {player} &c&m---------------------------------------------'
+help:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  message:
+    - 'battledrones message {player} &c&m---------------------------------------------'
+    - 'battledrones message {player} &7&l> &f/battledrones reload <all, config, language, particles, gui, drones, heads>'
+    - 'battledrones message {player} &7&l> &f/battledrones shop'
+    - 'battledrones message {player} &7&l> &f/battledrones menu'
+    - 'battledrones message {player} &7&l> &f/battledrones save'
+    - 'battledrones message {player} &7&l> &f/battledrones park'
+    - 'battledrones message {player} &7&l> &f/battledrones drone'
+    - 'battledrones message {player} &7&l> &f/battledrones activate <droneType>'
+    - 'battledrones message {player} &7&l> &f/battledrones deactivate <all, player, droneType> <waitSeconds>'
+    - 'battledrones message {player} &7&l> &f/battledrones unlock <droneType> <player>'
+    - 'battledrones message {player} &7&l> &f/battledrones lock <droneType> <player>'
+    - 'battledrones message {player} &7&l> &f/battledrones group set <player> <groupName>'
+    - 'battledrones message {player} &7&l> &f/battledrones group reset <player>'
+    - 'battledrones message {player} &7&l> &f/battledrones message <player> <text>'
+    - 'battledrones message {player} &7&l> &f/battledrones broadcast <null/permission> <text>'
+    - 'battledrones message {player} &7&l> &f/battledrones coins set/add/remove <player> <amount>'
+    - 'battledrones message {player} &7&l> &f/battledrones give ammo <droneType> <player> <1-64>'
+    - 'battledrones message {player} &7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
+    - 'battledrones message {player} &7&l> &f/battledrones actionbar <player> <seconds> <text>'
+    - 'battledrones message {player} &c&m---------------------------------------------'
+reload:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones reload <all, config, language, particles, gui, drones, heads>'
+  all:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded all configs'
+  config:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded config.yml'
+  language:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded language.yml'
+  particles:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded particles.yml'
+  gui:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded gui folder'
+  drones:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded drones folder'
+  heads:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded heads from config.yml'
+message:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones <player> <text>'
+  online:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
+broadcast:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones broadcast <null/permission> <text>'
+save:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  message:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aSaved cached data to the database!'
+activate:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones activate <droneType>'
+  valid:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe drone {drone} is not valid!'
+  unlocked:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou have not unlocked this drone!'
+deactivate:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  own:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed your drone.'
+  player:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYour drones has been removed for &6{amount} &cseconds.'
+  other:
     usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones <player> <text>'
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones deactivate <all, player, droneType> <waitSeconds>'
     online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-  broadcast:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones broadcast <null/permission> <text>'
-  save:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    message:
-      - '&7[&dBattleDrones&7] &aSaved cached data to the database!'
-  activate:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones activate <droneType> <player - console>'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-    valid:
-      - '&7[&dBattleDrones&7] &cThe drone {drone} is not valid!'
-    unlocked:
-      - '&7[&dBattleDrones&7] &cYou have not unlocked this drone!'
-  deactivate:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones deactivate'
-    own:
-      - '&7[&dBattleDrones&7] &aYou have removed your drone.'
-    player:
-      - '&7[&dBattleDrones&7] &cYour drones has been removed for &6{amount} &cseconds.'
-    other:
-      usage:
-        - '&7[&dBattleDrones&7] &cUsage: /battledrones deactivate <all, player, droneType> <waitSeconds>'
-      online:
-        - '&7[&dBattleDrones&7] &cThe player is not online!'
-      number:
-        - '&7[&dBattleDrones&7] &cSomething is wrong with the numbers!'
-      all:
-        - 'bd broadcast null &7[&dBattleDrones&7] &cAll drones have been deactivated for &6{amount} &cseconds.'
-      all-drone:
-        - 'bd broadcast null &7[&dBattleDrones&7] &cAll &6{drone} &cdrones have been deactivated for &6{amount} &cseconds.'
-  shop:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones shop <player>'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-  menu:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones menu <player>'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-  sound:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
-    names:
-      - '&c{sound_names}'
-    world:
-      - '&7[&dBattleDrones&7] &cNot a valid world!'
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
     number:
-      - '&7[&dBattleDrones&7] &cSomething is wrong with the numbers!'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-    found:
-      - '&7[&dBattleDrones&7] &cThe sound is not found!'
-  unlock:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cSomething is wrong with the numbers!'
+    all:
+      - 'battledrones message {player} &cYou have deactivated all for &6{amount} &cseconds.'
+      - 'bd broadcast null &7[&dBattleDrones&7] &cAll drones have been deactivated for &6{amount} &cseconds.'
+    all-drone:
+      - 'battledrones message {player} &cAll &6{drone} &cdrones have been deactivated.'
+      - 'bd broadcast null &7[&dBattleDrones&7] &cAll &6{drone} &cdrones have been deactivated for &6{amount} &cseconds.'
+shop:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+menu:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+park:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  active:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have any active drone.'
+  follow:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eYour drone will now follow you again.'
+  parked:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eYour drone is now parked at the current location. -{cost} coins'
+  enough:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot park your drone you dont have enough coins. cost: {cost}'
+  drone:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThis drone cannot be parked.'
+drone:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  active:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have any active drone.'
+sound:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
+  names:
+    - 'battledrones message {player} &c{sound_names}'
+  world:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a valid world!'
+  number:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cSomething is wrong with the numbers!'
+  online:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
+  found:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe sound is not found!'
+actionbar:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones actionbar <player> <seconds> <text>'
+  online:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
+  number:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a number!'
+unlock:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones unlock <droneType> <player>'
+  online:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
+  type:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a valid drone type!'
+  message:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eUnlocked drone {drone} for {target}'
+lock:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones lock <droneType> <player>'
+  online:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
+  type:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a valid drone type!'
+  message:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eLocked drone {drone} for {target}'
+group:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones group set/reset'
+  online:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
+  valid:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a valid group name! [a-zA-Z]'
+  reset:
     usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones unlock <droneType> <player>'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-    type:
-      - '&7[&dBattleDrones&7] &cNot a valid drone type!'
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones group reset <player>'
     message:
-      - '&7[&dBattleDrones&7] &eUnlocked drone {drone} for {player}'
-  lock:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+      - 'battledrones message {player} &7[&dBattleDrones&7] &e{target} group is reset back to the default group!'
+  set:
     usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones lock <droneType> <player>'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-    type:
-      - '&7[&dBattleDrones&7] &cNot a valid drone type!'
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones group set <player> <groupName>'
     message:
-      - '&7[&dBattleDrones&7] &eLocked drone {drone} for {player}'
-  group:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
+      - 'battledrones message {player} &7[&dBattleDrones&7] &e{target} group is now set to {group}'
+coins:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  set:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &e{target} coins is now set to {coins}'
+  add:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eAdded {coins} coins to {target}'
+  remove:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eRemoved {coins} coins from {target}'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones coins set/add/remove <player> <amount>'
+  online:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
+  number:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a number!'
+  0:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe amount must be over 0!'
+give:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones give ammo'
+  online:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
+  number:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
+  ammo:
     usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones group set/reset'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-    valid:
-      - '&7[&dBattleDrones&7] &cNot a valid group name! [a-zA-Z]'
-    reset:
-      usage:
-        - '&7[&dBattleDrones&7] &cUsage: /battledrones group reset <player>'
-      message:
-        - '&7[&dBattleDrones&7] &e{player} group is reset back to the default group!'
-    set:
-      usage:
-        - '&7[&dBattleDrones&7] &cUsage: /battledrones group set <player> <groupName>'
-      message:
-        - '&7[&dBattleDrones&7] &e{player} group is now set to {group}'
-  coins:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    set:
-      - '&7[&dBattleDrones&7] &e{player} coins is now set to {coins}'
-    add:
-      - '&7[&dBattleDrones&7] &eAdded {coins} coins to {player}'
-    remove:
-      - '&7[&dBattleDrones&7] &eRemoved {coins} coins from {player}'
-    usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones coins set/add/remove <player> <amount>'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-    number:
-      - '&7[&dBattleDrones&7] &cNot a number!'
-    0:
-      - '&7[&dBattleDrones&7] &cThe amount must be over 0!'
-  give:
-    permission:
-      - '&7[&dBattleDrones&7] &cYou dont have access to use this command!'
-    usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo'
-    online:
-      - '&7[&dBattleDrones&7] &cThe player is not online!'
-    number:
-      - '&7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
-    ammo:
-      usage:
-        - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <1-64>'
-      message:
-        - '&7[&dBattleDrones&7] &aAdded &6{amount} {drone} &aammo to &6{player}'
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <1-64>'
+    message:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &aAdded &6{amount} {drone} &aammo to &6{target}'
 gui:
   whitelist:
     seconds: 15
@@ -222,3 +255,195 @@ gui:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your drone right now maximum drone count reached.'
     enabled: Enabled
     disabled: Disabled
+drone-name:
+  laser: 'Laser'
+  rocket: 'Rocket'
+  faf-missile: 'F&&fF Missile'
+  mortar: 'Mortar'
+  machine-gun: 'Machine Gun'
+  shield-generator: 'Shield Generator'
+  healing: 'Healing'
+  flamethrower: 'Flamethrower'
+console:
+  command:
+    unknown:
+      - '&7[&dBattleDrones&7] &cUnknown sub command &f{command}'
+    message:
+      - '&c&m---------------------------------------------'
+      - '&7&l> &dBattleDrones created by &eMathiasMC'
+      - '&7&l> &bVersion: &e{version}'
+      - '&7&l> &f/battledrones help for list of commands'
+      - '&7&l> &2Any ideas for the plugin or need help?'
+      - '&7&l> &2Contact me on spigot'
+      - '&c&m---------------------------------------------'
+  help:
+    message:
+      - '&c&m---------------------------------------------'
+      - '&7&l> &f/battledrones reload'
+      - '&7&l> &f/battledrones shop'
+      - '&7&l> &f/battledrones menu'
+      - '&7&l> &f/battledrones save'
+      - '&7&l> &f/battledrones park <player>'
+      - '&7&l> &f/battledrones drone <player>'
+      - '&7&l> &f/battledrones activate <droneType> <player>'
+      - '&7&l> &f/battledrones deactivate <all, player, droneType> <waitSeconds>'
+      - '&7&l> &f/battledrones unlock <droneType> <player>'
+      - '&7&l> &f/battledrones lock <droneType> <player>'
+      - '&7&l> &f/battledrones group set <player> <groupName>'
+      - '&7&l> &f/battledrones group reset <player>'
+      - '&7&l> &f/battledrones message <player> <text>'
+      - '&7&l> &f/battledrones broadcast <null/permission> <text>'
+      - '&7&l> &f/battledrones coins set/add/remove <player> <amount>'
+      - '&7&l> &f/battledrones give ammo <droneType> <player> <1-64>'
+      - '&7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
+      - '&7&l> &f/battledrones actionbar <player> <seconds> <text>'
+      - '&c&m---------------------------------------------'
+  reload:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones reload <all, config, language, particles, gui, drones, heads>'
+    all:
+      - '&7[&dBattleDrones&7] &eReloaded all configs'
+    config:
+      - '&7[&dBattleDrones&7] &eReloaded config.yml'
+    language:
+      - '&7[&dBattleDrones&7] &eReloaded language.yml'
+    particles:
+      - '&7[&dBattleDrones&7] &eReloaded particles.yml'
+    gui:
+      - '&7[&dBattleDrones&7] &eReloaded gui folder'
+    drones:
+      - '&7[&dBattleDrones&7] &eReloaded drones folder'
+    heads:
+      - '&7[&dBattleDrones&7] &eReloaded heads from config.yml'
+  message:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones <player> <text>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  broadcast:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones broadcast <null/permission> <text>'
+  save:
+    message:
+      - '&7[&dBattleDrones&7] &aSaved cached data to the database!'
+  activate:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones activate <droneType> <player - console>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    valid:
+      - '&7[&dBattleDrones&7] &cThe drone {drone} is not valid!'
+  deactivate:
+    other:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones deactivate <all, player, droneType> <waitSeconds>'
+      online:
+        - '&7[&dBattleDrones&7] &cThe player is not online!'
+      number:
+        - '&7[&dBattleDrones&7] &cSomething is wrong with the numbers!'
+      all:
+        - 'bd broadcast null &7[&dBattleDrones&7] &cAll drones have been deactivated for &6{amount} &cseconds.'
+      all-drone:
+        - 'bd broadcast null &7[&dBattleDrones&7] &cAll &6{drone} &cdrones have been deactivated for &6{amount} &cseconds.'
+  shop:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones shop <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  menu:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones menu <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  park:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones park <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  drone:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones drone <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  sound:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
+    names:
+      - '&c{sound_names}'
+    world:
+      - '&7[&dBattleDrones&7] &cNot a valid world!'
+    number:
+      - '&7[&dBattleDrones&7] &cSomething is wrong with the numbers!'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    found:
+      - '&7[&dBattleDrones&7] &cThe sound is not found!'
+  actionbar:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones actionbar <player> <seconds> <text>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    number:
+      - '&7[&dBattleDrones&7] &cNot a number!'
+  unlock:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones unlock <droneType> <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    type:
+      - '&7[&dBattleDrones&7] &cNot a valid drone type!'
+    message:
+      - '&7[&dBattleDrones&7] &eUnlocked drone {drone} for {target}'
+  lock:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones lock <droneType> <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    type:
+      - '&7[&dBattleDrones&7] &cNot a valid drone type!'
+    message:
+      - '&7[&dBattleDrones&7] &eLocked drone {drone} for {target}'
+  group:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones group set/reset'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    valid:
+      - '&7[&dBattleDrones&7] &cNot a valid group name! [a-zA-Z]'
+    reset:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones group reset <player>'
+      message:
+        - '&7[&dBattleDrones&7] &e{target} group is reset back to the default group!'
+    set:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones group set <player> <groupName>'
+      message:
+        - '&7[&dBattleDrones&7] &e{target} group is now set to {group}'
+  coins:
+    set:
+      - '&7[&dBattleDrones&7] &e{target} coins is now set to {coins}'
+    add:
+      - '&7[&dBattleDrones&7] &eAdded {coins} coins to {target}'
+    remove:
+      - '&7[&dBattleDrones&7] &eRemoved {coins} coins from {target}'
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones coins set/add/remove <player> <amount>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    number:
+      - '&7[&dBattleDrones&7] &cNot a number!'
+    0:
+      - '&7[&dBattleDrones&7] &cThe amount must be over 0!'
+  give:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+    number:
+      - '&7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
+    ammo:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <1-64>'
+      message:
+        - '&7[&dBattleDrones&7] &aAdded &6{amount} {drone} &aammo to &6{target}'

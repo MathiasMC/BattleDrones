@@ -36,9 +36,14 @@ gui:
     LORES:
       - '&fThis is your drone ammo'
     MATERIAL: REDSTONE
+    OPTIONS:
+      - GLOW
 
 default:
   1:
+
+    # Check for targets around drone (ticks)
+    find-target: 3
 
     # Custom head from config.yml
     head: laser-1
@@ -54,7 +59,7 @@ default:
     cooldown: 23
 
     # The accuracy of the drone to hit and damage max (0-1)
-    accuracy: 0.45
+    chance: 0.45
 
     # How much knockback to give to your target
     knockback: 0
@@ -87,6 +92,9 @@ default:
     # Every x amount of ammo used -1 health
     wear-and-tear: 12
 
+    # Amount it costs to park the drone (remove to disable for this level)
+    park: 50
+
     # This section is run every time the drone shoots
     run:
       player:
@@ -113,12 +121,13 @@ default:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   2:
+    find-target: 3
     head: laser-2
     min: 1.2
     max: 3.5
     range: 11
     cooldown: 21
-    accuracy: 0.55
+    chance: 0.55
     knockback: 0.5
     cost: 1000
     max-ammo-slots: 4
@@ -131,6 +140,7 @@ default:
     particle:
       1: laser
     wear-and-tear: 14
+    park: 50
     run:
       player:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
@@ -153,12 +163,13 @@ default:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   3:
+    find-target: 3
     head: laser-3
     min: 2.2
     max: 4.8
     range: 12
     cooldown: 18
-    accuracy: 0.65
+    chance: 0.65
     knockback: 1.2
     cost: 2000
     max-ammo-slots: 6
@@ -171,6 +182,7 @@ default:
     particle:
       1: laser
     wear-and-tear: 18
+    park: 50
     run:
       player:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'

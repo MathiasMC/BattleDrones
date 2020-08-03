@@ -36,9 +36,14 @@ gui:
     LORES:
       - '&fThis is your drone ammo'
     MATERIAL: FLINT
+    OPTIONS:
+      - GLOW
 
 default:
   1:
+
+    # Check for targets around drone (ticks)
+    find-target: 3
 
     # Custom head from config.yml
     head: flamethrower-1
@@ -96,6 +101,9 @@ default:
     # Every x amount of ammo used -1 health
     wear-and-tear: 12
 
+    # Amount it costs to park the drone (remove to disable for this level)
+    park: 50
+
     # This section is run every time the drone shoots
     run:
       player:
@@ -122,6 +130,7 @@ default:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   2:
+    find-target: 3
     head: flamethrower-2
     min: 0.5
     max: 5
@@ -143,6 +152,7 @@ default:
     particle:
       1: flamethrower
     wear-and-tear: 14
+    park: 50
     run:
       player:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
@@ -165,6 +175,7 @@ default:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   3:
+    find-target: 3
     head: flamethrower-3
     min: 0.5
     max: 8
@@ -186,6 +197,7 @@ default:
     particle:
       1: flamethrower
     wear-and-tear: 16
+    park: 50
     run:
       player:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'

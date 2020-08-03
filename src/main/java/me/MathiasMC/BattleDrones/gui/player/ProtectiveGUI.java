@@ -3,13 +3,11 @@ package me.MathiasMC.BattleDrones.gui.player;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
-import me.MathiasMC.BattleDrones.gui.DroneMenu;
 import me.MathiasMC.BattleDrones.gui.GUI;
 import me.MathiasMC.BattleDrones.gui.Menu;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.HashMap;
@@ -17,12 +15,27 @@ import java.util.Objects;
 
 public class ProtectiveGUI extends GUI {
 
-    private final FileConfiguration file = BattleDrones.call.guiFiles.get("player_protective");
+    private final BattleDrones plugin = BattleDrones.call;
+    private final FileConfiguration file;
     private final Player player = playerMenu.getPlayer();
     private final String uuid = playerMenu.getUuid();
+    private final PlayerConnect playerConnect = playerMenu.getPlayerConnect();
+    private final String shield_generator_id;
+    private final DroneHolder shield_generator_droneHolder;
+    private final FileConfiguration shield_generator_file;
+    private final String healing_id;
+    private final DroneHolder healing_droneHolder;
+    private final FileConfiguration healing_file;
 
     public ProtectiveGUI(Menu playerMenu) {
         super(playerMenu);
+        this.file = plugin.guiFiles.get("player_protective");
+        this.shield_generator_id = "shield_generator";
+        this.shield_generator_droneHolder = plugin.getDroneHolder(uuid, shield_generator_id);
+        this.shield_generator_file = plugin.droneFiles.get(shield_generator_id);
+        this.healing_id = "healing";
+        this.healing_droneHolder = plugin.getDroneHolder(uuid, healing_id);
+        this.healing_file = plugin.droneFiles.get(healing_id);
     }
 
     @Override
@@ -38,65 +51,28 @@ public class ProtectiveGUI extends GUI {
     @Override
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
-        final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
-        final String shieldGeneratorDrone = "shield_generator";
-        final String healingDrone = "healing";
-        final DroneHolder shieldGeneratorHolder = BattleDrones.call.getDroneHolder(uuid, shieldGeneratorDrone);
-        final FileConfiguration shield_generator = BattleDrones.call.droneFiles.get(shieldGeneratorDrone);
-        final DroneHolder healingHolder = BattleDrones.call.getDroneHolder(uuid, healingDrone);
-        final FileConfiguration healing = BattleDrones.call.droneFiles.get(healingDrone);
-        if (shield_generator.getInt("gui.POSITION") == slot && shieldGeneratorHolder.getUnlocked() == 1) {
-            if (player.hasPermission("battledrones.player.shield.generator")) {
-                if (e.isLeftClick()) {
-                    BattleDrones.call.droneManager.spawnDrone(player, shieldGeneratorDrone, false, false);
-                } else if (e.isRightClick()) {
-                    BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.REMOVE-COMMANDS", false);
-                    playerConnect.stopDrone();
-                    playerConnect.saveDrone(shieldGeneratorHolder);
-                    playerConnect.save();
-                } else if (e.getClick().equals(ClickType.MIDDLE)) {
-                    new DroneMenu(BattleDrones.call.getPlayerMenu(player), shieldGeneratorDrone).open();
-                }
-            } else {
-                BattleDrones.call.droneManager.runCommands(player, playerConnect, shield_generator, "gui.PERMISSION", true);
-            }
-        } else if (healing.getInt("gui.POSITION") == slot && healingHolder.getUnlocked() == 1) {
-            if (player.hasPermission("battledrones.player.healing")) {
-                if (e.isLeftClick()) {
-                    BattleDrones.call.droneManager.spawnDrone(player, healingDrone, false, false);
-                } else if (e.isRightClick()) {
-                    BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.REMOVE-COMMANDS", false);
-                    playerConnect.stopDrone();
-                    playerConnect.saveDrone(healingHolder);
-                    playerConnect.save();
-                } else if (e.getClick().equals(ClickType.MIDDLE)) {
-                    new DroneMenu(BattleDrones.call.getPlayerMenu(player), healingDrone).open();
-                }
-            } else {
-                BattleDrones.call.droneManager.runCommands(player, playerConnect, healing, "gui.PERMISSION", true);
-            }
+        if (shield_generator_file.getInt("gui.POSITION") == slot && shield_generator_droneHolder.getUnlocked() == 1) {
+            plugin.guiManager.playerGUI(e, player, playerConnect, shield_generator_droneHolder, shield_generator_id, shield_generator_file, "shield.generator");
+        } else if (healing_file.getInt("gui.POSITION") == slot && healing_droneHolder.getUnlocked() == 1) {
+            plugin.guiManager.playerGUI(e, player, playerConnect, healing_droneHolder, healing_id, healing_file, healing_id);
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
-            new PlayerGUI(BattleDrones.call.getPlayerMenu(player)).open();
+            new PlayerGUI(plugin.getPlayerMenu(player)).open();
         }
         if (file.contains(String.valueOf(slot))) {
-            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
+            plugin.guiManager.dispatchCommand(file, slot, player);
         }
     }
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
-        final String shieldGeneratorDrone = "shield_generator";
-        final String healingDrone = "healing";
-        final DroneHolder shieldGenerator = BattleDrones.call.getDroneHolder(uuid, shieldGeneratorDrone);
-        final DroneHolder healing = BattleDrones.call.getDroneHolder(uuid, healingDrone);
+        plugin.guiManager.setGUIItemStack(inventory, file, player);
         HashMap<String, Integer> drones = new HashMap<>();
-        if (shieldGenerator.getUnlocked() == 1) {
-            drones.put(shieldGeneratorDrone, shieldGenerator.getLevel());
+        if (shield_generator_droneHolder.getUnlocked() == 1) {
+            drones.put(shield_generator_id, shield_generator_droneHolder.getLevel());
         }
-        if (healing.getUnlocked() == 1) {
-            drones.put(healingDrone, healing.getLevel());
+        if (healing_droneHolder.getUnlocked() == 1) {
+            drones.put(healing_id, healing_droneHolder.getLevel());
         }
-        BattleDrones.call.guiManager.setDrones(uuid, drones, inventory);
+        plugin.guiManager.setDrones(uuid, drones, inventory);
     }
 }

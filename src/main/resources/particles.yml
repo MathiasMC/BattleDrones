@@ -120,3 +120,66 @@ flamethrower:
     b: 0
   y-offset: 0.4
   delay: 0
+faf-missile-explode:
+  type: circle
+  particle: EXPLOSION_NORMAL
+  distance: 12
+  radius: 1.6
+  amount: 6
+  rgb:
+    r: 255
+    g: 0
+    b: 0
+  y-offset: -1
+faf-missile-outside:
+  type: sphere
+  particle: FLAME
+  radius: 0.1
+  distance: 2
+  amount: 1
+  size: 1
+  rgb:
+    r: 0
+    g: 0
+    b: 0
+  y-offset: 0.7
+  tick: 2
+  delay: 4
+faf-missile-inside:
+  type: sphere
+  particle: CAMPFIRE_COSY_SMOKE
+  radius: 0.2
+  distance: 2
+  amount: 1
+  size: 1
+  rgb:
+    r: 255
+    g: 0
+    b: 0
+  y-offset: 0.7
+  tick: 2
+  delay: 7
+mortar-explode:
+  type: circle
+  particle: EXPLOSION_NORMAL
+  distance: 12
+  radius: 1.6
+  amount: 6
+  rgb:
+    r: 255
+    g: 0
+    b: 0
+  y-offset: -1
+mortar-line:
+  type: sphere
+  particle: REDSTONE
+  radius: 0
+  distance: 1
+  amount: 1
+  size: 1
+  rgb:
+    r: 255
+    g: 255
+    b: 255
+  y-offset: 0.7
+  delay: 3

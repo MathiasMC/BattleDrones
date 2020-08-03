@@ -3,6 +3,7 @@ package me.MathiasMC.BattleDrones.placeholders;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.ChatColor;
 
 public class InternalPlaceholders {
 
@@ -14,17 +15,21 @@ public class InternalPlaceholders {
 
     public String getActiveDrone(String active) {
         if (active.equalsIgnoreCase("laser")) {
-            return "Laser";
+            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.laser"));
         } else if (active.equalsIgnoreCase("rocket")) {
-            return "Rocket";
+            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.rocket"));
+        } else if (active.equalsIgnoreCase("faf_missile")) {
+            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.faf-missile"));
+        } else if (active.equalsIgnoreCase("mortar")) {
+            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.mortar"));
         } else if (active.equalsIgnoreCase("machine_gun")) {
-            return "Machine Gun";
+            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.machine-gun"));
         } else if (active.equalsIgnoreCase("shield_generator")) {
-            return "Shield Generator";
+            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.shield-generator"));
         } else if (active.equalsIgnoreCase("healing")) {
-            return "Healing";
+            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.healing"));
         } else if (active.equalsIgnoreCase("flamethrower")) {
-            return "Flamethrower";
+            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.flamethrower"));
         }
         return "";
     }

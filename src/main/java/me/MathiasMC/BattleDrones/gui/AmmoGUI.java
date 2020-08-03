@@ -17,6 +17,7 @@ import java.util.Objects;
 
 public class AmmoGUI extends GUI {
 
+    private final BattleDrones plugin = BattleDrones.call;
     private final FileConfiguration file;
     private final String drone;
     private final Player player = playerMenu.getPlayer();
@@ -25,7 +26,7 @@ public class AmmoGUI extends GUI {
     public AmmoGUI(Menu playerMenu, String drone) {
         super(playerMenu);
         this.drone = drone;
-        file = BattleDrones.call.guiFiles.get(drone + "_ammo");
+        file = plugin.guiFiles.get(drone + "_ammo");
     }
 
     @Override
@@ -43,9 +44,9 @@ public class AmmoGUI extends GUI {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
-                new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new DroneMenu(plugin.getPlayerMenu(player), drone).open();
             }
-            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
+            plugin.guiManager.dispatchCommand(file, slot, player);
         }
         if (e.getClickedInventory() == null) {
             return;
@@ -55,9 +56,9 @@ public class AmmoGUI extends GUI {
             if (itemStack == null) { return; }
             final ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta == null) { return; }
-            final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
+            final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
             final ArrayList<String> lores = new ArrayList<>();
-            FileConfiguration droneFile = BattleDrones.call.droneFiles.get(drone);
+            FileConfiguration droneFile = plugin.droneFiles.get(drone);
             final String ammoName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(droneFile.getString("gui.AMMO.NAME"))));
             for (String lore : droneFile.getStringList("gui.AMMO.LORES")) {
                 lores.add(ChatColor.translateAlternateColorCodes('&', lore));
@@ -69,21 +70,21 @@ public class AmmoGUI extends GUI {
                 }
             }
             if (ChatColor.stripColor(itemMeta.getDisplayName()).equals(ammoName) || Objects.equals(getLores, lores)) {
-                final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
+                final PlayerConnect playerConnect = plugin.get(uuid);
                 final int ammo = droneHolder.getAmmo();
                 if (ammo < (droneFile.getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".max-ammo-slots") * 64)) {
                     droneHolder.setAmmo(ammo + itemStack.getAmount());
                     player.getInventory().setItem(slot, new ItemStack(Material.AIR));
-                    new AmmoGUI(BattleDrones.call.getPlayerMenu(player), drone).open();
+                    new AmmoGUI(plugin.getPlayerMenu(player), drone).open();
                     droneHolder.save();
                 } else {
-                    for (String command : BattleDrones.call.language.get.getStringList("gui.ammo.full")) {
-                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                    for (String command : plugin.language.get.getStringList("gui.ammo.full")) {
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
             } else {
-                for (String command : BattleDrones.call.language.get.getStringList("gui.ammo.not")) {
-                    BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                for (String command : plugin.language.get.getStringList("gui.ammo.not")) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                 }
             }
         }
@@ -91,12 +92,12 @@ public class AmmoGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
-        final FileConfiguration droneFile = BattleDrones.call.droneFiles.get(drone);
+        plugin.guiManager.setGUIItemStack(inventory, file, player);
+        final FileConfiguration droneFile = plugin.droneFiles.get(drone);
         final String material = droneFile.getString("gui.AMMO.MATERIAL");
-        final ItemStack itemStack = BattleDrones.call.getItemStack(material, 64);
+        ItemStack itemStack = plugin.getItemStack(material, 64);
         if (itemStack == null) {
-            BattleDrones.call.textUtils.gui(player, "ammo", material);
+            plugin.textUtils.gui(player, "ammo", material);
             return;
         }
         final ItemMeta itemMeta = itemStack.getItemMeta();
@@ -110,7 +111,8 @@ public class AmmoGUI extends GUI {
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(droneFile.getString("gui.AMMO.NAME"))));
         itemMeta.setLore(lores);
         itemStack.setItemMeta(itemMeta);
-        int ammo = BattleDrones.call.getDroneHolder(uuid, drone).getAmmo();
+        plugin.guiManager.glow(itemStack, droneFile, "gui.AMMO.OPTIONS");
+        int ammo = plugin.getDroneHolder(uuid, drone).getAmmo();
         for (int i = 0; i < inventory.getSize(); i++) {
             if (inventory.getItem(i) == null) {
                 if (ammo > 64) {

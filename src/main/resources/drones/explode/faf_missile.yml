@@ -7,32 +7,32 @@
 #                                         #
 
 gui:
-  NAME: '&6Rocket drone'
+  NAME: '&6F&&6F Missile drone'
   LORES:
     - '&f-----------------'
     - '&fDrone armed with'
-    - '&frocket weapon.'
+    - '&fhoming missiles weapon.'
     - ' '
     - '&fLMB &7- &aActivate'
     - '&fRMB &7- &cDeactivate'
     - '&fMiddle click &7- Open drone menu'
   AMOUNT: 1
-  POSITION: 20
+  POSITION: 21
   SPAWN-COMMANDS:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6Rocket Drone&a!'
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6F&&6F Missile Drone&a!'
     - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
   REMOVE-COMMANDS:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Rocket Drone&a!'
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6F&&6F Missile Drone&a!'
     - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
   PERMISSION:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this rocket drone.'
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this &6f&&6f missile drone.'
   WAIT:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Rocket Drone &cright now try again later.'
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6F&&6F Missile Drone &cright now try again later.'
   WAIT-SECONDS: 20
 
   # Ammo used by this drone and it must match (/bd give ammo)
   AMMO:
-    NAME: '&6Rocket Ammo'
+    NAME: '&6F&&6F Missile Ammo'
     LORES:
       - '&fThis is your drone ammo'
     MATERIAL: LEVER
@@ -46,26 +46,26 @@ default:
     find-target: 20
 
     # Custom head from config.yml
-    head: rocket-1
+    head: faf-missile-1
 
     # Damage between min, max
-    min: 0.5
-    max: 3
+    min: 1
+    max: 6
 
     # How far to look for entity´s
-    range: 10
+    range: 15
 
     # Delay 20 = 1 second
-    cooldown: 60
+    cooldown: 70
 
     # Rocket head (remove this section to disable head)
-    rocket-head: rocket-head
+    rocket-head: faf-missile-head-1
 
     # Rocket speed
-    rocket-speed: 0.3
+    rocket-speed: 0.2
 
     # Time to live for the rocket entity (seconds)
-    rocket-time: 6
+    rocket-time: 12
 
     # Damage radius
     rocket-radius: 3
@@ -83,7 +83,7 @@ default:
     rocket-explosion-block: false
 
     # Rocket self destruct if target is dead
-    rocket-self-destruction: false
+    rocket-self-destruction: true
 
     # cost: amount (this is not needed for level 1)
 
@@ -104,9 +104,9 @@ default:
 
     # Particles
     particle:
-      1: rocket-explode
-      2: rocket-outside
-      3: rocket-inside
+      1: faf-missile-explode
+      2: faf-missile-outside
+      3: faf-missile-inside
 
 
     # Commands when damaged
@@ -140,35 +140,35 @@ default:
     # Upgrade commands
     commands:
       levelup:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour rocket drone is now a level higher!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour f&&af missile drone is now a level higher!'
       enough:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your rocket drone!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your f&&cf missile drone!'
       max:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour rocket drone is at the max level already!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour f&&cf missile drone is at the max level already!'
 
     messages:
       name:
-        searching: '&6ROCKET DRONE &7(&3{name}&7) &7(&e1&7)'
-        target: '&6ROCKET DRONE &7(&3{name}&7) &7(&e1&7)'
+        searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e1&7)'
+        target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e1&7)'
       text:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   2:
     find-target: 20
-    head: rocket-2
-    min: 0.5
-    max: 5
-    range: 11
-    cooldown: 54
-    rocket-head: rocket-head
-    rocket-speed: 0.35
-    rocket-time: 7
+    head: faf-missile-2
+    min: 2
+    max: 7
+    range: 18
+    cooldown: 64
+    rocket-head: faf-missile-head-2
+    rocket-speed: 0.25
+    rocket-time: 15
     rocket-radius: 3
     rocket-explosion: true
     rocket-explosion-power: 1
     rocket-explosion-fire: false
     rocket-explosion-block: false
-    rocket-self-destruction: false
+    rocket-self-destruction: true
     cost: 1000
     max-ammo-slots: 4
     health: 65
@@ -176,9 +176,9 @@ default:
       health: 1
       delay: 12
     particle:
-      1: rocket-explode
-      2: rocket-outside
-      3: rocket-inside
+      1: faf-missile-explode
+      2: faf-missile-outside
+      3: faf-missile-inside
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     wear-and-tear: 4
@@ -199,34 +199,34 @@ default:
         - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
     commands:
       levelup:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour rocket drone is now a level higher!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour f&&af missile drone is now a level higher!'
       enough:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your rocket drone!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your f&&cf missile drone!'
       max:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour rocket drone is at the max level already!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour f&&cf missile drone is at the max level already!'
     messages:
       name:
-        searching: '&6ROCKET DRONE &7(&3{name}&7) &7(&e2&7)'
-        target: '&6ROCKET DRONE &7(&3{name}&7) &7(&e2&7)'
+        searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e2&7)'
+        target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e2&7)'
       text:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   3:
     find-target: 20
-    head: rocket-3
-    min: 2.5
-    max: 6
-    range: 12
-    cooldown: 48
-    rocket-head: rocket-head
-    rocket-speed: 0.4
-    rocket-time: 9
+    head: faf-missile-3
+    min: 3
+    max: 9
+    range: 22
+    cooldown: 58
+    rocket-head: faf-missile-head-3
+    rocket-speed: 0.3
+    rocket-time: 20
     rocket-radius: 4
     rocket-explosion: true
     rocket-explosion-power: 2
     rocket-explosion-fire: false
     rocket-explosion-block: false
-    rocket-self-destruction: false
+    rocket-self-destruction: true
     cost: 2000
     max-ammo-slots: 6
     health: 75
@@ -234,9 +234,9 @@ default:
       health: 2
       delay: 10
     particle:
-      1: rocket-explode
-      2: rocket-outside
-      3: rocket-inside
+      1: faf-missile-explode
+      2: faf-missile-outside
+      3: faf-missile-inside
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     wear-and-tear: 6
@@ -257,15 +257,15 @@ default:
         - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
     commands:
       levelup:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour rocket drone is now a level higher!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour f&&af missile drone is now a level higher!'
       enough:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your rocket drone!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your f&&cf missile drone!'
       max:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour rocket drone is at the max level already!'
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour f&&cf missile drone is at the max level already!'
     messages:
       name:
-        searching: '&6ROCKET DRONE &7(&3{name}&7) &7(&e3&7)'
-        target: '&6ROCKET DRONE &7(&3{name}&7) &7(&e3&7)'
+        searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e3&7)'
+        target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e3&7)'
       text:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'

@@ -36,9 +36,14 @@ gui:
     LORES:
       - '&fThis is your drone ammo'
     MATERIAL: STICK
+    OPTIONS:
+      - GLOW
 
 default:
   1:
+
+    # Check for targets around drone (ticks)
+    find-target: 3
 
     # Custom head from config.yml
     head: machine-gun-1
@@ -54,7 +59,7 @@ default:
     cooldown: 2
 
     # The accuracy of the drone to hit and damage max
-    accuracy: 0.45
+    chance: 0.45
 
     # cost: amount (this is not needed for level 1)
 
@@ -84,6 +89,9 @@ default:
     # Every x amount of ammo used -1 health
     wear-and-tear: 15
 
+    # Amount it costs to park the drone (remove to disable for this level)
+    park: 50
+
     # This section is run every time the drone shoots
     run:
       player:
@@ -110,12 +118,13 @@ default:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   2:
+    find-target: 3
     head: machine-gun-2
     min: 1.5
     max: 7
     range: 11
     cooldown: 2
-    accuracy: 0.55
+    chance: 0.55
     cost: 1000
     max-ammo-slots: 4
     health: 65
@@ -127,6 +136,7 @@ default:
     particle:
       1: machine_gun
     wear-and-tear: 25
+    park: 50
     run:
       player:
         - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'

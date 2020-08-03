@@ -16,6 +16,7 @@ import java.util.Objects;
 
 public class WhitelistGUI extends GUI {
 
+    private final BattleDrones plugin = BattleDrones.call;
     private final FileConfiguration file;
     private final String drone;
     private final Player player = playerMenu.getPlayer();
@@ -24,7 +25,7 @@ public class WhitelistGUI extends GUI {
     public WhitelistGUI(Menu playerMenu, String drone) {
         super(playerMenu);
         this.drone = drone;
-        file = BattleDrones.call.guiFiles.get(drone + "_whitelist");
+        file = plugin.guiFiles.get(drone + "_whitelist");
     }
 
     @Override
@@ -42,35 +43,35 @@ public class WhitelistGUI extends GUI {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
-                new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new DroneMenu(plugin.getPlayerMenu(player), drone).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_WHITELIST_ADD")) {
-                if (!BattleDrones.call.drone_whitelist.containsKey(uuid)) {
+                if (!plugin.drone_whitelist.containsKey(uuid)) {
                     player.closeInventory();
-                    for (String command : BattleDrones.call.language.get.getStringList("gui.whitelist.time")) {
-                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                    for (String command : plugin.language.get.getStringList("gui.whitelist.time")) {
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
-                    BattleDrones.call.drone_whitelist.put(uuid, drone);
-                    BattleDrones.call.getServer().getScheduler().runTaskLater(BattleDrones.call, () ->
-                                    BattleDrones.call.drone_whitelist.remove(uuid),
-                            20L * BattleDrones.call.language.get.getLong("gui.whitelist.seconds"));
+                    plugin.drone_whitelist.put(uuid, drone);
+                    plugin.getServer().getScheduler().runTaskLater(plugin, () ->
+                                    plugin.drone_whitelist.remove(uuid),
+                            20L * plugin.language.get.getLong("gui.whitelist.seconds"));
                 } else {
-                    for (String command : BattleDrones.call.language.get.getStringList("gui.whitelist.active")) {
-                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                    for (String command : plugin.language.get.getStringList("gui.whitelist.active")) {
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
             }
-            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
+            plugin.guiManager.dispatchCommand(file, slot, player);
         }
         final ItemStack itemStack = e.getCurrentItem();
         if (itemStack != null && itemStack.getType().equals(Material.PLAYER_HEAD) && itemStack.getItemMeta() != null && e.isRightClick()) {
-            final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(player.getUniqueId().toString(), drone);
+            final DroneHolder droneHolder = plugin.getDroneHolder(player.getUniqueId().toString(), drone);
             final List<String> players = droneHolder.getExclude();
             final String name = ChatColor.stripColor(itemStack.getItemMeta().getDisplayName());
             if (players.contains(name)) {
                 players.remove(name);
                 droneHolder.setExclude(players);
                 droneHolder.save();
-                new WhitelistGUI(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new WhitelistGUI(plugin.getPlayerMenu(player), drone).open();
             }
         }
     }
@@ -84,16 +85,16 @@ public class WhitelistGUI extends GUI {
         for (ItemStack itemStack : inventory.getContents()) {
             if (itemStack == null) {
                 if (players.size() > index) {
-                    final ItemStack itemStackS = BattleDrones.call.drone_heads.get("whitelist");
+                    final ItemStack itemStackS = plugin.drone_heads.get("whitelist");
                     if (itemStackS == null) {
                         BattleDrones.call.textUtils.gui(player, "head", "whitelist");
                         return;
                     }
                     final ItemMeta itemMeta = itemStackS.getItemMeta();
                     if (itemMeta == null) { return; }
-                    itemMeta.setDisplayName(BattleDrones.call.calculateManager.getChatColor(Objects.requireNonNull(BattleDrones.call.language.get.getString("gui.whitelist.name-color"))) + players.get(index));
+                    itemMeta.setDisplayName(plugin.calculateManager.getChatColor(Objects.requireNonNull(plugin.language.get.getString("gui.whitelist.name-color"))) + players.get(index));
                     final ArrayList<String> lores = new ArrayList<>();
-                    for (String lore : BattleDrones.call.language.get.getStringList("gui.whitelist.lores")) {
+                    for (String lore : plugin.language.get.getStringList("gui.whitelist.lores")) {
                         lores.add(ChatColor.translateAlternateColorCodes('&', lore));
                     }
                     itemMeta.setLore(lores);

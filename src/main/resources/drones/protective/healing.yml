@@ -36,9 +36,14 @@ gui:
     LORES:
       - '&fThis is your drone ammo'
     MATERIAL: GREEN_DYE
+    OPTIONS:
+      - GLOW
 
 default:
   1:
+
+    # Check for targets around drone (ticks)
+    find-target: 3
 
     # Custom head from config.yml
     head: healing-1
@@ -81,6 +86,9 @@ default:
     # Every x amount of ammo used -1 health
     wear-and-tear: 15
 
+    # Amount it costs to park the drone (remove to disable for this level)
+    park: 50
+
     # This section is run every time the drone shoots
     run:
       player:
@@ -107,6 +115,7 @@ default:
         searching: '&aSearching...'
         target: '&cDetected entity to heal...'
   2:
+    find-target: 3
     head: healing-2
     min: 1
     max: 4
@@ -123,6 +132,7 @@ default:
     particle:
       1: healing
     wear-and-tear: 18
+    park: 50
     run:
       player:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
@@ -145,6 +155,7 @@ default:
         searching: '&aSearching...'
         target: '&cDetected entity to heal...'
   3:
+    find-target: 3
     head: healing-3
     min: 1
     max: 6
@@ -161,6 +172,7 @@ default:
     particle:
       1: healing
     wear-and-tear: 20
+    park: 50
     run:
       player:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'

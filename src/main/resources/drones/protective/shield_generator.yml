@@ -36,9 +36,14 @@ gui:
     LORES:
       - '&fThis is your drone ammo'
     MATERIAL: REDSTONE_TORCH
+    OPTIONS:
+      - GLOW
 
 default:
   1:
+
+    # Check for targets around drone (ticks)
+    find-target: 60
 
     # Custom head from config.yml
     head: shield-generator-1
@@ -82,6 +87,9 @@ default:
     # Every x amount of ammo used -1 health
     wear-and-tear: 15
 
+    # Amount it costs to park the drone (remove to disable for this level)
+    park: 50
+
     # This section is run every time the drone uses its ability
     run:
       player:
@@ -108,6 +116,7 @@ default:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   2:
+    find-target: 60
     head: shield-generator-2
     min: 0.18
     max: 0.35
@@ -125,6 +134,7 @@ default:
       1: shield_generator
       2: shield_generator_ability
     wear-and-tear: 18
+    park: 50
     run:
       player:
         - 'bd message {target} &7[&dBattleDrones&7] &6You have got {damage}% damage off'
@@ -147,6 +157,7 @@ default:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   3:
+    find-target: 60
     head: shield-generator-3
     min: 0.18
     max: 0.40
@@ -164,6 +175,7 @@ default:
       1: shield_generator
       2: shield_generator_ability
     wear-and-tear: 20
+    park: 50
     run:
       player:
         - 'bd message {target} &7[&dBattleDrones&7] &6You have got {damage}% damage off'
@@ -186,6 +198,7 @@ default:
         searching: '&aSearching...'
         target: '&cDetected Enemy...'
   4:
+    find-target: 60
     head: shield-generator-4
     min: 0.25
     max: 0.50
@@ -203,6 +216,7 @@ default:
       1: shield_generator
       2: shield_generator_ability
     wear-and-tear: 25
+    park: 50
     run:
       player:
         - 'bd message {target} &7[&dBattleDrones&7] &6You have got {damage}% damage off'

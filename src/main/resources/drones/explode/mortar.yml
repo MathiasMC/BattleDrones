@@ -1,0 +1,355 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+
+gui:
+  NAME: '&6Mortar drone'
+  LORES:
+    - '&f-----------------'
+    - '&fDrone armed with'
+    - '&fmortar.'
+    - ' '
+    - '&fLMB &7- &aActivate'
+    - '&fRMB &7- &cDeactivate'
+    - '&fMiddle click &7- Open drone menu'
+  AMOUNT: 1
+  POSITION: 22
+  SPAWN-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6Mortar Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  REMOVE-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Mortar Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  PERMISSION:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this mortar drone.'
+  WAIT:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Mortar Drone &cright now try again later.'
+  WAIT-SECONDS: 20
+
+  # Ammo used by this drone and it must match (/bd give ammo)
+  AMMO:
+    NAME: '&6Mortar Ammo'
+    LORES:
+      - '&fThis is your drone ammo'
+    MATERIAL: GRAY_DYE
+    OPTIONS:
+      - GLOW
+
+default:
+  1:
+
+    # Check for targets around drone (ticks)
+    find-target: 60
+
+    # Custom head from config.yml
+    head: mortar-1
+
+    # Damage between min, max
+    min: 2
+    max: 5
+
+    # How far to look for entity´s
+    range: 18
+
+    # Delay 20 = 1 second
+    cooldown: 80
+
+    # Angle of drone head
+    angle: -1.22
+
+    # The chance of the drone to give an confusion effect
+    chance: 0.35
+
+    chance-commands:
+      - 'bd message {player} &7[&dBattleDrones&7] &cYou are Shell-shocked!'
+      - 'effect give {player} minecraft:nausea 10 1'
+
+    # Rocket head (remove this section to disable head)
+    rocket-head: mortar-head
+
+    # Rocket speed
+    rocket-speed: 0.5
+
+    # Time to live for the rocket entity (seconds)
+    rocket-time: 30
+
+    # distance / height
+    rocket-height: 1.1
+
+    # Damage radius
+    rocket-radius: 3
+
+    # Create explosion?
+    rocket-explosion: true
+
+    # Power of the explosion (if enabled)
+    rocket-explosion-power: 1
+
+    # Fire where the explosion is?
+    rocket-explosion-fire: false
+
+    # Destroy blocks?
+    rocket-explosion-block: false
+
+    # Rocket self destruct if target is dead
+    rocket-self-destruction: false
+
+    # cost: amount (this is not needed for level 1)
+
+    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    max-ammo-slots: 2
+
+    # Health
+    health: 50
+
+    # Regen drone
+    regen:
+
+      # Amount of health to add
+      health: 1
+
+      # Regen (health) every (x amount of seconds) (0 to disable)
+      delay: 14
+
+    # Particles
+    particle:
+      1: mortar-explode
+      2: mortar-line
+
+    # Commands when damaged
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+
+    # Every x amount of ammo used -1 health
+    wear-and-tear: 2
+
+    # Amount it costs to park the drone (remove to disable for this level)
+    park: 50
+
+    # This section is run every time the drone shoots
+    run:
+      player:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+      monster:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+      animal:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+
+    # This section is run every time the rocket explode
+    explode:
+      player:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+
+    # Upgrade commands
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour mortar drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your mortar drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour mortar drone is at the max level already!'
+
+    messages:
+      name:
+        searching: '&6MORTAR DRONE &7(&3{name}&7) &7(&e1&7)'
+        target: '&6MORTAR DRONE &7(&3{name}&7) &7(&e1&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  2:
+    find-target: 60
+    head: mortar-2
+    min: 4
+    max: 7
+    range: 20
+    cooldown: 60
+    angle: -1.22
+    chance: 0.45
+    chance-commands:
+      - 'bd message {player} &7[&dBattleDrones&7] &cYou are Shell-shocked!'
+      - 'effect give {player} minecraft:nausea 10 1'
+    rocket-head: mortar-head
+    rocket-speed: 0.45
+    rocket-time: 30
+    rocket-height: 1
+    rocket-radius: 3
+    rocket-explosion: true
+    rocket-explosion-power: 1
+    rocket-explosion-fire: false
+    rocket-explosion-block: false
+    rocket-self-destruction: false
+    cost: 1000
+    max-ammo-slots: 4
+    health: 65
+    regen:
+      health: 1
+      delay: 12
+    particle:
+      1: mortar-explode
+      2: mortar-line
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    wear-and-tear: 3
+    park: 50
+    run:
+      player:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+      monster:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+      animal:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+    explode:
+      player:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour mortar drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your mortar drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour mortar drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6MORTAR DRONE &7(&3{name}&7) &7(&e2&7)'
+        target: '&6MORTAR DRONE &7(&3{name}&7) &7(&e2&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  3:
+    find-target: 60
+    head: mortar-3
+    min: 5
+    max: 9
+    range: 22
+    cooldown: 55
+    angle: -1.22
+    chance: 0.55
+    chance-commands:
+      - 'bd message {player} &7[&dBattleDrones&7] &cYou are Shell-shocked!'
+      - 'effect give {player} minecraft:nausea 10 1'
+    rocket-head: mortar-head
+    rocket-speed: 0.40
+    rocket-time: 30
+    rocket-height: 0.8
+    rocket-radius: 5
+    rocket-explosion: true
+    rocket-explosion-power: 1
+    rocket-explosion-fire: false
+    rocket-explosion-block: false
+    rocket-self-destruction: false
+    cost: 2000
+    max-ammo-slots: 6
+    health: 75
+    regen:
+      health: 1
+      delay: 10
+    particle:
+      1: mortar-explode
+      2: mortar-line
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    wear-and-tear: 6
+    park: 50
+    run:
+      player:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+      monster:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+      animal:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+    explode:
+      player:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour mortar drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your mortar drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour mortar drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6MORTAR DRONE &7(&3{name}&7) &7(&e3&7)'
+        target: '&6MORTAR DRONE &7(&3{name}&7) &7(&e3&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'
+  4:
+    find-target: 60
+    head: mortar-4
+    min: 7
+    max: 13
+    range: 24
+    cooldown: 48
+    angle: -1.22
+    chance: 0.65
+    chance-commands:
+      - 'bd message {player} &7[&dBattleDrones&7] &cYou are Shell-shocked!'
+      - 'effect give {player} minecraft:nausea 10 1'
+    rocket-head: mortar-head
+    rocket-speed: 0.36
+    rocket-time: 30
+    rocket-height: 0.6
+    rocket-radius: 6
+    rocket-explosion: true
+    rocket-explosion-power: 1
+    rocket-explosion-fire: false
+    rocket-explosion-block: false
+    rocket-self-destruction: false
+    cost: 3000
+    max-ammo-slots: 8
+    health: 100
+    regen:
+      health: 1
+      delay: 8
+    particle:
+      1: mortar-explode
+      2: mortar-line
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+    wear-and-tear: 8
+    park: 50
+    run:
+      player:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+      monster:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+      animal:
+        - 'bd sound entity_creeper_death {world} {x} {y} {z} 1 0.5'
+    explode:
+      player:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      monster:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+      animal:
+        - 'bd sound entity_evoker_prepare_attack {world} {x} {y} {z} 1 2'
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour mortar drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your mortar drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour mortar drone is at the max level already!'
+    messages:
+      name:
+        searching: '&6MORTAR DRONE &7(&3{name}&7) &7(&e4&7)'
+        target: '&6MORTAR DRONE &7(&3{name}&7) &7(&e4&7)'
+      text:
+        searching: '&aSearching...'
+        target: '&cDetected Enemy...'

@@ -60,7 +60,7 @@ public class ParticleManager {
         }
     }
 
-    private void switchParticle(String particleType, World world, Location location, int amount, Particle.DustOptions dustOptions) {
+    public void switchParticle(String particleType, World world, Location location, int amount, Particle.DustOptions dustOptions) {
         if ("REDSTONE".equals(particleType)) {
             world.spawnParticle(Particle.REDSTONE, location, amount, 0, 0, 0, 0F, dustOptions);
             return;
@@ -79,5 +79,4 @@ public class ParticleManager {
             length += space;
         }
     }
-
 }

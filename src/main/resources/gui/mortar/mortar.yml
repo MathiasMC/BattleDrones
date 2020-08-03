@@ -1,5 +1,5 @@
 settings:
-  name: '&dYour drones > Laser'
+  name: '&dYour drones > Mortar'
   size: 54
   upgrade:
     NAME: '&6Upgrade'
@@ -96,9 +96,10 @@ settings:
     - '&7Level: &b{level} &7> &b{level_next}'
     - '&7damage: &b{min_max} &7> &b{min_max_next}'
     - '&7Range: &b{range} &7> &b{range_next}'
+    - '&7Speed: &b{rocket_speed} &7> &b{rocket_speed_next}'
+    - '&7Damage Radius: &b{rocket_radius} &7> &b{rocket_radius_next}'
+    - '&7Time in air: &b{rocket_time} sec &7> &b{rocket_time_next} sec'
     - '&7Firerate: &b{firerate} &7> &b{firerate_next}'
-    - '&7Accuracy: &b{chance}% &7> &b{chance_next}%'
-    - '&7Knockback: &b{knockback} &7> &b{knockback_next}'
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec &7> &b{regen_health_next} HP/{regen_delay_next} sec'
     - '&7Max ammo slots: &b{max_ammo_slots} &7> &b{max_ammo_slots_next}'
     - '&7Cost: &b{cost}'
@@ -114,9 +115,10 @@ settings:
     - '&7Damage: &b{min_max}'
     - '&7Ammo: &b{ammo} {ammo_bar} {ammo_percentage}%'
     - '&7Range: &b{range}'
+    - '&7Speed: &b{rocket_speed}'
+    - '&7Damage Radius: &b{rocket_radius}'
+    - '&7Time in air: &b{rocket_time} sec'
     - '&7Firerate: &b{firerate}'
-    - '&7Accuracy: &b{chance}%'
-    - '&7Knockback: &b{knockback}'
     - '&7Regen: &b{regen_health} HP/{regen_delay} sec'
     - '&7Max ammo slots: &b{max_ammo_slots}'
   MATERIAL: BOOK

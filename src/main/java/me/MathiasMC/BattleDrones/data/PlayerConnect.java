@@ -13,6 +13,7 @@ public class PlayerConnect {
     public ArmorStand name;
 
     public int AItaskID;
+    public int AIfindTargetID;
     public int ShootTaskID;
     public int RegenTaskID;
 
@@ -85,6 +86,10 @@ public class PlayerConnect {
         BattleDrones.call.getServer().getScheduler().cancelTask(this.AItaskID);
     }
 
+    public void stopFindTargetAI() {
+        BattleDrones.call.getServer().getScheduler().cancelTask(this.AIfindTargetID);
+    }
+
     public void stopShoot() {
         BattleDrones.call.getServer().getScheduler().cancelTask(this.ShootTaskID);
     }
@@ -96,6 +101,7 @@ public class PlayerConnect {
     public void stopDrone() {
         remove();
         stopAI();
+        stopFindTargetAI();
         stopShoot();
         stopRegen();
         setActive("");
@@ -117,8 +123,8 @@ public class PlayerConnect {
         armorStandName.setCustomNameVisible(true);
         head = armorStand;
         name = armorStandName;
-        armorStand.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, player.getUniqueId().toString());
-        armorStandName.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, player.getUniqueId().toString());
+        armorStand.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, uuid);
+        armorStandName.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, uuid);
     }
 
     public void save() {

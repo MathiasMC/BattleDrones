@@ -24,10 +24,12 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -63,12 +65,11 @@ public class BattleDrones extends JavaPlugin {
     public AIManager aiManager;
     public ParticleManager particleManager;
 
-    public Laser laser;
     public Rocket rocket;
-    public MachineGun machineGun;
     public ShieldGenerator shieldGenerator;
     public Healing healing;
     public Flamethrower flamethrower;
+    public Gun gun;
 
     public InternalPlaceholders internalPlaceholders;
 
@@ -85,6 +86,7 @@ public class BattleDrones extends JavaPlugin {
     public final ArrayList<String> drones = new ArrayList<>();
     public final HashSet<String> drone_amount = new HashSet<>();
     public final HashSet<ArmorStand> projectiles = new HashSet<>();
+    public final HashSet<String> park = new HashSet<>();
 
     public LocationSupport locationSupport;
 
@@ -105,6 +107,8 @@ public class BattleDrones extends JavaPlugin {
         drones.add("shield_generator");
         drones.add("healing");
         drones.add("flamethrower");
+        drones.add("faf_missile");
+        drones.add("mortar");
 
         textUtils = new TextUtils(this);
         config = new Config(this);
@@ -123,12 +127,11 @@ public class BattleDrones extends JavaPlugin {
 
         internalPlaceholders = new InternalPlaceholders(this);
 
-        laser = new Laser(this);
         rocket = new Rocket(this);
-        machineGun = new MachineGun(this);
         shieldGenerator = new ShieldGenerator(this);
         healing = new Healing(this);
         flamethrower = new Flamethrower(this);
+        gun = new Gun(this);
 
         locationSupport = new LocationSupport(this);
 
@@ -140,6 +143,7 @@ public class BattleDrones extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new InventoryClick(), this);
             getServer().getPluginManager().registerEvents(new AsyncPlayerChat(this), this);
             getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
+            getServer().getPluginManager().registerEvents(new PlayerInteractAtEntity(this), this);
             getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
             getServer().getPluginManager().registerEvents(new EntityDamageByEntity(this), this);
             getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
@@ -295,6 +299,11 @@ public class BattleDrones extends JavaPlugin {
 
     public float randomChance() {
         return new Random().nextFloat();
+    }
+
+    public boolean getEntityLook(Player player, Entity entity) {
+        final Location location = player.getEyeLocation();
+        return entity.getLocation().add(0, 1, 0).toVector().subtract(location.toVector()).normalize().dot(location.getDirection()) > 0.95D;
     }
 
     public Menu getPlayerMenu(Player player) {

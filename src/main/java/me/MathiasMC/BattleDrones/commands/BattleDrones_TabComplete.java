@@ -1,6 +1,7 @@
 package me.MathiasMC.BattleDrones.commands;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -32,6 +33,29 @@ public class BattleDrones_TabComplete implements TabCompleter {
             if (player.hasPermission("battledrones.command.reload")) {
                 if (args.length == 1) {
                     commands.add("reload");
+                } else if (args.length > 1 && args[0].equalsIgnoreCase("reload")) {
+                    if (args.length == 2) {
+                        commands.add("all");
+                        commands.add("config");
+                        commands.add("language");
+                        commands.add("particles");
+                        commands.add("gui");
+                        commands.add("drones");
+                        commands.add("heads");
+                    }
+                }
+            }
+            if (player.hasPermission("battledrones.command.actionbar")) {
+                if (args.length == 1) {
+                    commands.add("actionbar");
+                } else if (args.length > 1 && args[0].equalsIgnoreCase("actionbar")) {
+                    if (args.length == 2) {
+                        commands.addAll(getPlayers(args[1]));
+                    } else if (args.length == 3) {
+                        commands.add("seconds");
+                    } else if (args.length == 4) {
+                        commands.add("text");
+                    }
                 }
             }
             if (player.hasPermission("battledrones.command.save")) {
@@ -47,6 +71,16 @@ public class BattleDrones_TabComplete implements TabCompleter {
             if (player.hasPermission("battledrones.command.menu")) {
                 if (args.length == 1) {
                     commands.add("menu");
+                }
+            }
+            if (player.hasPermission("battledrones.command.park")) {
+                if (args.length == 1) {
+                    commands.add("park");
+                }
+            }
+            if (player.hasPermission("battledrones.command.drone")) {
+                if (args.length == 1) {
+                    commands.add("drone");
                 }
             }
             if (player.hasPermission("battledrones.command.message")) {
@@ -106,7 +140,9 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     commands.add("sound");
                 } else if (args.length > 1 && args[0].equalsIgnoreCase("sound")) {
                     if (args.length == 2) {
-                        commands.add("soundName");
+                        for (Sound sound : Sound.values()) {
+                            commands.add(sound.name().toLowerCase());
+                        }
                     } else if (args.length == 3) {
                         commands.add("world");
                     } else if (args.length == 4) {

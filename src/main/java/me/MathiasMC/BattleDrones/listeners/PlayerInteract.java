@@ -32,7 +32,7 @@ public class PlayerInteract implements Listener {
                 final ArmorStand armorStand = (ArmorStand) entity;
                 final String key = armorStand.getPersistentDataContainer().get(new NamespacedKey(plugin, "drone_uuid"), PersistentDataType.STRING);
                 if (key != null) {
-                    if (getEntityLook(e.getPlayer(), entity)) {
+                    if (plugin.getEntityLook(e.getPlayer(), entity)) {
                         e.setCancelled(true);
                         if (!e.getPlayer().getUniqueId().toString().equalsIgnoreCase(key)) {
                             if (!plugin.locationSupport.inWorldGuardRegion(entity)) {
@@ -78,10 +78,5 @@ public class PlayerInteract implements Listener {
             droneHolder.setAmmo(0);
         }
         playerConnect.stopDrone();
-    }
-
-    private boolean getEntityLook(Player player, Entity entity) {
-        final Location location = player.getEyeLocation();
-        return entity.getLocation().add(0, 1, 0).toVector().subtract(location.toVector()).normalize().dot(location.getDirection()) > 0.95D;
     }
 }

@@ -1,7 +1,6 @@
 package me.MathiasMC.BattleDrones.gui.shop;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
-import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import me.MathiasMC.BattleDrones.gui.GUI;
 import me.MathiasMC.BattleDrones.gui.Menu;
@@ -14,12 +13,21 @@ import java.util.Objects;
 
 public class ShopExplodeGUI extends GUI {
 
-    private final FileConfiguration file = BattleDrones.call.guiFiles.get("shop_explode");
+    private final BattleDrones plugin = BattleDrones.call;
+    private final FileConfiguration file;
     private final Player player = playerMenu.getPlayer();
     private final String uuid = playerMenu.getUuid();
+    private final PlayerConnect playerConnect = playerMenu.getPlayerConnect();
+    private final String rocket_id;
+    private final String faf_missile_id;
+    private final String mortar_id;
 
     public ShopExplodeGUI(Menu playerMenu) {
         super(playerMenu);
+        this.file = plugin.guiFiles.get("shop_explode");
+        this.rocket_id = "rocket";
+        this.faf_missile_id = "faf_missile";
+        this.mortar_id = "mortar";
     }
 
     @Override
@@ -37,49 +45,20 @@ public class ShopExplodeGUI extends GUI {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
             if (file.getStringList(slot + ".OPTIONS").contains("DRONE_ROCKET_BUY")) {
-                if (player.hasPermission("battledrones.shop.rocket")) {
-                    final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
-                    final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, "rocket");
-                    if (droneHolder.getUnlocked() != 1) {
-                        final long coins = playerConnect.getCoins();
-                        final long cost = file.getLong(slot + ".COST");
-                        if (!BattleDrones.call.config.get.getBoolean("vault") && coins >= cost ||
-                                BattleDrones.call.config.get.getBoolean("vault") &&
-                                        BattleDrones.call.getEconomy() != null &&
-                                        BattleDrones.call.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
-                            if (!BattleDrones.call.config.get.getBoolean("vault")) {
-                                playerConnect.setCoins(coins - cost);
-                            }
-                            droneHolder.setUnlocked(1);
-                            droneHolder.setHealth(BattleDrones.call.droneFiles.get("rocket").getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
-                            droneHolder.save();
-                            for (String command : file.getStringList(slot + ".SHOP-COMMANDS.BOUGHT")) {
-                                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
-                            }
-                        } else {
-                            for (String command : file.getStringList(slot + ".SHOP-COMMANDS.COINS")) {
-                                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
-                            }
-                        }
-                    } else {
-                        for (String command : file.getStringList(slot + ".SHOP-COMMANDS.HAVE")) {
-                            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
-                        }
-                    }
-                } else {
-                    for (String command : file.getStringList(slot + ".SHOP-COMMANDS.PERMISSION")) {
-                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
-                    }
-                }
+                plugin.guiManager.shopGUI(slot, player, uuid, playerConnect, file, rocket_id, rocket_id);
+            } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_FAFMISSILE_BUY")) {
+                plugin.guiManager.shopGUI(slot, player, uuid, playerConnect, file, faf_missile_id, "faf.missile");
+            } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_MORTAR_BUY")) {
+                plugin.guiManager.shopGUI(slot, player, uuid, playerConnect, file, mortar_id, mortar_id);
             } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
-                new ShopGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                new ShopGUI(plugin.getPlayerMenu(player)).open();
             }
-            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
+            plugin.guiManager.dispatchCommand(file, slot, player);
         }
     }
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
+        plugin.guiManager.setGUIItemStack(inventory, file, player);
     }
 }

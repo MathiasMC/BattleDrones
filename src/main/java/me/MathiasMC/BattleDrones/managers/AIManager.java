@@ -26,8 +26,17 @@ public class AIManager {
         final ArmorStand head = playerConnect.head;
         final ArmorStand name = playerConnect.name;
         final EulerAngle eulerAngle = new EulerAngle(0, 0, 0);
+        EulerAngle angle = null;
+        if (file.contains(group + "." + drone_level + ".angle")) {
+            angle = new EulerAngle(file.getDouble(group + "." + drone_level + ".angle"), 0, 0);
+        }
+        final EulerAngle finalAngle = angle;
         final double radius = file.getDouble(group + "." + drone_level + ".range");
-        playerConnect.AItaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+        int findTarget = 1;
+        if (file.contains(group + "." + drone_level + ".find-target")) {
+            findTarget = file.getInt(group + "." + drone_level + ".find-target");
+        }
+        playerConnect.AIfindTargetID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             LivingEntity target = plugin.armorStandManager.getClose(player, radius, monsters, animals, players, exclude, reverseExclude, hpCheck);
             if (target != null && !head.hasLineOfSight(target)) {
                 target = null;
@@ -35,27 +44,63 @@ public class AIManager {
             if (plugin.drone_targets.get(uuid) != target) {
                 plugin.drone_targets.put(uuid, target);
             }
-            final Location location = player.getLocation().add(0, 2, 0);
-            float yaw = location.getYaw();
-            final Vector direction = location.getDirection();
-            final double xD = Math.sin(-0.0175 * yaw + 1.575) + location.getX();
-            final double zD = Math.cos(-0.0175 * yaw + 1.575) + location.getZ();
-            final Location tp = new Location(player.getWorld(), xD, location.getY(), zD);
-            if (target != null) {
-                if (lookAI) {
-                    final Location targetLocation = target.getLocation();
-                    plugin.armorStandManager.lookAT(head, targetLocation.clone());
-                    head.teleport(tp.setDirection(targetLocation.toVector().subtract(head.getLocation().toVector()).normalize()));
-                } else {
-                    head.teleport(tp.setDirection(direction));
-                }
-                plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "target", player);
-            } else {
-                head.setHeadPose(eulerAngle);
-                head.teleport(tp.setDirection(direction));
-                plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "searching", player);
+        }, findTarget, findTarget).getTaskId();
+        playerConnect.AItaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            LivingEntity target = plugin.drone_targets.get(uuid);
+            if (target != null && target.isDead()) {
+                plugin.drone_targets.put(uuid, null);
+                target = null;
             }
-            name.teleport(tp.add(0, 0.3, 0));
+            if (!plugin.park.contains(uuid)) {
+                final Location location = player.getLocation().add(0, 2, 0);
+                float yaw = location.getYaw();
+                final Vector direction = location.getDirection();
+                final double xD = Math.sin(-0.0175 * yaw + 1.575) + location.getX();
+                final double zD = Math.cos(-0.0175 * yaw + 1.575) + location.getZ();
+                final Location tp = new Location(player.getWorld(), xD, location.getY(), zD);
+                if (target != null) {
+                    if (finalAngle != null) {
+                        head.setHeadPose(finalAngle);
+                    }
+                    if (lookAI) {
+                        final Location targetLocation = target.getLocation();
+                        if (finalAngle == null) {
+                            plugin.armorStandManager.lookAT(head, targetLocation.clone());
+                        }
+                        head.teleport(tp.setDirection(targetLocation.toVector().subtract(head.getLocation().toVector()).normalize()));
+                    } else {
+                        head.teleport(tp.setDirection(direction));
+                    }
+                    plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "target", player);
+                } else {
+                    head.setHeadPose(eulerAngle);
+                    head.teleport(tp.setDirection(direction));
+                    plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "searching", player);
+                }
+                name.teleport(tp.add(0, 0.3, 0));
+            } else {
+                final Location tp = head.getLocation();
+                if (target != null) {
+                    if (finalAngle != null) {
+                        head.setHeadPose(finalAngle);
+                    }
+                    if (lookAI) {
+                        final Location targetLocation = target.getLocation();
+                        if (finalAngle == null) {
+                            plugin.armorStandManager.lookAT(head, targetLocation.clone());
+                        }
+                        head.teleport(tp.setDirection(targetLocation.toVector().subtract(head.getLocation().toVector()).normalize()));
+                    } else {
+                        head.teleport(tp);
+                    }
+                    plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "target", player);
+                } else {
+                    head.setHeadPose(eulerAngle);
+                    head.teleport(tp);
+                    plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "searching", player);
+                }
+                name.teleport(tp.clone().add(0, 0.3, 0));
+            }
         }, 5, 1).getTaskId();
     }
 }

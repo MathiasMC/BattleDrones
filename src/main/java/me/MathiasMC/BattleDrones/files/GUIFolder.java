@@ -48,6 +48,14 @@ public class GUIFolder {
     final File flamethrower_whitelist;
     final File flamethrower_ammo;
 
+    final File faf_missile;
+    final File faf_missile_whitelist;
+    final File faf_missile_ammo;
+
+    final File mortar;
+    final File mortar_whitelist;
+    final File mortar_ammo;
+
     public GUIFolder(final BattleDrones plugin) {
         this.plugin = plugin;
         File folder = new File(plugin.getDataFolder() + File.separator + "gui");
@@ -85,6 +93,14 @@ public class GUIFolder {
         File folderFlamethrower = new File(folder + File.separator + "flamethrower");
         if (!folderFlamethrower.exists()) {
             folderFlamethrower.mkdir();
+        }
+        File folderFAFMissile = new File(folder + File.separator + "faf_missile");
+        if (!folderFAFMissile.exists()) {
+            folderFAFMissile.mkdir();
+        }
+        File folderMortar = new File(folder + File.separator + "mortar");
+        if (!folderMortar.exists()) {
+            folderMortar.mkdir();
         }
         shop = new File(folderShop, "shop.yml");
         if (!shop.exists()) {
@@ -356,6 +372,60 @@ public class GUIFolder {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
         }
+        faf_missile = new File(folderFAFMissile, "faf_missile.yml");
+        if (!faf_missile.exists()) {
+            try {
+                faf_missile.createNewFile();
+                plugin.copy("gui/faf_missile/faf_missile.yml", faf_missile);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        faf_missile_whitelist = new File(folderFAFMissile, "whitelist.yml");
+        if (!faf_missile_whitelist.exists()) {
+            try {
+                faf_missile_whitelist.createNewFile();
+                plugin.copy("gui/faf_missile/whitelist.yml", faf_missile_whitelist);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        faf_missile_ammo = new File(folderFAFMissile, "ammo.yml");
+        if (!faf_missile_ammo.exists()) {
+            try {
+                faf_missile_ammo.createNewFile();
+                plugin.copy("gui/faf_missile/ammo.yml", faf_missile_ammo);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        mortar = new File(folderMortar, "mortar.yml");
+        if (!mortar.exists()) {
+            try {
+                mortar.createNewFile();
+                plugin.copy("gui/mortar/mortar.yml", mortar);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        mortar_whitelist = new File(folderMortar, "whitelist.yml");
+        if (!mortar_whitelist.exists()) {
+            try {
+                mortar_whitelist.createNewFile();
+                plugin.copy("gui/mortar/whitelist.yml", mortar_whitelist);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        mortar_ammo = new File(folderMortar, "ammo.yml");
+        if (!mortar_ammo.exists()) {
+            try {
+                mortar_ammo.createNewFile();
+                plugin.copy("gui/mortar/ammo.yml", mortar_ammo);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
         load();
     }
 
@@ -397,5 +467,13 @@ public class GUIFolder {
         plugin.guiFiles.put("flamethrower", YamlConfiguration.loadConfiguration(flamethrower));
         plugin.guiFiles.put("flamethrower_whitelist", YamlConfiguration.loadConfiguration(flamethrower_whitelist));
         plugin.guiFiles.put("flamethrower_ammo", YamlConfiguration.loadConfiguration(flamethrower_ammo));
+
+        plugin.guiFiles.put("faf_missile", YamlConfiguration.loadConfiguration(faf_missile));
+        plugin.guiFiles.put("faf_missile_whitelist", YamlConfiguration.loadConfiguration(faf_missile_whitelist));
+        plugin.guiFiles.put("faf_missile_ammo", YamlConfiguration.loadConfiguration(faf_missile_ammo));
+
+        plugin.guiFiles.put("mortar", YamlConfiguration.loadConfiguration(mortar));
+        plugin.guiFiles.put("mortar_whitelist", YamlConfiguration.loadConfiguration(mortar_whitelist));
+        plugin.guiFiles.put("mortar_ammo", YamlConfiguration.loadConfiguration(mortar_ammo));
     }
 }

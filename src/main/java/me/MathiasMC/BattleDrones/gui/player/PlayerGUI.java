@@ -13,11 +13,14 @@ import java.util.Objects;
 
 public class PlayerGUI extends GUI {
 
-    private final FileConfiguration file = BattleDrones.call.guiFiles.get("player");
+    private final BattleDrones plugin = BattleDrones.call;
+    private final FileConfiguration file;
     private final Player player = playerMenu.getPlayer();
+    private final String uuid = playerMenu.getUuid();
 
     public PlayerGUI(Menu playerMenu) {
         super(playerMenu);
+        this.file = plugin.guiFiles.get("player");
     }
 
     @Override
@@ -35,30 +38,32 @@ public class PlayerGUI extends GUI {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
             if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYER_ENERGY")) {
-                BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "laser");
-                new EnergyGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                plugin.loadDroneHolder(uuid, "laser");
+                new EnergyGUI(plugin.getPlayerMenu(player)).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYER_KINETIC")) {
-                BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "machine_gun");
-                new KineticGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                plugin.loadDroneHolder(uuid, "machine_gun");
+                new KineticGUI(plugin.getPlayerMenu(player)).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYER_EXPLODE")) {
-                BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "rocket");
-                new ExplodeGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                plugin.loadDroneHolder(uuid, "rocket");
+                plugin.loadDroneHolder(uuid, "faf_missile");
+                plugin.loadDroneHolder(uuid, "mortar");
+                new ExplodeGUI(plugin.getPlayerMenu(player)).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYER_PROTECTIVE")) {
-                BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "shield_generator");
-                BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "healing");
-                new ProtectiveGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                plugin.loadDroneHolder(uuid, "shield_generator");
+                plugin.loadDroneHolder(uuid, "healing");
+                new ProtectiveGUI(plugin.getPlayerMenu(player)).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYER_SPECIAL")) {
-                BattleDrones.call.loadDroneHolder(playerMenu.getUuid(), "flamethrower");
-                new SpecialGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                plugin.loadDroneHolder(uuid, "flamethrower");
+                new SpecialGUI(plugin.getPlayerMenu(player)).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_SHOP")) {
-                new ShopGUI(BattleDrones.call.getPlayerMenu(player)).open();
+                new ShopGUI(plugin.getPlayerMenu(player)).open();
             }
-            BattleDrones.call.guiManager.dispatchCommand(file, slot, player);
+            plugin.guiManager.dispatchCommand(file, slot, player);
         }
     }
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
+        plugin.guiManager.setGUIItemStack(inventory, file, player);
     }
 }
