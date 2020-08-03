@@ -16,7 +16,7 @@ public class PlayerDeath implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        String uuid = e.getEntity().getUniqueId().toString();
+        final String uuid = e.getEntity().getUniqueId().toString();
         if (plugin.config.get.contains("player-death-commands")) {
             if (plugin.list().contains(uuid)) {
                 final PlayerConnect playerConnect = plugin.get(uuid);

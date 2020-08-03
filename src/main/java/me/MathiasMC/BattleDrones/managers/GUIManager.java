@@ -27,9 +27,9 @@ public class GUIManager {
         this.plugin = plugin;
     }
 
-    public void setGUIItemStack(Inventory inventory, FileConfiguration file, Player player) {
-        PlayerConnect droneHolder = plugin.get(player.getUniqueId().toString());
-        for (String key : file.getConfigurationSection("").getKeys(false)) {
+    public void setGUIItemStack(final Inventory inventory, final FileConfiguration file, final Player player) {
+        final PlayerConnect droneHolder = plugin.get(player.getUniqueId().toString());
+        for (String key : Objects.requireNonNull(file.getConfigurationSection("")).getKeys(false)) {
             if (!key.equalsIgnoreCase("settings")) {
                 ItemStack itemStack;
                 if (!file.contains(key + ".HEAD")) {
@@ -47,10 +47,14 @@ public class GUIManager {
                         return;
                     }
                 }
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName(plugin.replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', file.getString(key + ".NAME")
+                final ItemMeta itemMeta = itemStack.getItemMeta();
+                if (itemMeta == null) {
+                    return;
+                }
+                itemMeta.setDisplayName(plugin.replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&',
+                        Objects.requireNonNull(file.getString(key + ".NAME"))
                         .replace("{coins}", String.valueOf(droneHolder.getCoins())))));
-                ArrayList<String> list = new ArrayList<>();
+                final ArrayList<String> list = new ArrayList<>();
                 for (String lores : file.getStringList(key + ".LORES")) {
                     list.add(plugin.replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', lores
                             .replace("{coins}", String.valueOf(droneHolder.getCoins())))));
@@ -63,11 +67,11 @@ public class GUIManager {
         }
     }
 
-    public void setDrones(String uuid, HashMap<String, Integer> drones, Inventory inventory) {
-        final PlayerConnect playerConnect = BattleDrones.call.get(uuid);
+    public void setDrones(final String uuid, final HashMap<String, Integer> drones, final Inventory inventory) {
+        final PlayerConnect playerConnect = plugin.get(uuid);
         for (String drone : drones.keySet()) {
-            final FileConfiguration file = BattleDrones.call.droneFiles.get(drone);
-            final ItemStack itemStack = BattleDrones.call.drone_heads.get(file.getString(playerConnect.getGroup() + "." + drones.get(drone) + ".head"));
+            final FileConfiguration file = plugin.droneFiles.get(drone);
+            final ItemStack itemStack = plugin.drone_heads.get(file.getString(playerConnect.getGroup() + "." + drones.get(drone) + ".head"));
             final ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta == null) {
                 return;
@@ -83,7 +87,7 @@ public class GUIManager {
         }
     }
 
-    public void dispatchCommand(FileConfiguration file, int slot, Player player) {
+    public void dispatchCommand(final FileConfiguration file, final int slot, final Player player) {
         if (file.contains(slot + ".COMMANDS")) {
             if (player.hasPermission(Objects.requireNonNull(file.getString(slot + ".COMMANDS.PERMISSION")))) {
                 if (file.contains(slot + ".COMMANDS.CONSOLE")) {
@@ -106,64 +110,67 @@ public class GUIManager {
         }
     }
 
-    public void glow(ItemStack itemStack, FileConfiguration file, String path) {
+    public void glow(final ItemStack itemStack, final FileConfiguration file, final String path) {
         if (file.contains(path) && file.getStringList(path).contains("GLOW")) {
             itemStack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 0);
             ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta == null) {
+                return;
+            }
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             itemStack.setItemMeta(itemMeta);
         }
     }
 
-    public void playerGUI(InventoryClickEvent e, Player player, PlayerConnect playerConnect, DroneHolder droneHolder, String drone, FileConfiguration file, String permission) {
+    public void playerGUI(final InventoryClickEvent e, final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final String drone, final FileConfiguration file, final String permission) {
         if (player.hasPermission("battledrones.player." + permission)) {
             if (e.isLeftClick()) {
-                BattleDrones.call.droneManager.spawnDrone(player, drone, false, false);
+                plugin.droneManager.spawnDrone(player, drone, false, false);
             } else if (e.isRightClick()) {
-                BattleDrones.call.droneManager.runCommands(player, playerConnect, file, "gui.REMOVE-COMMANDS", false);
+                plugin.droneManager.runCommands(player, playerConnect, file, "gui.REMOVE-COMMANDS", false);
                 playerConnect.stopDrone();
                 playerConnect.saveDrone(droneHolder);
                 playerConnect.save();
             } else if (e.getClick().equals(ClickType.MIDDLE)) {
-                new DroneMenu(BattleDrones.call.getPlayerMenu(player), drone).open();
+                new DroneMenu(plugin.getPlayerMenu(player), drone).open();
             }
         } else {
-            BattleDrones.call.droneManager.runCommands(player, playerConnect, file, "gui.PERMISSION", true);
+            plugin.droneManager.runCommands(player, playerConnect, file, "gui.PERMISSION", true);
         }
     }
 
-    public void shopGUI(int slot, Player player, String uuid, PlayerConnect playerConnect, FileConfiguration file, String drone, String permission) {
+    public void shopGUI(final int slot, final Player player, final String uuid, final PlayerConnect playerConnect, final FileConfiguration file, final String drone, final String permission) {
         if (player.hasPermission("battledrones.shop." + permission)) {
-            final DroneHolder droneHolder = BattleDrones.call.getDroneHolder(uuid, drone);
+            final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
             if (droneHolder.getUnlocked() != 1) {
                 final long coins = playerConnect.getCoins();
                 final long cost = file.getLong(slot + ".COST");
-                if (!BattleDrones.call.config.get.getBoolean("vault") && coins >= cost ||
-                        BattleDrones.call.config.get.getBoolean("vault") &&
-                                BattleDrones.call.getEconomy() != null &&
-                                BattleDrones.call.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
-                    if (!BattleDrones.call.config.get.getBoolean("vault")) {
+                if (!plugin.config.get.getBoolean("vault") && coins >= cost ||
+                        plugin.config.get.getBoolean("vault") &&
+                                plugin.getEconomy() != null &&
+                                plugin.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
+                    if (!plugin.config.get.getBoolean("vault")) {
                         playerConnect.setCoins(coins - cost);
                     }
                     droneHolder.setUnlocked(1);
-                    droneHolder.setHealth(BattleDrones.call.droneFiles.get(drone).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
+                    droneHolder.setHealth(plugin.droneFiles.get(drone).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
                     droneHolder.save();
                     for (String command : file.getStringList(slot + ".SHOP-COMMANDS.BOUGHT")) {
-                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 } else {
                     for (String command : file.getStringList(slot + ".SHOP-COMMANDS.COINS")) {
-                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
             } else {
                 for (String command : file.getStringList(slot + ".SHOP-COMMANDS.HAVE")) {
-                    BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                 }
             }
         } else {
             for (String command : file.getStringList(slot + ".SHOP-COMMANDS.PERMISSION")) {
-                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()));
+                plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
             }
         }
     }

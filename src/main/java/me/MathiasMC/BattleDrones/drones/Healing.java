@@ -10,6 +10,8 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 public class Healing {
 
     private final BattleDrones plugin;
@@ -43,26 +45,20 @@ public class Healing {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
                 if (droneHolder.getAmmo() > 0) {
-                    double health = target.getHealth();
-                    double maxHealth = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                    final double health = target.getHealth();
+                    final double maxHealth = Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
                     final Location location = armorStand.getEyeLocation();
                     final Location targetLocation = target.getEyeLocation();
                     if (armorStand.hasLineOfSight(target) && health < maxHealth && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
-                        double add = plugin.randomDouble(healing.getDouble(path + "min"), healing.getDouble(path + "max"));
-                        if (health + add > maxHealth) {
-                            target.setHealth(maxHealth);
-                        } else {
-                            target.setHealth(health + add);
-                        }
+                        final double add = plugin.randomDouble(healing.getDouble(path + "min"), healing.getDouble(path + "max"));
+                        target.setHealth(Math.min(health + add, maxHealth));
                         if (customParticle != null) {
                             final Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
-                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                            plugin.particleManager.line(particleType, armorstand, targetLocation, armorstand.distance(targetLocation), space, r, g, b, amount, size);
-                            }, delay);
+                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.particleManager.line(particleType, armorstand, targetLocation, armorstand.distance(targetLocation), space, r, g, b, amount, size), delay);
                         }
-                        BattleDrones.call.droneManager.checkAmmo(healing, path, droneHolder.getAmmo(), player.getName());
-                        BattleDrones.call.droneManager.checkShot(target, healing, location, path, "run");
-                        BattleDrones.call.droneManager.takeAmmo(playerConnect, droneHolder, healing, path, player.getName());
+                        plugin.droneManager.checkAmmo(healing, path, droneHolder.getAmmo(), player.getName());
+                        plugin.droneManager.checkShot(player, target, healing, location, path, "run");
+                        plugin.droneManager.takeAmmo(playerConnect, droneHolder, healing, path, player.getName());
                     }
                 }
                 playerConnect.setRegen(false);

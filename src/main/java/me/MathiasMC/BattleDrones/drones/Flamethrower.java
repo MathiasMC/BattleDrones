@@ -50,10 +50,10 @@ public class Flamethrower {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
                     if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
-                        line(location.add(0, 0.4, 0), targetLocation, target, rocket, path, customParticle, delay, size, amount, distance, space, r, g, b, yOffset, particleType);
-                        BattleDrones.call.droneManager.checkAmmo(rocket, path, droneHolder.getAmmo(), player.getName());
-                        BattleDrones.call.droneManager.checkShot(target, rocket, location, path, "run");
-                        BattleDrones.call.droneManager.takeAmmo(playerConnect, droneHolder, rocket, path, player.getName());
+                        line(location.add(0, 0.4, 0), targetLocation, player, target, rocket, path, customParticle, delay, size, amount, distance, space, r, g, b, yOffset, particleType);
+                        plugin.droneManager.checkAmmo(rocket, path, droneHolder.getAmmo(), player.getName());
+                        plugin.droneManager.checkShot(player, target, rocket, location, path, "run");
+                        plugin.droneManager.takeAmmo(playerConnect, droneHolder, rocket, path, player.getName());
 
                     }
                 }
@@ -64,17 +64,21 @@ public class Flamethrower {
         }, 0, rocket.getLong(path + "cooldown")).getTaskId();
     }
 
-    private void line(Location start, Location end, LivingEntity target, FileConfiguration file, String path
-            , String customParticle, int delay, int size, int amount, double distance, double space, int r, int g, int b, double yOffset, String particleType) {
+    private void line(final Location start, final Location end, final Player player, final LivingEntity target, final FileConfiguration file, final String path
+            , final String customParticle, final int delay, final int size, final int amount, final double distance, final double space, final int r, final int g, final int b, final double yOffset, final String particleType) {
+        final World world = start.getWorld();
+        if (world == null) {
+            return;
+        }
         new BukkitRunnable() {
             final Vector p1 = start.toVector();
             final Vector vector = end.toVector().clone().subtract(p1).normalize().multiply(file.getDouble(path + "projectile-space"));
             int timer = 0;
-            final World world = start.getWorld();
             final double damage = plugin.randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max"));
             final double radius = file.getDouble(path + "projectile-radius");
             final double chance = file.getDouble(path + "setfire-chance");
             final int burnTime = file.getInt(path + "burning-time");
+
             @Override
             public void run() {
                 final Location location = p1.toLocation(world);
@@ -85,6 +89,9 @@ public class Flamethrower {
                     }
                     target.damage(damage);
                     this.cancel();
+                    if (target.isDead()) {
+                        plugin.droneManager.checkShot(player, target, file, location, path, "killed");
+                    }
                 }
                 if (timer > 8 * 20) {
                     this.cancel();
@@ -92,8 +99,8 @@ public class Flamethrower {
                 if (customParticle != null) {
                     location.add(0, yOffset, 0);
                     plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                        plugin.particleManager.line(particleType, location, start, distance, space , r, g, b, amount, size);
-                        }, delay);
+                        plugin.particleManager.line(particleType, location, start, distance, space, r, g, b, amount, size);
+                    }, delay);
                 }
                 timer++;
                 p1.add(vector);

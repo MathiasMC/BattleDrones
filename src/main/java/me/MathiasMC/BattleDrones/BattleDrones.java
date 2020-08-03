@@ -209,44 +209,44 @@ public class BattleDrones extends JavaPlugin {
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
 
     public Economy getEconomy() {
         return econ;
     }
 
-    public String replacePlaceholders(Player player, String message) {
+    public String replacePlaceholders(final Player player, String message) {
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
         }
         return message;
     }
 
-    public void load(String uuid) {
+    public void load(final String uuid) {
         PlayerConnect playerConnect = new PlayerConnect(uuid);
         this.playerConnect.put(uuid, playerConnect);
     }
 
-    public void loadDroneHolder(String uuid, String drone) {
+    public void loadDroneHolder(final String uuid, final String drone) {
         if (!this.droneHolder.containsKey(uuid)) {
             this.droneHolder.put(uuid, new HashMap<>());
         }
-        HashMap<String, DroneHolder> map = this.droneHolder.get(uuid);
+        final HashMap<String, DroneHolder> map = this.droneHolder.get(uuid);
         if (!map.containsKey(drone)) {
             map.put(drone, new DroneHolder(uuid, drone));
             this.droneHolder.put(uuid, map);
         }
     }
 
-    public void unload(String uuid) {
+    public void unload(final String uuid) {
         PlayerConnect playerConnect = this.playerConnect.remove(uuid);
         if (playerConnect != null) {
             playerConnect.save();
         }
     }
 
-    public void unloadDroneHolder(String uuid) {
+    public void unloadDroneHolder(final String uuid) {
         if (this.droneHolder.containsKey(uuid)) {
             for (String drone : this.droneHolder.get(uuid).keySet()) {
                 this.droneHolder.get(uuid).get(drone).save();
@@ -255,15 +255,15 @@ public class BattleDrones extends JavaPlugin {
         this.droneHolder.remove(uuid);
     }
 
-    public PlayerConnect get(String uuid) {
+    public PlayerConnect get(final String uuid) {
         return playerConnect.get(uuid);
     }
 
-    public DroneHolder getDroneHolder(String uuid, String drone) {
+    public DroneHolder getDroneHolder(final String uuid, final String drone) {
         return droneHolder.get(uuid).get(drone);
     }
 
-    public HashMap<String, DroneHolder> getDroneHolderUUID(String uuid) {
+    public HashMap<String, DroneHolder> getDroneHolderUUID(final String uuid) {
         return droneHolder.get(uuid);
     }
 
@@ -275,7 +275,7 @@ public class BattleDrones extends JavaPlugin {
         return droneHolder.keySet();
     }
 
-    public boolean isInt(String s) {
+    public boolean isInt(final String s) {
         try {
             Integer.parseInt(s);
         } catch(NumberFormatException e) {
@@ -284,7 +284,7 @@ public class BattleDrones extends JavaPlugin {
         return true;
     }
 
-    public boolean isFloat(String s) {
+    public boolean isFloat(final String s) {
         try {
             Float.parseFloat(s);
         } catch (NumberFormatException e) {
@@ -301,12 +301,12 @@ public class BattleDrones extends JavaPlugin {
         return new Random().nextFloat();
     }
 
-    public boolean getEntityLook(Player player, Entity entity) {
+    public boolean getEntityLook(final Player player, final Entity entity) {
         final Location location = player.getEyeLocation();
         return entity.getLocation().add(0, 1, 0).toVector().subtract(location.toVector()).normalize().dot(location.getDirection()) > 0.95D;
     }
 
-    public Menu getPlayerMenu(Player player) {
+    public Menu getPlayerMenu(final Player player) {
         Menu playerMenu;
         if (!this.playerMenu.containsKey(player)) {
             playerMenu = new Menu(player);
@@ -317,7 +317,7 @@ public class BattleDrones extends JavaPlugin {
         }
     }
 
-    public ItemStack getItemStack(String bb, int amount) {
+    public ItemStack getItemStack(final String bb, final int amount) {
         try {
             return new ItemStack(Material.getMaterial(bb), amount);
         } catch (Exception e) {
@@ -325,7 +325,7 @@ public class BattleDrones extends JavaPlugin {
         }
     }
 
-    public boolean isString(String text) {
+    public boolean isString(final String text) {
         return text.matches("^[a-zA-Z]*$");
     }
 
@@ -347,12 +347,12 @@ public class BattleDrones extends JavaPlugin {
         textUtils.info("Loaded ( " + config.get.getConfigurationSection("heads").getKeys(false).size() + " ) heads");
     }
 
-    public ItemStack setTexture(String texture) {
-        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
-        SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
+    public ItemStack setTexture(final String texture) {
+        final ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
+        final SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
+        final GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
         gameProfile.getProperties().put("textures", new Property("textures", texture));
-        Field profileField;
+        final Field profileField;
         try {
             profileField = itemMeta.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
@@ -364,7 +364,7 @@ public class BattleDrones extends JavaPlugin {
         return itemStack;
     }
 
-    public void copy(String filename, File file) {
+    public void copy(final String filename, final File file) {
         try {
             ByteStreams.copy(getResource(filename), new FileOutputStream(file));
         } catch (IOException exception) {

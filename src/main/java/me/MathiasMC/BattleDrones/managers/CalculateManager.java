@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 public class CalculateManager {
 
@@ -25,15 +26,15 @@ public class CalculateManager {
         this.plugin = plugin;
     }
 
-    public void damage(LivingEntity livingEntity, double damage) {
-        PotionEffect effect = livingEntity.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-        int resistance = effect == null ? 0 : effect.getAmplifier();
+    public void damage(final LivingEntity livingEntity, final double damage) {
+        final PotionEffect effect = livingEntity.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+        final int resistance = effect == null ? 0 : effect.getAmplifier();
         int e = 0;
         if (livingEntity instanceof Player) {
             e = getEnchant(((Player) livingEntity).getInventory());
         }
-        AttributeInstance armor = livingEntity.getAttribute(Attribute.GENERIC_ARMOR);
-        AttributeInstance toughness = livingEntity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+        final AttributeInstance armor = livingEntity.getAttribute(Attribute.GENERIC_ARMOR);
+        final AttributeInstance toughness = livingEntity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
         double armorValue = 0;
         if (armor != null) {
             armorValue = armor.getValue();
@@ -42,38 +43,38 @@ public class CalculateManager {
         if (toughness != null) {
             toughnessValue = toughness.getValue();
         }
-        double dialed = dialed(damage, armorValue, toughnessValue, resistance, e);
+        final double dialed = dialed(damage, armorValue, toughnessValue, resistance, e);
         livingEntity.damage(dialed);
     }
 
-    private int getEnchant(PlayerInventory inv) {
-        ItemStack helm = inv.getHelmet();
-        ItemStack chest = inv.getChestplate();
-        ItemStack legs = inv.getLeggings();
-        ItemStack boot = inv.getBoots();
+    private int getEnchant(final PlayerInventory inv) {
+        final ItemStack helm = inv.getHelmet();
+        final ItemStack chest = inv.getChestplate();
+        final ItemStack legs = inv.getLeggings();
+        final ItemStack boot = inv.getBoots();
         return (helm != null ? helm.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0) +
                 (chest != null ? chest.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0) +
                 (legs != null ? legs.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0) +
                 (boot != null ? boot.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0);
     }
 
-    public double dialed(double damage, double armor, double toughness, int resistance, int enchant) {
+    public double dialed(final double damage, final double armor, final double toughness, final int resistance, final int enchant) {
         return damage * (1 - Math.min(20, Math.max(armor / 5, armor - damage / (2 + toughness / 4))) / 25) * (1 - (resistance * 0.2)) * (1 - (Math.min(20.0, enchant) / 25));
     }
 
-    public String getFirerate(double firerate) {
-        DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(new Locale("en", "UK"));
+    public String getFirerate(final double firerate) {
+        final DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(new Locale("en", "UK"));
         decimalFormat.applyPattern("#.##");
         return decimalFormat.format(20 / firerate);
     }
 
-    public String getBar(int current, int max, String path, String extra) {
-        char xp = (char) Integer.parseInt(plugin.config.get.getString(path + extra + "." + path + ".symbol").substring(2), 16);
-        char none = (char) Integer.parseInt(plugin.config.get.getString(path + extra + ".none.symbol").substring(2), 16);
-        ChatColor xpColor = getChatColor(plugin.config.get.getString(path + extra + "." + path + ".color"));
-        ChatColor noneColor = getChatColor(plugin.config.get.getString(path + extra + ".none.color"));
-        int bars = plugin.config.get.getInt(path + extra + ".amount");
-        int progressBars = (bars * getPercent(current, max) / 100);
+    public String getBar(final int current, final int max, final String path, final String extra) {
+        final char xp = (char) Integer.parseInt(Objects.requireNonNull(plugin.config.get.getString(path + extra + "." + path + ".symbol")).substring(2), 16);
+        final char none = (char) Integer.parseInt(Objects.requireNonNull(plugin.config.get.getString(path + extra + ".none.symbol")).substring(2), 16);
+        final ChatColor xpColor = getChatColor(Objects.requireNonNull(plugin.config.get.getString(path + extra + "." + path + ".color")));
+        final ChatColor noneColor = getChatColor(Objects.requireNonNull(plugin.config.get.getString(path + extra + ".none.color")));
+        final int bars = plugin.config.get.getInt(path + extra + ".amount");
+        final int progressBars = (bars * getPercent(current, max) / 100);
         try {
             return Strings.repeat("" + xpColor + xp, progressBars) + Strings.repeat("" + noneColor + none, bars - progressBars);
         } catch (Exception exception) {
@@ -81,20 +82,20 @@ public class CalculateManager {
         }
     }
 
-    public int getPercent(int current, int max) {
+    public int getPercent(final int current, final int max) {
         if (current > max) {
             return 100;
         }
-        double percent = ((double) current / (double) max) * 100;
+        final double percent = ((double) current / (double) max) * 100;
         return (int) Math.round(percent);
     }
 
-    public int getProcentFromDouble(double current) {
-        double percent = current * 100;
+    public int getProcentFromDouble(final double current) {
+        final double percent = current * 100;
         return (int) Math.round(percent);
     }
 
-    public ChatColor getChatColor(String colorCode){
+    public ChatColor getChatColor(final String colorCode){
         switch (colorCode){
             case "&0" : return ChatColor.BLACK;
             case "&1" : return ChatColor.DARK_BLUE;

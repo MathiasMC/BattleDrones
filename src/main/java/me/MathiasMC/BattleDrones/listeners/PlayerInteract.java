@@ -3,7 +3,6 @@ package me.MathiasMC.BattleDrones.listeners;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -45,7 +44,7 @@ public class PlayerInteract implements Listener {
                                 hitCommands(armorStand, plugin.droneFiles.get(playerConnect.getActive()), playerConnect.getGroup(), droneHolder.getLevel());
                                 return;
                             }
-                            droneDeath(plugin.getServer().getPlayer(UUID.fromString(key)), playerConnect.getActive(), playerConnect, droneHolder);
+                            droneDeath(plugin.getServer().getPlayer(UUID.fromString(key)), playerConnect, droneHolder);
                         }
                     }
                 }
@@ -54,9 +53,9 @@ public class PlayerInteract implements Listener {
         }
     }
 
-    private void hitCommands(ArmorStand armorStand, FileConfiguration file, String group, long drone_level) {
+    private void hitCommands(final ArmorStand armorStand, final FileConfiguration file, final String group, final long drone_level) {
         for (String command : file.getStringList(group+ "." + drone_level + ".hit-commands")) {
-            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
+            plugin.getServer().dispatchCommand(plugin.consoleSender, command
                     .replace("{world}", armorStand.getWorld().getName())
                     .replace("{x}", String.valueOf(armorStand.getLocation().getBlockX()))
                     .replace("{y}", String.valueOf(armorStand.getLocation().getBlockY()))
@@ -64,17 +63,17 @@ public class PlayerInteract implements Listener {
         }
     }
 
-    private void droneDeath(Player target, String type, PlayerConnect playerConnect, DroneHolder droneHolder) {
+    private void droneDeath(final Player target, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
         if (target != null) {
-            for (String command : BattleDrones.call.config.get.getStringList("dead.player")) {
-                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", target.getName()));
+            for (String command : plugin.config.get.getStringList("dead.player")) {
+                plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", target.getName()));
             }
         }
-        droneHolder.setUnlocked(BattleDrones.call.config.get.getInt("dead.unlocked"));
-        if (BattleDrones.call.config.get.getLong("dead.set-level") != 0) {
-            droneHolder.setLevel(BattleDrones.call.config.get.getInt("dead.set-level"));
+        droneHolder.setUnlocked(plugin.config.get.getInt("dead.unlocked"));
+        if (plugin.config.get.getLong("dead.set-level") != 0) {
+            droneHolder.setLevel(plugin.config.get.getInt("dead.set-level"));
         }
-        if (!BattleDrones.call.config.get.getBoolean("dead.ammo")) {
+        if (!plugin.config.get.getBoolean("dead.ammo")) {
             droneHolder.setAmmo(0);
         }
         playerConnect.stopDrone();

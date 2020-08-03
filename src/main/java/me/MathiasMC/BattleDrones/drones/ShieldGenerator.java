@@ -4,6 +4,7 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Monster;
@@ -32,7 +33,7 @@ public class ShieldGenerator {
         final String path = group + "." + droneHolder.getLevel() + ".";
         final FileConfiguration particleFile = plugin.particles.get;
         if (shield_generator.contains(path + "particle.1")) {
-            String customParticle = shield_generator.getString(path + "particle.1");
+            final String customParticle = shield_generator.getString(path + "particle.1");
             if (particleFile.contains(customParticle)) {
                 final ArmorStand armorStand = playerConnect.head;
                 final int delay = particleFile.getInt(customParticle + ".delay");
@@ -75,7 +76,7 @@ public class ShieldGenerator {
                                 shieldGeneratorRun(shield_generator, path + "run.monster", playerConnect.head.getLocation(), e.getEntity().getName(), String.valueOf(plugin.calculateManager.getProcentFromDouble(randomReduce)));
                             }
                             if (shield_generator.contains(path + "particle.2")) {
-                                String customParticle = shield_generator.getString(path + "particle.2");
+                                final String customParticle = shield_generator.getString(path + "particle.2");
                                 final FileConfiguration particleFile = plugin.particles.get;
                                 if (particleFile.contains(customParticle)) {
                                     final int delay = particleFile.getInt(customParticle + ".delay");
@@ -102,14 +103,18 @@ public class ShieldGenerator {
         }
     }
 
-    private void shieldGeneratorRun(FileConfiguration file, String path, Location location, String targetName, String reduce) {
-        final String world = location.getWorld().getName();
+    private void shieldGeneratorRun(final FileConfiguration file, final String path, final Location location, final String targetName, final String reduce) {
+        final World world = location.getWorld();
+        if (world == null) {
+            return;
+        }
+        final String worldName = world.getName();
         final String x = String.valueOf(location.getBlockX());
         final String y = String.valueOf(location.getBlockX());
         final String z = String.valueOf(location.getBlockX());
         for (String command : file.getStringList(path)) {
-            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
-                    .replace("{world}", world)
+            plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                    .replace("{world}", worldName)
                     .replace("{x}", x)
                     .replace("{y}", y)
                     .replace("{z}", z)

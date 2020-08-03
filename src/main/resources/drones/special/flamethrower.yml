@@ -113,6 +113,15 @@ default:
       animal:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
 
+    # This section is run every time the drone has killed the target
+    killed:
+      player:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+      monster:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+      animal:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+
     # Upgrade commands
     commands:
       levelup:
@@ -160,6 +169,13 @@ default:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
       animal:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    killed:
+      player:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+      monster:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+      animal:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
     commands:
       levelup:
         - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'
@@ -205,6 +221,13 @@ default:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
       animal:
         - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    killed:
+      player:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+      monster:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+      animal:
+        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
     commands:
       levelup:
         - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'

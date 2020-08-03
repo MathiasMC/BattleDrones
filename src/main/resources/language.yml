@@ -447,3 +447,75 @@ console:
         - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <1-64>'
       message:
         - '&7[&dBattleDrones&7] &aAdded &6{amount} {drone} &aammo to &6{target}'
+
+# This section is for placeholders for entity names (Remove section "translate" to just use default names)
+translate:
+  BAT: Bat
+  BEE: Bee
+  BLAZE: Blaze
+  CAT: Cat
+  CAVE_SPIDER: Cave spider
+  CHICKEN: Chicken
+  COD: Cod
+  COW: Cow
+  CREEPER: Creeper
+  DOLPHIN: Dolphin
+  DONKEY: Donkey
+  DROWNED: Drowned
+  ELDER_GUARDIAN: Elder guardian
+  ENDER_DRAGON: Ender dragon
+  ENDERMAN: Enderman
+  ENDERMITE: Endermite
+  EVOKER: Evoker
+  FOX: Fox
+  GHAST: Ghast
+  GIANT: Giant
+  GUARDIAN: Guardian
+  HOGLIN: Hoglin
+  HORSE: Horse
+  HUSK: Husk
+  ILLUSIONER: Illusioner
+  IRON_GOLEM: Iron golem
+  LLAMA: Llama
+  MAGMA_CUBE: Magma cube
+  MULE: Mule
+  MUSHROOM_COW: Mooshroom
+  OCELOT: Ocelot
+  PANDA: Panda
+  PARROT: Parrot
+  PHANTOM: Phantom
+  PIG: Pig
+  PIGLIN: Piglin
+  PILLAGER: Pillager
+  POLAR_BEAR: Polar bear
+  PUFFERFISH: Pufferfish
+  RABBIT: Rabbit
+  RAVAGER: Ravager
+  SALMON: Salmon
+  SHEEP: Sheep
+  SHULKER: Shulker
+  SILVERFISH: Silverfish
+  SKELETON_HORSE: Skeleton horse
+  SKELETON: Skeleton
+  SLIME: Slime
+  SNOWMAN: Snow golem
+  SPIDER: Spider
+  SQUID: Squid
+  STRAY: Stray
+  STRIDER: Strider
+  TRADER_LLAMA: Trader llama
+  TROPICAL_FISH: Tropical fish
+  TURTLE: Turtle
+  VEX: Vex
+  VILLAGER: Villager
+  VINDICATOR: Vindicator
+  WANDERING_TRADER: Wandering trader
+  WITCH: Witch
+  WITHER_SKELETON: Wither skeleton
+  WITHER: Wither
+  WOLF: Wolf
+  ZOGLIN: Zoglin
+  ZOMBIE_HORSE: Zombie horse
+  ZOMBIE_VILLAGER: Zombie villager
+  ZOMBIE: Zombie
+  ZOMBIFIED_PIGLIN: Zombified piglin

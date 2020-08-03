@@ -31,12 +31,12 @@ public class PlayerConnect {
         this.group = data[2];
     }
 
-    public void setActive(String set) {
+    public void setActive(final String set) {
         this.active = set;
         BattleDrones.call.drone_amount.add(uuid);
     }
 
-    public void setCoins(long set) {
+    public void setCoins(final long set) {
         this.coins = set;
     }
 
@@ -44,7 +44,7 @@ public class PlayerConnect {
         this.group = set;
     }
 
-    public void setRegen(boolean set) {
+    public void setRegen(final boolean set) {
         this.regen = set;
     }
 

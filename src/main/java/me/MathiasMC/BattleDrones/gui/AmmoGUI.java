@@ -53,12 +53,16 @@ public class AmmoGUI extends GUI {
         }
         if (e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
             final ItemStack itemStack = e.getCurrentItem();
-            if (itemStack == null) { return; }
+            if (itemStack == null) {
+                return;
+            }
             final ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemMeta == null) { return; }
+            if (itemMeta == null) {
+                return;
+            }
             final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
             final ArrayList<String> lores = new ArrayList<>();
-            FileConfiguration droneFile = plugin.droneFiles.get(drone);
+            final FileConfiguration droneFile = plugin.droneFiles.get(drone);
             final String ammoName = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(droneFile.getString("gui.AMMO.NAME"))));
             for (String lore : droneFile.getStringList("gui.AMMO.LORES")) {
                 lores.add(ChatColor.translateAlternateColorCodes('&', lore));
@@ -95,7 +99,7 @@ public class AmmoGUI extends GUI {
         plugin.guiManager.setGUIItemStack(inventory, file, player);
         final FileConfiguration droneFile = plugin.droneFiles.get(drone);
         final String material = droneFile.getString("gui.AMMO.MATERIAL");
-        ItemStack itemStack = plugin.getItemStack(material, 64);
+        final ItemStack itemStack = plugin.getItemStack(material, 64);
         if (itemStack == null) {
             plugin.textUtils.gui(player, "ammo", material);
             return;
@@ -119,7 +123,7 @@ public class AmmoGUI extends GUI {
                     inventory.setItem(i, itemStack.clone());
                     ammo = ammo - 64;
                 } else if (ammo > 0) {
-                    ItemStack itemStack1 = itemStack.clone();
+                    final ItemStack itemStack1 = itemStack.clone();
                     itemStack1.setAmount(ammo);
                     inventory.setItem(i, itemStack1);
                     ammo = 0;

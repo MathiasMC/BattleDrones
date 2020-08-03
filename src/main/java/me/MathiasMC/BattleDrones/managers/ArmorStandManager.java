@@ -22,7 +22,7 @@ public class ArmorStandManager {
         this.plugin = plugin;
     }
 
-    public ArmorStand getArmorStand(Location location, boolean visible, boolean mini) {
+    public ArmorStand getArmorStand(final Location location, final boolean visible, final boolean mini) {
         final ArmorStand as = Objects.requireNonNull(location.getWorld()).spawn(location, ArmorStand.class);
         as.setVisible(visible);
         as.setSmall(mini);
@@ -34,25 +34,25 @@ public class ArmorStandManager {
         return as;
     }
 
-    public void setCustomName(PlayerConnect playerConnect, long droneLevel, String group, FileConfiguration file, String message, Player player) {
-        final String text = ChatColor.translateAlternateColorCodes('&', file.getString(group + "." + droneLevel + ".messages.text." + message).replace("{name}", player.getName()));
+    public void setCustomName(final PlayerConnect playerConnect, final long droneLevel, final String group, final FileConfiguration file, final String message, final Player player) {
+        final String text = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.text." + message)).replace("{name}", player.getName()));
         final ArmorStand armorStandText = playerConnect.head;
-        if (!armorStandText.getCustomName().equalsIgnoreCase(text)) {
+        if (!Objects.requireNonNull(armorStandText.getCustomName()).equalsIgnoreCase(text)) {
             armorStandText.setCustomName(text);
         }
-        final String name = ChatColor.translateAlternateColorCodes('&', file.getString(group + "." + droneLevel + ".messages.name." + message).replace("{name}", player.getName()));
+        final String name = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.name." + message)).replace("{name}", player.getName()));
         final ArmorStand armorStandName = playerConnect.name;
-        if (!armorStandName.getCustomName().equalsIgnoreCase(name)) {
+        if (!Objects.requireNonNull(armorStandName.getCustomName()).equalsIgnoreCase(name)) {
             armorStandName.setCustomName(name);
         }
     }
 
-    public void lookAT(ArmorStand armorStand, Location location) {
-        Location direction = location.subtract(armorStand.getLocation());
+    public void lookAT(final ArmorStand armorStand, final Location location) {
+        final Location direction = location.subtract(armorStand.getLocation());
         armorStand.setHeadPose(new EulerAngle(Math.atan2(Math.sqrt(direction.getX()*direction.getX() + direction.getZ()*direction.getZ()), direction.getY()) - Math.PI / 2, 0, 0));
     }
 
-    public ArrayList<LivingEntity> getEntityAround(Entity entity, double radius, int monsters, int animal, int player, List<String> excludePlayers, boolean reverseExclude) {
+    public ArrayList<LivingEntity> getEntityAround(final Entity entity, final double radius, final int monsters, final int animal, final int player, final List<String> excludePlayers, final boolean reverseExclude) {
         if (!plugin.locationSupport.inWorldGuardRegion(entity)) {
             return new ArrayList<>();
         }
@@ -99,11 +99,11 @@ public class ArmorStandManager {
         return list;
     }
 
-    public LivingEntity getClose(Entity entity, double radius, int monsters, int animal, int player, List<String> excludePlayers, boolean reverseExclude, boolean lowHP) {
+    public LivingEntity getClose(final Entity entity, final double radius, final int monsters, final int animal, final int player, final List<String> excludePlayers, final boolean reverseExclude, final boolean lowHP) {
         double max = Double.MAX_VALUE;
         LivingEntity livingEntity = null;
         final LivingEntity living = (LivingEntity) entity;
-        if (lowHP && living.getHealth() < living.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
+        if (lowHP && living.getHealth() < Objects.requireNonNull(living.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue()) {
             return (LivingEntity) entity;
         }
         final Location entityLocation = entity.getLocation();
@@ -114,7 +114,7 @@ public class ArmorStandManager {
                     if (!lowHP) {
                         livingEntity = key;
                     } else {
-                        if (key.getHealth() < key.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
+                        if (key.getHealth() < Objects.requireNonNull(key.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue()) {
                             livingEntity = key;
                         }
                     }
@@ -123,11 +123,15 @@ public class ArmorStandManager {
         return livingEntity;
     }
 
-    public boolean hasBlockSight(Location start, Location end) {
+    public boolean hasBlockSight(final Location start, final Location end) {
         if (plugin.config.get.getBoolean("better-block-check")) {
-            BlockIterator block = new BlockIterator(start.getWorld(), start.toVector(), new Vector(end.getBlockX() - start.getBlockX(), end.getBlockY() - start.getBlockY(), end.getBlockZ() - start.getBlockZ()), 0, (int) Math.floor(start.distanceSquared(end)));
+            final World world = start.getWorld();
+            if (world == null) {
+                return false;
+            }
+            final BlockIterator block = new BlockIterator(world, start.toVector(), new Vector(end.getBlockX() - start.getBlockX(), end.getBlockY() - start.getBlockY(), end.getBlockZ() - start.getBlockZ()), 0, (int) Math.floor(start.distanceSquared(end)));
             while (block.hasNext()) {
-                Material material = block.next().getType();
+                final Material material = block.next().getType();
                 if (material.equals(Material.LAVA) || material.equals(Material.WATER)) {
                     return false;
                 }

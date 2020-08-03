@@ -43,8 +43,8 @@ public class DroneMenu extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (file.contains(String.valueOf(slot))) {
-            PlayerConnect playerConnect = plugin.get(uuid);
-            DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
+            final PlayerConnect playerConnect = plugin.get(uuid);
+            final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
             final FileConfiguration droneFile = plugin.droneFiles.get(drone);
             boolean updateAI = false;
             if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
@@ -88,11 +88,11 @@ public class DroneMenu extends GUI {
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_AMMO")) {
                 new AmmoGUI(plugin.getPlayerMenu(player), drone).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_UPGRADE")) {
-                FileConfiguration file = plugin.droneFiles.get(drone);
-                String path = playerConnect.getGroup() + "." + (droneHolder.getLevel() + 1);
+                final FileConfiguration file = plugin.droneFiles.get(drone);
+                final String path = playerConnect.getGroup() + "." + (droneHolder.getLevel() + 1);
                 if (file.contains(path)) {
-                    long coins = playerConnect.getCoins();
-                    long cost = file.getLong(path + ".cost");
+                    final long coins = playerConnect.getCoins();
+                    final long cost = file.getLong(path + ".cost");
                     if (!plugin.config.get.getBoolean("vault") && coins >= cost ||
                             plugin.config.get.getBoolean("vault") &&
                                     plugin.getEconomy() != null &&
@@ -134,7 +134,7 @@ public class DroneMenu extends GUI {
 
     @Override
     public void setItems() {
-        DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
+        final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
         setPlayerGUI(plugin.droneFiles.get(drone),
                 plugin.guiFiles.get(drone),
                 plugin.get(playerMenu.getUuid()).getGroup(),
@@ -149,11 +149,10 @@ public class DroneMenu extends GUI {
         );
     }
 
-    public void setPlayerGUI(FileConfiguration file, FileConfiguration gui, String group, Inventory inventory, int health, int monsters, int animals, int players, int drone_level, int drone_ammo, int WhitelistSize) {
+    public void setPlayerGUI(final FileConfiguration file, final FileConfiguration gui, final String group, final Inventory inventory, final int health, final int monsters, final int animals, final int players, final int drone_level, final int drone_ammo, final int WhitelistSize) {
         final String path = group + "." + drone_level + ".";
         final String path_next = group + "." + (drone_level + 1);
         final String level = String.valueOf(drone_level);
-        final int ammo = drone_ammo;
         final String max_ammo_slots = file.getString(path + "max-ammo-slots");
         final String min_max = file.getString(path + "min") + "-" + file.getString(path + "max");
         final String range = file.getString(path + "range");
@@ -294,9 +293,9 @@ public class DroneMenu extends GUI {
                         .replace("{max_ammo_slots}", max_ammo_slots)
                         .replace("{level}", level)
                         .replace("{cost}", cost_next)
-                        .replace("{ammo}", String.valueOf(ammo))
-                        .replace("{ammo_bar}", plugin.calculateManager.getBar(ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
-                        .replace("{ammo_percentage}", String.valueOf((plugin.calculateManager.getPercent(ammo, file.getInt(path + "max-ammo-slots") * 64))))
+                        .replace("{ammo}", String.valueOf(drone_ammo))
+                        .replace("{ammo_bar}", plugin.calculateManager.getBar(drone_ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
+                        .replace("{ammo_percentage}", String.valueOf((plugin.calculateManager.getPercent(drone_ammo, file.getInt(path + "max-ammo-slots") * 64))))
                         .replace("{min_max}", min_max)
                         .replace("{shield_generator_damage}", shield_generator_damage)
                         .replace("{range}", range)
@@ -339,9 +338,9 @@ public class DroneMenu extends GUI {
                             .replace("{max_ammo_slots}", max_ammo_slots)
                             .replace("{level}", level)
                             .replace("{cost}", cost_next)
-                            .replace("{ammo}", String.valueOf(ammo))
-                            .replace("{ammo_bar}", plugin.calculateManager.getBar(ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
-                            .replace("{ammo_percentage}", String.valueOf((plugin.calculateManager.getPercent(ammo, file.getInt(path + "max-ammo-slots") * 64))))
+                            .replace("{ammo}", String.valueOf(drone_ammo))
+                            .replace("{ammo_bar}", plugin.calculateManager.getBar(drone_ammo, file.getInt(path + "max-ammo-slots") * 64, "ammo", ""))
+                            .replace("{ammo_percentage}", String.valueOf((plugin.calculateManager.getPercent(drone_ammo, file.getInt(path + "max-ammo-slots") * 64))))
                             .replace("{min_max}", min_max)
                             .replace("{shield_generator_damage}", shield_generator_damage)
                             .replace("{range}", range)
@@ -390,19 +389,19 @@ public class DroneMenu extends GUI {
         }
     }
 
-    public void setItemStack(Inventory inventory, FileConfiguration file, String path) {
+    public void setItemStack(final Inventory inventory, final FileConfiguration file, final String path) {
         ItemStack itemStack;
         if (!file.contains(path + ".HEAD")) {
             itemStack = plugin.getItemStack(file.getString(path + ".MATERIAL"), file.getInt(path + ".AMOUNT"));
         } else {
             itemStack = plugin.drone_heads.get(file.getString(path + ".HEAD"));
         }
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {
             return;
         }
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(path + ".NAME"))));
-        ArrayList<String> list = new ArrayList<>();
+        final ArrayList<String> list = new ArrayList<>();
         for (String lores : file.getStringList(path + ".LORES")) {
             list.add(ChatColor.translateAlternateColorCodes('&', lores));
         }

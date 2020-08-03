@@ -12,6 +12,7 @@ import org.bukkit.entity.*;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DroneManager {
 
@@ -21,7 +22,7 @@ public class DroneManager {
         this.plugin = plugin;
     }
 
-    public void checkAmmo(FileConfiguration file, String path, long ammo, String name) {
+    public void checkAmmo(final FileConfiguration file, final String path, final long ammo, final String name) {
         final int maxAmmo = file.getInt(path + "max-ammo-slots") * 64;
         final long ammoLeft = Double.valueOf(Math.floor(ammo * (100D / maxAmmo))).longValue();
         if (ammoLeft != 0L) {
@@ -35,24 +36,24 @@ public class DroneManager {
         }
     }
 
-    private void ammoMessage(long ammoLeftProcent, String name) {
-        if (BattleDrones.call.config.get.contains("low-ammo." + ammoLeftProcent)) {
-            for (String command : BattleDrones.call.config.get.getStringList("low-ammo." + ammoLeftProcent)) {
-                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", name));
+    private void ammoMessage(final long ammoLeftProcent, final String name) {
+        if (plugin.config.get.contains("low-ammo." + ammoLeftProcent)) {
+            for (String command : plugin.config.get.getStringList("low-ammo." + ammoLeftProcent)) {
+                plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", name));
             }
         }
     }
 
-    public void checkShot(LivingEntity target, FileConfiguration file, Location location, String path, String type) {
+    public void checkShot(final Player player, final LivingEntity target, final FileConfiguration file, final Location location, final String path, final String type) {
         if (target instanceof Player) {
-            shotCommands(file, path + type + ".player", location, target.getName());
+            shotCommands(file, path + type + ".player", location, player.getName(), target.getName());
         } else if (target instanceof Monster
                 || target instanceof Slime
                 || target instanceof Phantom
                 || target instanceof IronGolem
                 || target instanceof Ghast
                 || target instanceof Shulker) {
-            shotCommands(file, path + type + ".monster", location, target.getName());
+            shotCommands(file, path + type + ".monster", location, player.getName(), target.getName());
         } else if (target instanceof Animals
                 || target instanceof Villager
                 || target instanceof WanderingTrader
@@ -63,11 +64,11 @@ public class DroneManager {
                 || target instanceof Bat
                 || target instanceof Cod
                 || target instanceof Salmon) {
-            shotCommands(file, path + type + ".animal", location, target.getName());
+            shotCommands(file, path + type + ".animal", location, player.getName(), target.getName());
         }
     }
 
-    public void takeAmmo(PlayerConnect playerConnect, DroneHolder droneHolder, FileConfiguration file, String path, String name) {
+    public void takeAmmo(final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final String path, final String name) {
         droneHolder.setAmmo(droneHolder.getAmmo() - 1);
         if (droneHolder.getLeft() > 0) {
             droneHolder.setLeft(droneHolder.getLeft() - 1);
@@ -77,43 +78,48 @@ public class DroneManager {
                 droneHolder.setHealth(droneHolder.getHealth() - 1);
             } else {
                 playerConnect.stopDrone();
-                for (String command : BattleDrones.call.config.get.getStringList("dead.wear")) {
-                    BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", name));
+                for (String command : plugin.config.get.getStringList("dead.wear")) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", name));
                 }
-                droneHolder.setUnlocked(BattleDrones.call.config.get.getInt("dead.unlocked"));
-                if (BattleDrones.call.config.get.getLong("dead.set-level") != 0) {
-                    droneHolder.setLevel(BattleDrones.call.config.get.getInt("dead.set-level"));
+                droneHolder.setUnlocked(plugin.config.get.getInt("dead.unlocked"));
+                if (plugin.config.get.getLong("dead.set-level") != 0) {
+                    droneHolder.setLevel(plugin.config.get.getInt("dead.set-level"));
                 }
-                if (!BattleDrones.call.config.get.getBoolean("dead.ammo")) {
+                if (!plugin.config.get.getBoolean("dead.ammo")) {
                     droneHolder.setAmmo(0);
                 }
             }
         }
     }
 
-    private void shotCommands(FileConfiguration laser, String path, Location location, String targetName) {
+    private void shotCommands(final FileConfiguration laser, final String path, final Location location, final String player, String targetName) {
         final String x = String.valueOf(location.getBlockX());
         final String y = String.valueOf(location.getBlockY());
         final String z = String.valueOf(location.getBlockZ());
-        final String world = location.getWorld().getName();
-        for (String command : laser.getStringList(path)) {
-            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
-                    .replace("{world}", world)
-                    .replace("{x}", x)
-                    .replace("{y}", y)
-                    .replace("{z}", z)
-                    .replace("{target}", targetName));
+        final String world = Objects.requireNonNull(location.getWorld()).getName();
+        final String translate = targetName.toUpperCase().replace(" ", "_");
+        if (plugin.language.get.contains("translate." + translate)) {
+            targetName = String.valueOf(plugin.language.get.getString("translate." + translate));
+        }
+        if (laser.contains(path)) {
+            for (String command : laser.getStringList(path)) {
+                plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                        .replace("{world}", world)
+                        .replace("{x}", x)
+                        .replace("{y}", y)
+                        .replace("{z}", z)
+                        .replace("{player}", player)
+                        .replace("{target}", targetName));
+            }
         }
     }
 
-    public void waitSchedule(String uuid, FileConfiguration file) {
-        BattleDrones.call.drone_players.add(uuid);
-        BattleDrones.call.getServer().getScheduler().runTaskLater(BattleDrones.call, () -> {
-            BattleDrones.call.drone_players.remove(uuid);
-        }, file.getInt("gui.WAIT-SECONDS") * 20);
+    public void waitSchedule(final String uuid, final FileConfiguration file) {
+        plugin.drone_players.add(uuid);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.drone_players.remove(uuid), file.getInt("gui.WAIT-SECONDS") * 20);
     }
 
-    public void wait(Player player, FileConfiguration file) {
+    public void wait(final Player player, final FileConfiguration file) {
         final Location location = player.getLocation();
         final String x = String.valueOf(location.getBlockX());
         final String y = String.valueOf(location.getBlockY());
@@ -121,7 +127,7 @@ public class DroneManager {
         final String world = player.getWorld().getName();
         final String name = player.getName();
         for (String command : file.getStringList("gui.WAIT")) {
-            BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
+            plugin.getServer().dispatchCommand(plugin.consoleSender, command
                     .replace("{player}", name)
                     .replace("{world}", world)
                     .replace("{x}", x)
@@ -131,7 +137,7 @@ public class DroneManager {
         }
     }
 
-    public void runCommands(Player player, PlayerConnect playerConnect, FileConfiguration file, String path, boolean bypass) {
+    public void runCommands(final Player player, final PlayerConnect playerConnect, final FileConfiguration file, final String path, final boolean bypass) {
         if ((!playerConnect.hasActive() && path.equalsIgnoreCase("gui.SPAWN-COMMANDS")) || (playerConnect.hasActive() && path.equalsIgnoreCase("gui.REMOVE-COMMANDS")) || bypass) {
             final Location location = player.getLocation();
             final String x = String.valueOf(location.getBlockX());
@@ -140,7 +146,7 @@ public class DroneManager {
             final String world = player.getWorld().getName();
             final String name = player.getName();
             for (String command : file.getStringList(path)) {
-                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command
+                plugin.getServer().dispatchCommand(plugin.consoleSender, command
                         .replace("{player}", name)
                         .replace("{world}", world)
                         .replace("{x}", x)
@@ -169,14 +175,14 @@ public class DroneManager {
         armorStands.clear();
     }
 
-    public void regen(PlayerConnect playerConnect, DroneHolder droneHolder, FileConfiguration file, long drone_level) {
+    public void regen(final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final long drone_level) {
         final String group = playerConnect.getGroup();
         final String path = group + "." + drone_level + ".";
         final int health = file.getInt(path + "regen.health");
         if (file.getLong(path + "regen.delay") != 0) {
             playerConnect.RegenTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
                 if (playerConnect.canRegen()) {
-                    int add_health = droneHolder.getHealth() + health;
+                    final int add_health = droneHolder.getHealth() + health;
                     if (file.getInt(path + "health") >= add_health) {
                         droneHolder.setHealth(add_health);
                     }
@@ -186,16 +192,16 @@ public class DroneManager {
     }
 
 
-    public void spawnDrone(Player player, String drone, boolean bypass, boolean bypassChecks) {
+    public void spawnDrone(final Player player, final String drone, final boolean bypass, final boolean bypassChecks) {
         if (plugin.locationSupport.inLocation(player)) {
-            String uuid = player.getUniqueId().toString();
-            FileConfiguration file = plugin.droneFiles.get(drone);
+            final String uuid = player.getUniqueId().toString();
+            final FileConfiguration file = plugin.droneFiles.get(drone);
             if (!plugin.drone_players.contains(player.getUniqueId().toString()) || player.hasPermission("battledrones.bypass.activate") || bypassChecks) {
                 plugin.droneManager.waitSchedule(uuid, file);
                 plugin.loadDroneHolder(uuid, drone);
-                DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
+                final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
                 if (droneHolder.getUnlocked() == 1) {
-                    PlayerConnect playerConnect = plugin.get(uuid);
+                    final PlayerConnect playerConnect = plugin.get(uuid);
                     if (plugin.drone_amount.size() < plugin.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount") || bypassChecks) {
                         plugin.droneManager.runCommands(player, playerConnect, file, "gui.SPAWN-COMMANDS", bypass);
                         playerConnect.stopDrone();
@@ -235,7 +241,7 @@ public class DroneManager {
         }
     }
 
-    public void startAI(Player player, PlayerConnect playerConnect, DroneHolder droneHolder, FileConfiguration file, String drone) {
+    public void startAI(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final String drone) {
             if (drone.equalsIgnoreCase("shield_generator")) {
                 plugin.aiManager.defaultAI(player,
                         playerConnect,

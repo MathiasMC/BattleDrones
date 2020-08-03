@@ -20,26 +20,22 @@ public class TextUtils {
         this.prefix = plugin.getDescription().getName();
     }
 
-    public void info(String text) {
+    public void info(final String text) {
         logger.info("[" + prefix + "] " + text);
     }
 
-    public void warning(String text) {
+    public void warning(final String text) {
         logger.warning("[" + prefix + "] " + text);
     }
 
-    public void error(String text) {
+    public void error(final String text) {
         logger.severe("[" + prefix + "] " + text);
     }
 
-    public void debug(String text) {
-        logger.warning("[" + prefix + "] [DEBUG] " + text);
-    }
-
-    public void exception(StackTraceElement[] stackTraceElement, String text) {
+    public void exception(final StackTraceElement[] stackTraceElement, final String text) {
         info("(!) " + prefix + " has being encountered an error, pasting below for support (!)");
-        for (int i = 0; i < stackTraceElement.length; i++) {
-            error(stackTraceElement[i].toString());
+        for (StackTraceElement traceElement : stackTraceElement) {
+            error(traceElement.toString());
         }
         info("Message: " + text);
         info(prefix + " version: " + plugin.getDescription().getVersion());
@@ -47,7 +43,7 @@ public class TextUtils {
         info("(!) " + prefix + " (!)");
     }
 
-    public void gui(CommandSender target, String itemType, String material) {
+    public void gui(final CommandSender target, final String itemType, final String material) {
         target.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cAn error has occurred, " + itemType + " item &7" + material + " &cis not found."));
     }
 }

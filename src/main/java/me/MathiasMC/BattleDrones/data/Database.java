@@ -112,7 +112,7 @@ public class Database {
             r.runTaskAsynchronously(plugin);
         }
     }
-    public void insertDrone(final String uuid, String drone) {
+    public void insertDrone(final String uuid, final String drone) {
         if (set()) {
             BukkitRunnable r = new BukkitRunnable() {
                 @Override
@@ -239,7 +239,7 @@ public class Database {
         }
     }
 
-    public String[] getPlayers(String uuid) {
+    public String[] getPlayers(final String uuid) {
         Statement statement = null;
         ResultSet resultSet = null;
         try {
@@ -267,7 +267,7 @@ public class Database {
         return new String[] { "", String.valueOf(0), "default" };
     }
 
-    public String[] getDrone(String uuid, final String drone) {
+    public String[] getDrone(final String uuid, final String drone) {
         Statement statement = null;
         ResultSet resultSet = null;
         try {

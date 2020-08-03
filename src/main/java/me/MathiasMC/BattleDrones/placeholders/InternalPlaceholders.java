@@ -5,6 +5,8 @@ import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import org.bukkit.ChatColor;
 
+import java.util.Objects;
+
 public class InternalPlaceholders {
 
     private final BattleDrones plugin;
@@ -13,28 +15,28 @@ public class InternalPlaceholders {
         this.plugin = plugin;
     }
 
-    public String getActiveDrone(String active) {
+    public String getActiveDrone(final String active) {
         if (active.equalsIgnoreCase("laser")) {
-            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.laser"));
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.language.get.getString("drone-name.laser")));
         } else if (active.equalsIgnoreCase("rocket")) {
-            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.rocket"));
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.language.get.getString("drone-name.rocket")));
         } else if (active.equalsIgnoreCase("faf_missile")) {
-            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.faf-missile"));
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.language.get.getString("drone-name.faf-missile")));
         } else if (active.equalsIgnoreCase("mortar")) {
-            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.mortar"));
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.language.get.getString("drone-name.mortar")));
         } else if (active.equalsIgnoreCase("machine_gun")) {
-            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.machine-gun"));
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.language.get.getString("drone-name.machine-gun")));
         } else if (active.equalsIgnoreCase("shield_generator")) {
-            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.shield-generator"));
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.language.get.getString("drone-name.shield-generator")));
         } else if (active.equalsIgnoreCase("healing")) {
-            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.healing"));
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.language.get.getString("drone-name.healing")));
         } else if (active.equalsIgnoreCase("flamethrower")) {
-            return ChatColor.translateAlternateColorCodes('&', plugin.language.get.getString("drone-name.flamethrower"));
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.language.get.getString("drone-name.flamethrower")));
         }
         return "";
     }
 
-    public int getDroneHealth(String uuid) {
+    public int getDroneHealth(final String uuid) {
         final PlayerConnect playerConnect = plugin.get(uuid);
         if (playerConnect.hasActive() && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
             return plugin.getDroneHolder(uuid, playerConnect.getActive()).getHealth();
@@ -42,7 +44,7 @@ public class InternalPlaceholders {
         return 0;
     }
 
-    public int getDroneMaxHealth(String uuid) {
+    public int getDroneMaxHealth(final String uuid) {
         final PlayerConnect playerConnect = plugin.get(uuid);
         if (playerConnect.hasActive()  && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
@@ -51,7 +53,7 @@ public class InternalPlaceholders {
         return 0;
     }
 
-    public String getDroneHealthBar(String uuid) {
+    public String getDroneHealthBar(final String uuid) {
         final PlayerConnect playerConnect = plugin.get(uuid);
         if (playerConnect.hasActive()  && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
@@ -60,7 +62,7 @@ public class InternalPlaceholders {
         return "";
     }
 
-    public int getDroneMaxAmmo(String uuid) {
+    public int getDroneMaxAmmo(final String uuid) {
         final PlayerConnect playerConnect = plugin.get(uuid);
         if (playerConnect.hasActive()  && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
@@ -69,7 +71,7 @@ public class InternalPlaceholders {
         return 0;
     }
 
-    public int getDroneAmmo(String uuid) {
+    public int getDroneAmmo(final String uuid) {
         final PlayerConnect playerConnect = plugin.get(uuid);
         if (playerConnect.hasActive()  && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
@@ -78,7 +80,7 @@ public class InternalPlaceholders {
         return 0;
     }
 
-    public String getDroneAmmoBar(String uuid) {
+    public String getDroneAmmoBar(final String uuid) {
         final PlayerConnect playerConnect = plugin.get(uuid);
         if (playerConnect.hasActive()  && plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(playerConnect.getActive())) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());

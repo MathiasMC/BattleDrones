@@ -38,39 +38,39 @@ public class DroneHolder {
         this.left = Integer.parseInt(data[8]);
     }
 
-    public void setUnlocked(int set) {
+    public void setUnlocked(final int set) {
         this.unlocked = set;
     }
 
-    public void setLevel(int set) {
+    public void setLevel(final int set) {
         this.level = set;
     }
 
-    public void setAmmo(int set) {
+    public void setAmmo(final int set) {
         this.ammo = set;
     }
 
-    public void setMonsters(int set) {
+    public void setMonsters(final int set) {
         this.monsters = set;
     }
 
-    public void setAnimals(int set) {
+    public void setAnimals(final int set) {
         this.animals = set;
     }
 
-    public void setPlayers(int set) {
+    public void setPlayers(final int set) {
         this.players = set;
     }
 
-    public void setExclude(List<String> set) {
+    public void setExclude(final List<String> set) {
         this.exclude = set;
     }
 
-    public void setHealth(int set) {
+    public void setHealth(final int set) {
         this.health = set;
     }
 
-    public void setLeft(int set) {
+    public void setLeft(final int set) {
         this.left = set;
     }
 
@@ -111,7 +111,7 @@ public class DroneHolder {
     }
 
     public String exclude() {
-        StringJoiner stringJoiner = new StringJoiner(":");
+        final StringJoiner stringJoiner = new StringJoiner(":");
         for (String player : this.exclude) {
             stringJoiner.add(player);
         }

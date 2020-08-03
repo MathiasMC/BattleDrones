@@ -78,32 +78,28 @@ public class WhitelistGUI extends GUI {
 
     @Override
     public void setItems() {
-        BattleDrones.call.guiManager.setGUIItemStack(inventory, file, player);
-        List<String> players = BattleDrones.call.getDroneHolder(uuid, drone).getExclude();
-        int index = 0;
-        int set = 0;
-        for (ItemStack itemStack : inventory.getContents()) {
-            if (itemStack == null) {
-                if (players.size() > index) {
-                    final ItemStack itemStackS = plugin.drone_heads.get("whitelist");
-                    if (itemStackS == null) {
-                        BattleDrones.call.textUtils.gui(player, "head", "whitelist");
-                        return;
-                    }
-                    final ItemMeta itemMeta = itemStackS.getItemMeta();
-                    if (itemMeta == null) { return; }
-                    itemMeta.setDisplayName(plugin.calculateManager.getChatColor(Objects.requireNonNull(plugin.language.get.getString("gui.whitelist.name-color"))) + players.get(index));
-                    final ArrayList<String> lores = new ArrayList<>();
-                    for (String lore : plugin.language.get.getStringList("gui.whitelist.lores")) {
-                        lores.add(ChatColor.translateAlternateColorCodes('&', lore));
-                    }
-                    itemMeta.setLore(lores);
-                    itemStackS.setItemMeta(itemMeta);
-                    inventory.setItem(set, itemStackS);
+        plugin.guiManager.setGUIItemStack(inventory, file, player);
+        final List<String> players = plugin.getDroneHolder(uuid, drone).getExclude();
+        for (int index = 0; index < 54; index++) {
+            if (players.size() > index) {
+                final ItemStack itemStackS = plugin.drone_heads.get("whitelist");
+                if (itemStackS == null) {
+                    plugin.textUtils.gui(player, "head", "whitelist");
+                    return;
                 }
-                index++;
+                final ItemMeta itemMeta = itemStackS.getItemMeta();
+                if (itemMeta == null) {
+                    return;
+                }
+                itemMeta.setDisplayName(plugin.calculateManager.getChatColor(Objects.requireNonNull(plugin.language.get.getString("gui.whitelist.name-color"))) + players.get(index));
+                final ArrayList<String> lores = new ArrayList<>();
+                for (String lore : plugin.language.get.getStringList("gui.whitelist.lores")) {
+                    lores.add(ChatColor.translateAlternateColorCodes('&', lore));
+                }
+                itemMeta.setLore(lores);
+                itemStackS.setItemMeta(itemMeta);
+                inventory.setItem(index, itemStackS);
             }
-            set++;
         }
     }
 }

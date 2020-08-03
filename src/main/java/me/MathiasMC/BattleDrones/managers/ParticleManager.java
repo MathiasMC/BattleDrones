@@ -9,6 +9,7 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class ParticleManager {
@@ -23,9 +24,9 @@ public class ParticleManager {
 
     public void load() {
         lib.clear();
-        for (String particle : plugin.particles.get.getConfigurationSection("").getKeys(false)) {
-            if (plugin.particles.get.getString(particle + ".type").equalsIgnoreCase("sphere")) {
-                Set<double[]> set = new LinkedHashSet<>();
+        for (String particle : Objects.requireNonNull(plugin.particles.get.getConfigurationSection("")).getKeys(false)) {
+            if (Objects.requireNonNull(plugin.particles.get.getString(particle + ".type")).equalsIgnoreCase("sphere")) {
+                final Set<double[]> set = new LinkedHashSet<>();
                 final double r = plugin.particles.get.getDouble(particle + ".radius");
                 final int distance = plugin.particles.get.getInt(particle + ".distance");
                 for (double phi = 0; phi <= Math.PI; phi += Math.PI / distance) {
@@ -37,8 +38,8 @@ public class ParticleManager {
                     }
                 }
                 lib.put(particle, set);
-            } else if (plugin.particles.get.getString(particle + ".type").equalsIgnoreCase("circle")) {
-                Set<double[]> set = new LinkedHashSet<>();
+            } else if (Objects.requireNonNull(plugin.particles.get.getString(particle + ".type")).equalsIgnoreCase("circle")) {
+                final Set<double[]> set = new LinkedHashSet<>();
                 final int points = plugin.particles.get.getInt(particle + ".distance");
                 final double radius = plugin.particles.get.getDouble(particle + ".radius");
                 for (int i = 0; i < points; i++) {
@@ -50,7 +51,7 @@ public class ParticleManager {
         }
     }
 
-    public void displayParticle(String particleName, String particleType, Location location, int r, int g, int b, int size, int amount) {
+    public void displayParticle(final String particleName, final String particleType, final Location location, final int r, final int g, final int b, final int size, final int amount) {
         final World world = location.getWorld();
         final Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
         for (double[] set : lib.get(particleName)) {
@@ -60,7 +61,7 @@ public class ParticleManager {
         }
     }
 
-    public void switchParticle(String particleType, World world, Location location, int amount, Particle.DustOptions dustOptions) {
+    public void switchParticle(final String particleType, final World world, final Location location, final int amount, final Particle.DustOptions dustOptions) {
         if ("REDSTONE".equals(particleType)) {
             world.spawnParticle(Particle.REDSTONE, location, amount, 0, 0, 0, 0F, dustOptions);
             return;
@@ -72,6 +73,9 @@ public class ParticleManager {
         final Vector p1 = start.toVector();
         final Vector vector = end.toVector().clone().subtract(p1).normalize().multiply(space);
         final World world = start.getWorld();
+        if (world == null) {
+            return;
+        }
         final Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
         double length = 0;
         for (; length < distance; p1.add(vector)) {

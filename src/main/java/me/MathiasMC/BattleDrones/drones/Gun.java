@@ -17,7 +17,7 @@ public class Gun {
         this.plugin = plugin;
     }
 
-    public void shot(final Player player, String drone) {
+    public void shot(final Player player, final String drone) {
         final String uuid = player.getUniqueId().toString();
         final PlayerConnect playerConnect = plugin.get(uuid);
         final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
@@ -46,7 +46,7 @@ public class Gun {
                     final Location targetLocation = target.getEyeLocation();
                     if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
                         if (customParticle != null) {
-                            Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
+                            final Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
                             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                                 double distance = particleFile.getDouble(customParticle + ".distance");
                                 if (drone.equalsIgnoreCase("laser")) {
@@ -66,10 +66,15 @@ public class Gun {
                                 target.setVelocity(target.getLocation().getDirection().setY(0).normalize().multiply(knockback));
                             }
                         }
-                        BattleDrones.call.calculateManager.damage(target, damage);
-                        BattleDrones.call.droneManager.checkAmmo(file, path, droneHolder.getAmmo(), player.getName());
-                        BattleDrones.call.droneManager.checkShot(target, file, location, path, "run");
-                        BattleDrones.call.droneManager.takeAmmo(playerConnect, droneHolder, file, path, player.getName());
+                        plugin.calculateManager.damage(target, damage);
+                        plugin.droneManager.checkAmmo(file, path, droneHolder.getAmmo(), player.getName());
+                        plugin.droneManager.checkShot(player, target, file, location, path, "run");
+                        plugin.droneManager.takeAmmo(playerConnect, droneHolder, file, path, player.getName());
+                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                            if (target.isDead()) {
+                                plugin.droneManager.checkShot(player, target, file, targetLocation, path, "killed");
+                            }
+                        }, 2);
                     }
                 }
                 playerConnect.setRegen(false);

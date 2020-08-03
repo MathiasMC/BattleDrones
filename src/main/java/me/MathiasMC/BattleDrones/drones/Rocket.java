@@ -66,8 +66,8 @@ public class Rocket {
         if (rocket.contains(path + "rocket-speed")) {
             points = plugin.calculateManager.getProcentFromDouble(rocket.getDouble(path + "rocket-speed"));
         }
-        int finalPoint = points;
-        double finalHeight = height;
+        final int finalPoint = points;
+        final double finalHeight = height;
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
@@ -85,9 +85,9 @@ public class Rocket {
                                     ,customParticle_2, delay_2, size_2, amount_2, r_2, g_2, b_2, yOffset_2, particleType_2, tick_2
                                     ,customParticle_3, delay_3, size_3, amount_3, r_3, g_3, b_3, yOffset_3, particleType_3, tick_3
                             );
-                            BattleDrones.call.droneManager.checkAmmo(rocket, path, droneHolder.getAmmo(), player.getName());
-                            BattleDrones.call.droneManager.checkShot(target, rocket, location, path, "run");
-                            BattleDrones.call.droneManager.takeAmmo(playerConnect, droneHolder, rocket, path, player.getName());
+                            plugin.droneManager.checkAmmo(rocket, path, droneHolder.getAmmo(), player.getName());
+                            plugin.droneManager.checkShot(player, target, rocket, location, path, "run");
+                            plugin.droneManager.takeAmmo(playerConnect, droneHolder, rocket, path, player.getName());
                         }
                 }
                 playerConnect.setRegen(false);
@@ -97,10 +97,10 @@ public class Rocket {
         }, 0, rocket.getLong(path + "cooldown")).getTaskId();
     }
 
-    private void line(boolean homing, boolean mortar, double heightAdd, int points, Location end, double space, ArmorStand armorStand, LivingEntity target, FileConfiguration file, String path, EulerAngle eulerAngle, Player player
-            , String customParticle_1, int delay_1, int size_1, int amount_1, int r_1, int g_1, int b_1, double yOffset_1, String particleType_1
-            , String customParticle_2, int delay_2, int size_2, int amount_2, int r_2, int g_2, int b_2, double yOffset_2, String particleType_2, int tick_1
-            , String customParticle_3, int delay_3, int size_3, int amount_3, int r_3, int g_3, int b_3, double yOffset_3, String particleType_3, int tick_2
+    private void line(final boolean homing, final boolean mortar, final double heightAdd, final int points, final Location end, final double space, final ArmorStand armorStand, final LivingEntity target, final FileConfiguration file, final String path, final EulerAngle eulerAngle, final Player player
+            , final String customParticle_1, final int delay_1, final int size_1, final int amount_1, final int r_1, final int g_1, final int b_1, final double yOffset_1, final String particleType_1
+            , final String customParticle_2, final int delay_2, final int size_2, final int amount_2, final int r_2, final int g_2, final int b_2, final double yOffset_2, final String particleType_2, final int tick_1
+            , final String customParticle_3, final int delay_3, final int size_3, final int amount_3, final int r_3, final int g_3, final int b_3, final double yOffset_3, final String particleType_3, final int tick_2
     ) {
         new BukkitRunnable() {
             final Vector p1 = armorStand.getLocation().toVector();
@@ -122,9 +122,9 @@ public class Rocket {
                         armorStand.setHeadPose(eulerAngle);
                         armorStand.teleport(p1.toLocation(world));
                     } else {
-                        Vector vector = startVector.clone().normalize().multiply(length * timer / points);
-                        float x = ((float) timer / points) * length - length / 2;
-                        float y = (float) (-pitch * Math.pow(x, 2) + height);
+                        final Vector vector = startVector.clone().normalize().multiply(length * timer / points);
+                        final float x = ((float) timer / points) * length - length / 2;
+                        final float y = (float) (-pitch * Math.pow(x, 2) + height);
                         start.add(vector).add(0, y, 0);
                         plugin.armorStandManager.lookAT(armorStand, start.clone());
                         armorStand.teleport(start);
@@ -134,17 +134,17 @@ public class Rocket {
                     final Location targetLocation = target.getLocation();
                     vector = targetLocation.toVector().clone().subtract(p1).normalize().multiply(space);
                     plugin.armorStandManager.lookAT(armorStand, targetLocation);
-                    Vector direction = target.getLocation().toVector().subtract(armorStand.getLocation().toVector()).normalize();
+                    final Vector direction = target.getLocation().toVector().subtract(armorStand.getLocation().toVector()).normalize();
                     armorStand.teleport(p1.toLocation(world).setDirection(direction));
                 }
                 p1.add(vector);
                 final Location armorStandLocation = armorStand.getLocation();
-                ArrayList<LivingEntity> rocket = plugin.armorStandManager.getEntityAround(armorStand, 1,  1, 1, 1, exclude, false);
+                final ArrayList<LivingEntity> rocket = plugin.armorStandManager.getEntityAround(armorStand, 1,  1, 1, 1, exclude, false);
                 rocket.remove(player);
-                Material targetMaterial = armorStand.getTargetBlock(null, 1).getType();
+                final Material targetMaterial = armorStand.getTargetBlock(null, 1).getType();
                 if (timer > (file.getLong(path + "rocket-time") * 20) || rocket.size() > 0 || targetMaterial != Material.AIR && targetMaterial != Material.WATER && targetMaterial != Material.LAVA ||  file.getBoolean(path + "rocket-self-destruction") && target.isDead()) {
                     this.cancel();
-                    ArrayList<LivingEntity> livingEntities = plugin.armorStandManager.getEntityAround(armorStand, file.getDouble(path + "rocket-radius"),  1, 1, 1, exclude, false);
+                    final ArrayList<LivingEntity> livingEntities = plugin.armorStandManager.getEntityAround(armorStand, file.getDouble(path + "rocket-radius"),  1, 1, 1, exclude, false);
                     for (LivingEntity livingEntity : livingEntities) {
                         plugin.calculateManager.damage(livingEntity, plugin.randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max")));
                         if (plugin.randomChance() <= file.getDouble(path + "chance")) {
@@ -160,7 +160,7 @@ public class Rocket {
                     if (file.getBoolean(path + "rocket-explosion")) {
                         world.createExplosion(armorStandLocation, file.getInt(path + "rocket-explosion-power"), file.getBoolean(path + "rocket-explosion-fire"), file.getBoolean(path + "rocket-explosion-block"));
                     }
-                    BattleDrones.call.droneManager.checkShot(target, file, armorStandLocation, path, "explode");
+                    plugin.droneManager.checkShot(player, target, file, armorStandLocation, path, "explode");
                     if (customParticle_1 != null) {
                         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                             Location location = armorStandLocation.add(0, yOffset_1, 0);
@@ -168,6 +168,9 @@ public class Rocket {
                         }, delay_1);
                     }
                     armorStand.remove();
+                    if (target.isDead()) {
+                        plugin.droneManager.checkShot(player, target, file, armorStandLocation, path, "killed");
+                    }
                 }
                 timer++;
                 if (customParticle_2 != null) {
@@ -176,9 +179,7 @@ public class Rocket {
                     }
                     if (particle1 > tick_1) {
                         final Location location = armorStandLocation.clone().add(0, yOffset_2, 0);
-                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                            plugin.particleManager.displayParticle(customParticle_2, particleType_2, location, r_2, g_2, b_2, size_2, amount_2);
-                        }, delay_2);
+                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.particleManager.displayParticle(customParticle_2, particleType_2, location, r_2, g_2, b_2, size_2, amount_2), delay_2);
                         particle1 = 1;
                     }
                     particle1++;
@@ -189,9 +190,7 @@ public class Rocket {
                         }
                         if (particle2 > tick_2) {
                             final Location location = armorStandLocation.clone().add(0, yOffset_3, 0);
-                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                                plugin.particleManager.displayParticle(customParticle_3, particleType_3, location, r_3, g_3, b_3, size_3, amount_3);
-                            }, delay_3);
+                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.particleManager.displayParticle(customParticle_3, particleType_3, location, r_3, g_3, b_3, size_3, amount_3), delay_3);
                             particle2 = 1;
                         }
                     particle2++;

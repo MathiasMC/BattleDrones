@@ -101,6 +101,15 @@ default:
       animal:
         - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
 
+    # This section is run every time the drone has killed the target
+    killed:
+      player:
+        - 'bd actionbar {player} 4 &6Your machine gun drone killed &c{target}'
+      monster:
+        - 'bd actionbar {player} 4 &6Your machine gun drone killed &c{target}'
+      animal:
+        - 'bd actionbar {player} 4 &6Your machine gun drone killed &c{target}'
+
     # Upgrade Commands
     commands:
       levelup:
@@ -144,6 +153,13 @@ default:
         - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
       animal:
         - 'bd sound entity_firework_rocket_blast {world} {x} {y} {z} 1 1.5'
+    killed:
+      player:
+        - 'bd actionbar {player} 4 &6Your machine gun drone killed &c{target}'
+      monster:
+        - 'bd actionbar {player} 4 &6Your machine gun drone killed &c{target}'
+      animal:
+        - 'bd actionbar {player} 4 &6Your machine gun drone killed &c{target}'
     commands:
       levelup:
         - 'battledrones message {player} &7[&dBattleDrones&7] &aYour machine gun drone is now a level higher!'

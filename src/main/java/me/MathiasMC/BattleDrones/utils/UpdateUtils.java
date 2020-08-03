@@ -14,7 +14,7 @@ public class UpdateUtils {
     private final BattleDrones plugin;
     private final int resourceId;
 
-    public UpdateUtils(final BattleDrones plugin, int resourceId) {
+    public UpdateUtils(final BattleDrones plugin, final int resourceId) {
         this.plugin = plugin;
         this.resourceId = resourceId;
     }

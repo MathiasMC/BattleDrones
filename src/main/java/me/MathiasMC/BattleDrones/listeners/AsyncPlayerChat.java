@@ -32,20 +32,20 @@ public class AsyncPlayerChat implements Listener {
                         droneHolder.save();
                         plugin.getServer().getScheduler().runTask(plugin, () -> {
                             for (String command : plugin.language.get.getStringList("gui.whitelist.add")) {
-                                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
+                                plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
                             }
                         });
                     } else {
                         plugin.getServer().getScheduler().runTask(plugin, () -> {
                             for (String command : plugin.language.get.getStringList("gui.whitelist.own")) {
-                                BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
+                                plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
                             }
                         });
                     }
                 } else {
                     plugin.getServer().getScheduler().runTask(plugin, () -> {
                     for (String command : plugin.language.get.getStringList("gui.whitelist.same")) {
-                        BattleDrones.call.getServer().dispatchCommand(BattleDrones.call.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
                     }
                     });
                 }

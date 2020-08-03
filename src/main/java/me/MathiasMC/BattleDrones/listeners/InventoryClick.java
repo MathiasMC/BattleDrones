@@ -10,11 +10,11 @@ public class InventoryClick implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        InventoryHolder inventoryHolder = e.getInventory().getHolder();
+        final InventoryHolder inventoryHolder = e.getInventory().getHolder();
         if (inventoryHolder instanceof GUI) {
             e.setCancelled(true);
             if (e.getCurrentItem() == null) { return; }
-            GUI gui = (GUI) inventoryHolder;
+            final GUI gui = (GUI) inventoryHolder;
             gui.click(e);
         }
     }
