@@ -186,7 +186,7 @@ settings:
     - '&fmortar.'
     - ' '
     - '&7Cost: 100 coin(s)'
-  HEAD: faf-missile-1
+  HEAD: mortar-1
   AMOUNT: 1
   OPTIONS:
     - DRONE_MORTAR_BUY
