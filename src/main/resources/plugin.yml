@@ -4,8 +4,190 @@ name: ${project.name}
 author: MathiasMC
 description: ${project.description}
 api-version: 1.15
-softdepend: [PlaceholderAPI, MVdWPlaceholderAPI, WorldGuard, Vault, IridiumSkyblock]
+softdepend: [PlaceholderAPI, MVdWPlaceholderAPI, WorldGuard, Vault, IridiumSkyblock, Lands]
 commands:
   battledrones:
-    description: BattleDrones main command
-    aliases: [bd]
+    description: "BattleDrones main command"
+    aliases: ["bd"]
+permissions:
+  battledrones.*:
+    description: "Access to use all bd commands"
+    children:
+      battledrones.player.*: true
+      battledrones.admin.*: true
+  battledrones.player.*:
+    description: "Access to use all player commands"
+    children:
+      battledrones.player.help: true
+      battledrones.player.shop: true
+      battledrones.player.menu: true
+      battledrones.player.drone: true
+      battledrones.player.activate: true
+      battledrones.player.deactivate: true
+      battledrones.player.park: true
+  battledrones.admin.*:
+    description: "Access to use all admin commands"
+    children:
+      battledrones.admin.reload: true
+      battledrones.admin.save: true
+      battledrones.admin.unlock: true
+      battledrones.admin.lock: true
+      battledrones.admin.deactivate: true
+      battledrones.admin.group: true
+      battledrones.admin.message: true
+      battledrones.admin.actionbar: true
+      battledrones.admin.broadcast: true
+      battledrones.admin.coins: true
+      battledrones.admin.give: true
+      battledrones.admin.sound: true
+  battledrones.bypass.*:
+    default: "op"
+    description: "Access to bypass everything"
+    children:
+      battledrones.bypass.drone-amount: true
+      battledrones.bypass.activate: true
+      battledrones.bypass.drone-worlds: true
+  battledrones.gui.*:
+    default: "op"
+    description: "Access to buy and use all drones"
+    children:
+      battledrones.gui.shop.*: true
+      battledrones.gui.menu.*: true
+  battledrones.gui.shop.*:
+    default: "op"
+    description: "Access to buy all drones"
+    children:
+      battledrones.gui.shop.laser: true
+      battledrones.gui.shop.rocket: true
+      battledrones.gui.shop.faf_missile: true
+      battledrones.gui.shop.mortar: true
+      battledrones.gui.shop.machine_gun: true
+      battledrones.gui.shop.shield_generator: true
+      battledrones.gui.shop.healing: true
+      battledrones.gui.shop.flamethrower: true
+  battledrones.gui.menu.*:
+    default: "op"
+    description: "Access to use all drones"
+    children:
+      battledrones.gui.menu.laser: true
+      battledrones.gui.menu.rocket: true
+      battledrones.gui.menu.faf_missile: true
+      battledrones.gui.menu.mortar: true
+      battledrones.gui.menu.machine_gun: true
+      battledrones.gui.menu.shield_generator: true
+      battledrones.gui.menu.healing: true
+      battledrones.gui.menu.flamethrower: true
+  battledrones.player.help:
+    default: "op"
+    description: "Access to use help"
+  battledrones.player.shop:
+    default: "op"
+    description: "Access to use shop"
+  battledrones.player.menu:
+    default: "op"
+    description: "Access to use menu"
+  battledrones.player.drone:
+    default: "op"
+    description: "Access to use drone"
+  battledrones.player.activate:
+    default: "op"
+    description: "Access to use activate"
+  battledrones.player.deactivate:
+    default: "op"
+    description: "Access to use deactivate"
+  battledrones.player.park:
+    default: "op"
+    description: "Access to use park"
+  battledrones.admin.reload:
+    default: "op"
+    description: "Access to use reload"
+  battledrones.admin.save:
+    default: "op"
+    description: "Access to use save"
+  battledrones.admin.unlock:
+    default: "op"
+    description: "Access to use unlock"
+  battledrones.admin.lock:
+    default: "op"
+    description: "Access to use lock"
+  battledrones.admin.deactivate:
+    default: "op"
+    description: "Access to use deactivate"
+  battledrones.admin.group:
+    default: "op"
+    description: "Access to use group"
+  battledrones.admin.message:
+    default: "op"
+    description: "Access to use message"
+  battledrones.admin.actionbar:
+    default: "op"
+    description: "Access to use actionbar"
+  battledrones.admin.broadcast:
+    default: "op"
+    description: "Access to use broadcast"
+  battledrones.admin.coins:
+    default: "op"
+    description: "Access to use coins"
+  battledrones.admin.give:
+    default: "op"
+    description: "Access to use give"
+  battledrones.admin.sound:
+    default: "op"
+    description: "Access to use sound"
+  battledrones.bypass.drone-amount:
+    default: "op"
+    description: "Access to bypass drone amount"
+  battledrones.bypass.activate:
+    default: "op"
+    description: "Access to bypass activate"
+  battledrones.bypass.drone-worlds.*:
+    default: "op"
+    description: "Access to bypass drone worlds"
+  battledrones.gui.shop.laser:
+    default: "op"
+    description: "Access to buy laser drone"
+  battledrones.gui.shop.rocket:
+    default: "op"
+    description: "Access to buy rocket drone"
+  battledrones.gui.shop.faf_missile:
+    default: "op"
+    description: "Access to buy faf missile drone"
+  battledrones.gui.shop.mortar:
+    default: "op"
+    description: "Access to buy mortar drone"
+  battledrones.gui.shop.machine_gun:
+    default: "op"
+    description: "Access to buy machine gun drone"
+  battledrones.gui.shop.shield_generator:
+    default: "op"
+    description: "Access to buy shield generator drone"
+  battledrones.gui.shop.healing:
+    default: "op"
+    description: "Access to buy healing drone"
+  battledrones.gui.shop.flamethrower:
+    default: "op"
+    description: "Access to buy flamethrower drone"
+  battledrones.gui.menu.laser:
+    default: "op"
+    description: "Access to use laser drone"
+  battledrones.gui.menu.rocket:
+    default: "op"
+    description: "Access to use rocket drone"
+  battledrones.gui.menu.faf_missile:
+    default: "op"
+    description: "Access to use faf missile drone"
+  battledrones.gui.menu.mortar:
+    default: "op"
+    description: "Access to use mortar drone"
+  battledrones.gui.menu.machine_gun:
+    default: "op"
+    description: "Access to use machine gun drone"
+  battledrones.gui.menu.shield_generator:
+    default: "op"
+    description: "Access to use shield generator drone"
+  battledrones.gui.menu.healing:
+    default: "op"
+    description: "Access to use healing drone"
+  battledrones.gui.menu.flamethrower:
+    default: "op"
+    description: "Access to use flamethrower drone"

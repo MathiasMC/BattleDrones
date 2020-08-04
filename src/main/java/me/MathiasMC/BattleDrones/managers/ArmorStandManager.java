@@ -1,7 +1,6 @@
 package me.MathiasMC.BattleDrones.managers;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
-import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,16 +33,14 @@ public class ArmorStandManager {
         return as;
     }
 
-    public void setCustomName(final PlayerConnect playerConnect, final long droneLevel, final String group, final FileConfiguration file, final String message, final Player player) {
+    public void setCustomName(final ArmorStand head, final ArmorStand name, final long droneLevel, final String group, final FileConfiguration file, final String message, final Player player) {
         final String text = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.text." + message)).replace("{name}", player.getName()));
-        final ArmorStand armorStandText = playerConnect.head;
-        if (!Objects.requireNonNull(armorStandText.getCustomName()).equalsIgnoreCase(text)) {
-            armorStandText.setCustomName(text);
+        if (!Objects.requireNonNull(head.getCustomName()).equalsIgnoreCase(text)) {
+            head.setCustomName(text);
         }
-        final String name = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.name." + message)).replace("{name}", player.getName()));
-        final ArmorStand armorStandName = playerConnect.name;
-        if (!Objects.requireNonNull(armorStandName.getCustomName()).equalsIgnoreCase(name)) {
-            armorStandName.setCustomName(name);
+        final String nameText = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.name." + message)).replace("{name}", player.getName()));
+        if (!Objects.requireNonNull(name.getCustomName()).equalsIgnoreCase(nameText)) {
+            name.setCustomName(nameText);
         }
     }
 

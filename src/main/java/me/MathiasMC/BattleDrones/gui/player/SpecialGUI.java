@@ -46,7 +46,7 @@ public class SpecialGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (flamethrower_file.getInt("gui.POSITION") == slot && flamethrower_droneHolder.getUnlocked() == 1) {
-            plugin.guiManager.playerGUI(e, player, playerConnect, flamethrower_droneHolder, flamethrower_id, flamethrower_file, flamethrower_id);
+            plugin.guiManager.playerGUI(e, player, playerConnect, flamethrower_droneHolder, flamethrower_id, flamethrower_file);
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
             new PlayerGUI(plugin.getPlayerMenu(player)).open();
         }

@@ -122,8 +122,8 @@ public class GUIManager {
         }
     }
 
-    public void playerGUI(final InventoryClickEvent e, final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final String drone, final FileConfiguration file, final String permission) {
-        if (player.hasPermission("battledrones.player." + permission)) {
+    public void playerGUI(final InventoryClickEvent e, final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final String drone, final FileConfiguration file) {
+        if (player.hasPermission("battledrones.gui.menu." + drone)) {
             if (e.isLeftClick()) {
                 plugin.droneManager.spawnDrone(player, drone, false, false);
             } else if (e.isRightClick()) {
@@ -140,7 +140,7 @@ public class GUIManager {
     }
 
     public void shopGUI(final int slot, final Player player, final String uuid, final PlayerConnect playerConnect, final FileConfiguration file, final String drone, final String permission) {
-        if (player.hasPermission("battledrones.shop." + permission)) {
+        if (player.hasPermission("battledrones.gui.shop." + permission)) {
             final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
             if (droneHolder.getUnlocked() != 1) {
                 final long coins = playerConnect.getCoins();

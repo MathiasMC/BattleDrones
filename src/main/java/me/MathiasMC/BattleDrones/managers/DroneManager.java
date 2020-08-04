@@ -193,7 +193,7 @@ public class DroneManager {
 
 
     public void spawnDrone(final Player player, final String drone, final boolean bypass, final boolean bypassChecks) {
-        if (plugin.locationSupport.inLocation(player)) {
+        if (plugin.locationSupport.inLocation(player, drone)) {
             final String uuid = player.getUniqueId().toString();
             final FileConfiguration file = plugin.droneFiles.get(drone);
             if (!plugin.drone_players.contains(player.getUniqueId().toString()) || player.hasPermission("battledrones.bypass.activate") || bypassChecks) {

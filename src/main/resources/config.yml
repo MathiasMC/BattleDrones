@@ -75,6 +75,12 @@ iridium-skyblock:
   island:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your drone, you are not an member of this island.'
 
+# Vault (Use vault economy instead of build in coins system)
+vault: false
+
+# Lands support (if trusted drone will not attack that player)
+lands: false
+
 # Better block check (disable shoot thru lava, water, this will impact performance)
 better-block-check: false
 
@@ -84,9 +90,6 @@ exclude:
   - vindicator
   - iron_golem
   - silverfish
-
-# Vault (Use vault economy instead of build in coins system)
-vault: false
 
 # Look for armorstands that is a drone on startup and remove it
 cleanup: true
@@ -102,6 +105,18 @@ drone-click: true
 
 # Drone count (How many drones can be active at the same time)
 drone-amount: 10
+
+# Drone blacklist and whitelist
+drone-worlds:
+  blacklist: true
+  whitelist:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cDrone {drone} is not allowed in the world {world}'
+  list:
+    world_nether:
+      laser:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot use the laser drone in this world.'
+      rocket:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot use the rocket drone in this world.'
 
 # Save every x amount of minutes
 save:

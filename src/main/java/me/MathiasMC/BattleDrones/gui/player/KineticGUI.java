@@ -46,7 +46,7 @@ public class KineticGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (machine_gun_file.getInt("gui.POSITION") == slot && machine_gun_droneHolder.getUnlocked() == 1) {
-            plugin.guiManager.playerGUI(e, player, playerConnect, machine_gun_droneHolder, machine_gun_id, machine_gun_file, "machine.gun");
+            plugin.guiManager.playerGUI(e, player, playerConnect, machine_gun_droneHolder, machine_gun_id, machine_gun_file);
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
             new PlayerGUI(plugin.getPlayerMenu(player)).open();
         }

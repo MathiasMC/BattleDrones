@@ -52,9 +52,9 @@ public class ProtectiveGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (shield_generator_file.getInt("gui.POSITION") == slot && shield_generator_droneHolder.getUnlocked() == 1) {
-            plugin.guiManager.playerGUI(e, player, playerConnect, shield_generator_droneHolder, shield_generator_id, shield_generator_file, "shield.generator");
+            plugin.guiManager.playerGUI(e, player, playerConnect, shield_generator_droneHolder, shield_generator_id, shield_generator_file);
         } else if (healing_file.getInt("gui.POSITION") == slot && healing_droneHolder.getUnlocked() == 1) {
-            plugin.guiManager.playerGUI(e, player, playerConnect, healing_droneHolder, healing_id, healing_file, healing_id);
+            plugin.guiManager.playerGUI(e, player, playerConnect, healing_droneHolder, healing_id, healing_file);
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
             new PlayerGUI(plugin.getPlayerMenu(player)).open();
         }

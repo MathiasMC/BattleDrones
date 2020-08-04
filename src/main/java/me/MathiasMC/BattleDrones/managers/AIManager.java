@@ -42,7 +42,9 @@ public class AIManager {
                 target = null;
             }
             if (plugin.drone_targets.get(uuid) != target) {
-                plugin.drone_targets.put(uuid, target);
+                if (plugin.locationSupport.canTarget(player, target)) {
+                    plugin.drone_targets.put(uuid, target);
+                }
             }
         }, findTarget, findTarget).getTaskId();
         playerConnect.AItaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
@@ -71,11 +73,11 @@ public class AIManager {
                     } else {
                         head.teleport(tp.setDirection(direction));
                     }
-                    plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "target", player);
+                    plugin.armorStandManager.setCustomName(head, name, drone_level, group, file, "target", player);
                 } else {
                     head.setHeadPose(eulerAngle);
                     head.teleport(tp.setDirection(direction));
-                    plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "searching", player);
+                    plugin.armorStandManager.setCustomName(head, name, drone_level, group, file, "searching", player);
                 }
                 name.teleport(tp.add(0, 0.3, 0));
             } else {
@@ -93,11 +95,11 @@ public class AIManager {
                     } else {
                         head.teleport(tp);
                     }
-                    plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "target", player);
+                    plugin.armorStandManager.setCustomName(head, name, drone_level, group, file, "target", player);
                 } else {
                     head.setHeadPose(eulerAngle);
                     head.teleport(tp);
-                    plugin.armorStandManager.setCustomName(playerConnect, drone_level, group, file, "searching", player);
+                    plugin.armorStandManager.setCustomName(head, name, drone_level, group, file, "searching", player);
                 }
                 name.teleport(tp.clone().add(0, 0.3, 0));
             }

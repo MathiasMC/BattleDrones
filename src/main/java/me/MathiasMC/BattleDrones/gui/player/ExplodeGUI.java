@@ -58,11 +58,11 @@ public class ExplodeGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (rocket_file.getInt("gui.POSITION") == slot && rocket_droneHolder.getUnlocked() == 1) {
-            plugin.guiManager.playerGUI(e, player, playerConnect, rocket_droneHolder, rocket_id, rocket_file, rocket_id);
+            plugin.guiManager.playerGUI(e, player, playerConnect, rocket_droneHolder, rocket_id, rocket_file);
         } else if (faf_missile_file.getInt("gui.POSITION") == slot && faf_missile_droneHolder.getUnlocked() == 1) {
-            plugin.guiManager.playerGUI(e, player, playerConnect, faf_missile_droneHolder, faf_missile_id, faf_missile_file, "faf.missile");
+            plugin.guiManager.playerGUI(e, player, playerConnect, faf_missile_droneHolder, faf_missile_id, faf_missile_file);
         } else if (mortar_file.getInt("gui.POSITION") == slot && mortar_droneHolder.getUnlocked() == 1) {
-            plugin.guiManager.playerGUI(e, player, playerConnect, mortar_droneHolder, mortar_id, mortar_file, mortar_id);
+            plugin.guiManager.playerGUI(e, player, playerConnect, mortar_droneHolder, mortar_id, mortar_file);
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
             new PlayerGUI(plugin.getPlayerMenu(player)).open();
         }

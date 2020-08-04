@@ -6,7 +6,7 @@
 
     <groupId>me.MathiasMC</groupId>
     <artifactId>BattleDrones</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
     <name>BattleDrones</name>
     <description>Battle Drones will add new combat mechanics to your minecraft server.</description>
 
@@ -31,6 +31,10 @@
             <id>mvdw-software</id>
             <name>MVdW Public Repositories</name>
             <url>http://repo.mvdw-software.be/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -63,6 +67,12 @@
             <groupId>be.maximvdw</groupId>
             <artifactId>MVdWPlaceholderAPI</artifactId>
             <version>2.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.angeschossen</groupId>
+            <artifactId>LandsAPI</artifactId>
+            <version>4.7.3</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

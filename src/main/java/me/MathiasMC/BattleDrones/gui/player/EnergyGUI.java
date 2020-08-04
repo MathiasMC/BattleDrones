@@ -46,7 +46,7 @@ public class EnergyGUI extends GUI {
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
         if (laser_file.getInt("gui.POSITION") == slot && laser_droneHolder.getUnlocked() == 1) {
-            plugin.guiManager.playerGUI(e, player, playerConnect, laser_droneHolder, laser_id, laser_file, laser_id);
+            plugin.guiManager.playerGUI(e, player, playerConnect, laser_droneHolder, laser_id, laser_file);
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
             new PlayerGUI(plugin.getPlayerMenu(player)).open();
         }
