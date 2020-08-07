@@ -20,9 +20,7 @@ import me.MathiasMC.BattleDrones.support.LocationSupport;
 import me.MathiasMC.BattleDrones.utils.MetricsLite;
 import me.MathiasMC.BattleDrones.utils.TextUtils;
 import me.MathiasMC.BattleDrones.utils.UpdateUtils;
-import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -91,8 +89,6 @@ public class BattleDrones extends JavaPlugin {
     public LocationSupport locationSupport;
 
     private Economy econ = null;
-    private Permission perms = null;
-    private Chat chat = null;
 
     @Override
     public void onEnable() {
@@ -204,7 +200,7 @@ public class BattleDrones extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }

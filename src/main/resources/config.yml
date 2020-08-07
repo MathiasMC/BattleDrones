@@ -81,6 +81,15 @@ vault: false
 # Lands support (if trusted drone will not attack that player)
 lands: false
 
+# Automatic disable toggles on tp
+auto-disable:
+  world_nether:
+    commands:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cDisabled your drone will not attack {types}'
+    # PLAYERS, ANIMALS, MONSTERS
+    list:
+      - PLAYERS
+
 # Better block check (disable shoot thru lava, water, this will impact performance)
 better-block-check: false
 

@@ -100,7 +100,7 @@ public class LocationSupport {
         return true;
     }
 
-    public void tp(Player player) {
+    public void tp(final Player player) {
         if (plugin.config.get.contains("iridium-skyblock.toggle") && plugin.getServer().getPluginManager().getPlugin("IridiumSkyblock") != null) {
             final List<String> options = plugin.config.get.getStringList("iridium-skyblock.toggle.disabled");
             final Island island = IridiumSkyblock.getIslandManager().getIslandViaLocation(player.getLocation());
@@ -108,35 +108,40 @@ public class LocationSupport {
                 for (Player islandPlayer : island.getPlayersOnIsland()) {
                     final String member = islandPlayer.getUniqueId().toString();
                     if (island.getMembers().contains(member)) {
-                        PlayerConnect playerConnect = plugin.get(member);
-                        if (playerConnect.hasActive()) {
-                            final String drone = playerConnect.getActive();
-                            if (plugin.listDroneHolder().contains(member) && plugin.getDroneHolderUUID(member).containsKey(drone)) {
-                                final DroneHolder droneHolder = plugin.getDroneHolder(member, drone);
-                                ArrayList<String> list = new ArrayList<>();
-                                if (options.contains("PLAYERS") && droneHolder.getPlayers() != 0) {
-                                    droneHolder.setPlayers(0);
-                                    list.add("players");
-                                }
-                                if (options.contains("ANIMALS") && droneHolder.getAnimals() != 0) {
-                                    droneHolder.setAnimals(0);
-                                    list.add("animals");
-                                }
-                                if (options.contains("MONSTERS") && droneHolder.getMonsters() != 0) {
-                                    droneHolder.setMonsters(0);
-                                    list.add("monsters");
-                                }
-                                if (!list.isEmpty()) {
-                                    for (String command : plugin.config.get.getStringList("iridium-skyblock.toggle.commands")) {
-                                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", islandPlayer.getName()).replace("{types}", list.toString().replace("[", "").replace("]", "")));
-                                    }
-                                    playerConnect.stopAI();
-                                    playerConnect.stopFindTargetAI();
-                                    plugin.droneManager.startAI(islandPlayer, playerConnect, droneHolder, plugin.droneFiles.get(drone), drone);
-                                }
-                            }
-                        }
+                        toggle(islandPlayer, options, "iridium-skyblock.toggle.commands");
                     }
+                }
+            }
+        }
+    }
+
+    public void toggle(final Player player, final List<String> options, final String path) {
+        final String uuid = player.getUniqueId().toString();
+        final PlayerConnect playerConnect = plugin.get(uuid);
+        if (playerConnect.hasActive()) {
+            final String drone = playerConnect.getActive();
+            if (plugin.listDroneHolder().contains(uuid) && plugin.getDroneHolderUUID(uuid).containsKey(drone)) {
+                final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
+                final ArrayList<String> list = new ArrayList<>();
+                if (options.contains("PLAYERS") && droneHolder.getPlayers() != 0) {
+                    droneHolder.setPlayers(0);
+                    list.add("players");
+                }
+                if (options.contains("ANIMALS") && droneHolder.getAnimals() != 0) {
+                    droneHolder.setAnimals(0);
+                    list.add("animals");
+                }
+                if (options.contains("MONSTERS") && droneHolder.getMonsters() != 0) {
+                    droneHolder.setMonsters(0);
+                    list.add("monsters");
+                }
+                if (!list.isEmpty()) {
+                    for (String command : plugin.config.get.getStringList(path)) {
+                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()).replace("{types}", list.toString().replace("[", "").replace("]", "")));
+                    }
+                    playerConnect.stopAI();
+                    playerConnect.stopFindTargetAI();
+                    plugin.droneManager.startAI(player, playerConnect, droneHolder, plugin.droneFiles.get(drone), drone);
                 }
             }
         }

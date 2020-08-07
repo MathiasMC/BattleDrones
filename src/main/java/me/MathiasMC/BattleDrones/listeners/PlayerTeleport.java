@@ -19,6 +19,10 @@ public class PlayerTeleport implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
         final Player player = e.getPlayer();
         final String uuid = player.getUniqueId().toString();
+        final String world = e.getTo().getWorld().getName();
+        if (plugin.config.get.contains("auto-disable." + world)) {
+            plugin.locationSupport.toggle(player, plugin.config.get.getStringList("auto-disable." + world + ".list"), "auto-disable." + world + ".commands");
+        }
         if (plugin.config.get.contains("player-teleport-commands")) {
             if (plugin.list().contains(uuid)) {
                 final PlayerConnect playerConnect = plugin.get(uuid);
