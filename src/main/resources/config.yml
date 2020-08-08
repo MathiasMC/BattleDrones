@@ -81,7 +81,7 @@ vault: false
 # Lands support (if trusted drone will not attack that player)
 lands: false
 
-# Automatic disable toggles on tp
+# Automatic disable toggles on world change
 auto-disable:
   world_nether:
     commands:
@@ -139,10 +139,6 @@ player-death-commands:
 # Player change world (if section is removed the drone will not be removed) [] (to disable commands)
 player-world-change-commands:
   - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you changed world.'
-
-# Player teleport (if section is removed the drone will not be removed) [] (to disable commands)
-player-teleport-commands:
-  - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you teleported.'
 
 # Custom heads for drones, gui - (base64 textures find one on minecraft-heads.com) (whitelist, cannot be removed) (Check if the head belongs somewhere before removing)
 heads:
