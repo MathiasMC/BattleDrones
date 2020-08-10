@@ -5,6 +5,7 @@ import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import me.MathiasMC.BattleDrones.gui.DroneMenu;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -33,11 +34,20 @@ public class GUIManager {
             if (!key.equalsIgnoreCase("settings")) {
                 ItemStack itemStack;
                 if (!file.contains(key + ".HEAD")) {
-                    final String material = file.getString(key + ".MATERIAL");
-                    itemStack = plugin.getItemStack(material, file.getInt(key + ".AMOUNT"));
-                    if (itemStack == null) {
-                        plugin.textUtils.gui(player, "gui", material);
-                        return;
+                    if (!file.contains(key + ".MODEL-DATA")) {
+                        final String material = file.getString(key + ".MATERIAL");
+                        itemStack = plugin.getItemStack(material, file.getInt(key + ".AMOUNT"));
+                        if (itemStack == null) {
+                            plugin.textUtils.gui(player, "gui", material);
+                            return;
+                        }
+                    } else {
+                        itemStack = new ItemStack(Material.STICK);
+                        final ItemMeta itemMeta = itemStack.getItemMeta();
+                        if (itemMeta != null) {
+                            itemMeta.setCustomModelData(file.getInt(key + ".MODEL-DATA"));
+                            itemStack.setItemMeta(itemMeta);
+                        }
                     }
                 } else {
                     final String material = file.getString(key + ".HEAD");
@@ -71,7 +81,18 @@ public class GUIManager {
         final PlayerConnect playerConnect = plugin.get(uuid);
         for (String drone : drones.keySet()) {
             final FileConfiguration file = plugin.droneFiles.get(drone);
-            final ItemStack itemStack = plugin.drone_heads.get(file.getString(playerConnect.getGroup() + "." + drones.get(drone) + ".head"));
+            final String path = playerConnect.getGroup() + "." + drones.get(drone) + ".";
+            ItemStack itemStack;
+            if (file.contains(path + "model-data-gui")) {
+                itemStack = new ItemStack(Material.STICK);
+                final ItemMeta itemMeta = itemStack.getItemMeta();
+                if (itemMeta != null) {
+                    itemMeta.setCustomModelData(file.getInt(path + "model-data-gui"));
+                    itemStack.setItemMeta(itemMeta);
+                }
+            } else {
+                itemStack = plugin.drone_heads.get(file.getString(path + "head"));
+            }
             final ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta == null) {
                 return;

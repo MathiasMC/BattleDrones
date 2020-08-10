@@ -3,12 +3,11 @@ package me.MathiasMC.BattleDrones.managers;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -205,7 +204,18 @@ public class DroneManager {
                     if (plugin.drone_amount.size() < plugin.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount") || bypassChecks) {
                         plugin.droneManager.runCommands(player, playerConnect, file, "gui.SPAWN-COMMANDS", bypass);
                         playerConnect.stopDrone();
-                        playerConnect.spawn(player, file.getString(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".head"));
+                        final String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".";
+                        ItemStack itemStack = plugin.drone_heads.get(file.getString(path + "head"));
+                        if (file.contains(path + "model-data")) {
+                            itemStack = new ItemStack(Material.STICK);
+                            final ItemMeta itemMeta = itemStack.getItemMeta();
+                            if (itemMeta != null) {
+                                itemMeta.setCustomModelData(file.getInt(path + "model-data"));
+                                itemStack.setItemMeta(itemMeta);
+                            }
+                        }
+
+                        playerConnect.spawn(player, itemStack);
                         startAI(player, playerConnect, droneHolder, file, drone);
                         if (drone.equalsIgnoreCase("laser")) {
                             plugin.gun.shot(player, "laser");

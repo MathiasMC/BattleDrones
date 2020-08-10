@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class PlayerConnect {
@@ -112,11 +113,11 @@ public class PlayerConnect {
         droneHolder.save();
     }
 
-    public void spawn(final Player player, final String drone) {
+    public void spawn(final Player player, final ItemStack itemStack) {
         final Location location = player.getLocation();
         final ArmorStand armorStand = BattleDrones.call.armorStandManager.getArmorStand(location.add(0, 2, 0), false, true);
         final ArmorStand armorStandName = BattleDrones.call.armorStandManager.getArmorStand(location.add(0, 2.3, 0), false, true);
-        armorStand.setHelmet(BattleDrones.call.drone_heads.get(drone));
+        armorStand.setHelmet(itemStack);
         armorStand.setCustomName(" ");
         armorStand.setCustomNameVisible(true);
         armorStandName.setCustomName(" ");
