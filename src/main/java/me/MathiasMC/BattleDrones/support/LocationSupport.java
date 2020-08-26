@@ -2,6 +2,9 @@ package me.MathiasMC.BattleDrones.support;
 
 import com.iridium.iridiumskyblock.IridiumSkyblock;
 import com.iridium.iridiumskyblock.Island;
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.struct.Relation;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.WorldGuard;
@@ -28,10 +31,15 @@ public class LocationSupport {
 
     private LandsIntegration landsIntegration = null;
 
+    private FPlayers fPlayers = null;
+
     public LocationSupport(final BattleDrones plugin) {
         this.plugin = plugin;
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
             this.landsIntegration = new LandsIntegration(plugin);
+        }
+        if (plugin.getServer().getPluginManager().getPlugin("Factions") != null) {
+            this.fPlayers = FPlayers.getInstance();
         }
     }
 
@@ -154,11 +162,22 @@ public class LocationSupport {
     }
 
     public boolean canTarget(final Player player, final LivingEntity target) {
-        if (plugin.config.get.getBoolean("lands") && landsIntegration != null && target instanceof Player) {
-            final LandPlayer landPlayer = landsIntegration.getLandPlayer(player.getUniqueId());
-            final LandPlayer targetLandPlayer = landsIntegration.getLandPlayer(target.getUniqueId());
-            if (landPlayer != null && targetLandPlayer != null) {
-                return Collections.disjoint(landPlayer.getLands(), targetLandPlayer.getLands());
+        if (target instanceof Player) {
+            if (plugin.config.get.getBoolean("lands") && landsIntegration != null) {
+                final LandPlayer landPlayer = landsIntegration.getLandPlayer(player.getUniqueId());
+                final LandPlayer targetLandPlayer = landsIntegration.getLandPlayer(target.getUniqueId());
+                if (landPlayer != null && targetLandPlayer != null) {
+                    return Collections.disjoint(landPlayer.getLands(), targetLandPlayer.getLands());
+                }
+            }
+            if (plugin.config.get.getBoolean("saber-factions") && fPlayers != null) {
+                final FPlayer fPlayer = fPlayers.getByPlayer(player);
+                final FPlayer fPlayerTarget = fPlayers.getByPlayer((Player) target);
+                if (fPlayer.hasFaction() && fPlayerTarget.hasFaction()) {
+                    if (fPlayer.getFaction().getFPlayers().contains(fPlayerTarget)) {
+                        return false;
+                    } else return !fPlayer.getFaction().getRelationWish(fPlayerTarget.getFaction()).equals(Relation.ALLY);
+                }
             }
         }
         return true;

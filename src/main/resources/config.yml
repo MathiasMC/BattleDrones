@@ -90,6 +90,9 @@ vault: false
 # Lands support (if trusted drone will not attack that player)
 lands: false
 
+# SaberFactions support (if in same faction disable attack)
+saber-factions: false
+
 # Automatic disable toggles on world change
 auto-disable:
   world_nether:
