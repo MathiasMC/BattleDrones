@@ -123,7 +123,7 @@ public class Database {
                     try {
                         resultSet = connection.createStatement().executeQuery("SELECT * FROM " + drone + " WHERE uuid= '" + uuid + "';");
                         if (!resultSet.next()) {
-                            preparedStatement = connection.prepareStatement("INSERT INTO " + drone + " (uuid, unlocked, level, ammo, monsters, animals, players, exclude, health, left) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                            preparedStatement = connection.prepareStatement("INSERT INTO " + drone + " (uuid, unlocked, level, ammo, monsters, animals, players, exclude, health, `left`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
                             preparedStatement.setString(1, uuid);
                             preparedStatement.setInt(2, 0);
                             preparedStatement.setInt(3, 1);
@@ -205,7 +205,7 @@ public class Database {
                     try {
                         resultSet = connection.createStatement().executeQuery("SELECT * FROM " + drone + " WHERE uuid= '" + uuid + "';");
                         if (resultSet.next()) {
-                            preparedStatement = connection.prepareStatement("UPDATE " + drone + " SET unlocked = ?, level = ?, ammo = ?, monsters = ?, animals = ?, players = ?, exclude = ?, health = ?, left = ? WHERE uuid = ?");
+                            preparedStatement = connection.prepareStatement("UPDATE " + drone + " SET unlocked = ?, level = ?, ammo = ?, monsters = ?, animals = ?, players = ?, exclude = ?, health = ?, `left` = ? WHERE uuid = ?");
                             preparedStatement.setInt(1, unlocked);
                             preparedStatement.setInt(2, level);
                             preparedStatement.setInt(3, ammo);
