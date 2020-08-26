@@ -58,9 +58,9 @@ public class Database {
             if (connection == null || connection.isClosed()) {
                 return false;
             }
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `players` (`uuid` char(36) PRIMARY KEY, `active` TINYTEXT(255), `coins` BIGINT(255), `group` TINYTEXT(255));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `players` (`uuid` char(36) PRIMARY KEY, `active` text(255), `coins` BIGINT(255), `group` text(255));");
             for (String drone : plugin.drones) {
-                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + drone + "` (`uuid` char(36) PRIMARY KEY, `unlocked` TINYINT(1), `level` SMALLINT(255), `ammo` SMALLINT(255), `monsters` TINYINT(1), `animals` TINYINT(1), `players` TINYINT(1), `exclude` LONGTEXT(255), `health` SMALLINT(255), `left` SMALLINT(255));");
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + drone + "` (`uuid` char(36) PRIMARY KEY, `unlocked` TINYINT(1), `level` SMALLINT(255), `ammo` SMALLINT(255), `monsters` TINYINT(1), `animals` TINYINT(1), `players` TINYINT(1), `exclude` LONGTEXT, `health` SMALLINT(255), `left` SMALLINT(255));");
             }
         }
         return true;
@@ -70,6 +70,7 @@ public class Database {
         try {
             return check();
         } catch (SQLException e) {
+            plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
             return false;
         }
     }

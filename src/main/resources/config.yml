@@ -9,6 +9,15 @@
 # Check for updates on startup?
 update-check: true
 
+# Database settings
+mysql:
+  use: false
+  host: localhost
+  port: 3306
+  database: database
+  username: username
+  password: password
+
 # Drone health in gui
 health:
 
