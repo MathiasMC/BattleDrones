@@ -90,11 +90,8 @@ vault: false
 # Lands support (if trusted drone will not attack that player)
 lands: false
 
-# SaberFactions support (if in same faction disable attack)
-saber-factions: false
-
-# FactionsUUID support (If in same faction disable attack)
-factions-uuid: false
+# SaberFactions/FactionsUUID support (if in same faction disable attack)
+factions: false
 
 # Towny Advanced support (If in same town disable attack)
 towny-advanced: true
