@@ -96,6 +96,9 @@ saber-factions: false
 # FactionsUUID support (If in same faction disable attack)
 factions-uuid: false
 
+# Towny Advanced support (If in same town disable attack)
+towny-advanced: true
+
 # Automatic disable toggles on world change
 auto-disable:
   world_nether:
