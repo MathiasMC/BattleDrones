@@ -93,6 +93,9 @@ lands: false
 # SaberFactions support (if in same faction disable attack)
 saber-factions: false
 
+# FactionsUUID support (If in same faction disable attack)
+factions-uuid: false
+
 # Automatic disable toggles on world change
 auto-disable:
   world_nether:
