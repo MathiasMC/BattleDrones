@@ -56,6 +56,10 @@ public class GUIFolder {
     final File mortar_whitelist;
     final File mortar_ammo;
 
+    final File lightning;
+    final File lightning_whitelist;
+    final File lightning_ammo;
+
     public GUIFolder(final BattleDrones plugin) {
         this.plugin = plugin;
         File folder = new File(plugin.getDataFolder() + File.separator + "gui");
@@ -101,6 +105,10 @@ public class GUIFolder {
         File folderMortar = new File(folder + File.separator + "mortar");
         if (!folderMortar.exists()) {
             folderMortar.mkdir();
+        }
+        File folderLightning = new File(folder + File.separator + "lightning");
+        if (!folderLightning.exists()) {
+            folderLightning.mkdir();
         }
         shop = new File(folderShop, "shop.yml");
         if (!shop.exists()) {
@@ -426,6 +434,33 @@ public class GUIFolder {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
         }
+        lightning = new File(folderLightning, "lightning.yml");
+        if (!lightning.exists()) {
+            try {
+                lightning.createNewFile();
+                plugin.copy("gui/lightning/lightning.yml", lightning);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        lightning_whitelist = new File(folderLightning, "whitelist.yml");
+        if (!lightning_whitelist.exists()) {
+            try {
+                lightning_whitelist.createNewFile();
+                plugin.copy("gui/lightning/whitelist.yml", lightning_whitelist);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
+        lightning_ammo = new File(folderLightning, "ammo.yml");
+        if (!lightning_ammo.exists()) {
+            try {
+                lightning_ammo.createNewFile();
+                plugin.copy("gui/lightning/ammo.yml", lightning_ammo);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
         load();
     }
 
@@ -475,5 +510,9 @@ public class GUIFolder {
         plugin.guiFiles.put("mortar", YamlConfiguration.loadConfiguration(mortar));
         plugin.guiFiles.put("mortar_whitelist", YamlConfiguration.loadConfiguration(mortar_whitelist));
         plugin.guiFiles.put("mortar_ammo", YamlConfiguration.loadConfiguration(mortar_ammo));
+
+        plugin.guiFiles.put("lightning", YamlConfiguration.loadConfiguration(lightning));
+        plugin.guiFiles.put("lightning_whitelist", YamlConfiguration.loadConfiguration(lightning_whitelist));
+        plugin.guiFiles.put("lightning_ammo", YamlConfiguration.loadConfiguration(lightning_ammo));
     }
 }

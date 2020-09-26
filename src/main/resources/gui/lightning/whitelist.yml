@@ -1,0 +1,17 @@
+settings:
+  name: '&dYour drones > Lightning'
+  size: 54
+45:
+  NAME: ' '
+  LORES: []
+  MATERIAL: RED_STAINED_GLASS_PANE
+  AMOUNT: 1
+  OPTIONS:
+    - BACK
+53:
+  NAME: '&6Add a player to the whitelist'
+  LORES: []
+  MATERIAL: PAPER
+  AMOUNT: 1
+  OPTIONS:
+    - DRONE_WHITELIST_ADD

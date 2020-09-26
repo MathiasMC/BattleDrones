@@ -68,6 +68,7 @@ public class BattleDrones extends JavaPlugin {
     public Healing healing;
     public Flamethrower flamethrower;
     public Gun gun;
+    public Lightning lightning;
 
     public InternalPlaceholders internalPlaceholders;
 
@@ -105,6 +106,7 @@ public class BattleDrones extends JavaPlugin {
         drones.add("flamethrower");
         drones.add("faf_missile");
         drones.add("mortar");
+        drones.add("lightning");
 
         textUtils = new TextUtils(this);
         config = new Config(this);
@@ -128,6 +130,7 @@ public class BattleDrones extends JavaPlugin {
         healing = new Healing(this);
         flamethrower = new Flamethrower(this);
         gun = new Gun(this);
+        lightning = new Lightning(this);
 
         locationSupport = new LocationSupport(this);
 

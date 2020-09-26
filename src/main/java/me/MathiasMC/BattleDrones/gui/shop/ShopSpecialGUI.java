@@ -19,11 +19,13 @@ public class ShopSpecialGUI extends GUI {
     private final String uuid = playerMenu.getUuid();
     private final PlayerConnect playerConnect = playerMenu.getPlayerConnect();
     private final String flamethrower_id;
+    private final String lightning_id;
 
     public ShopSpecialGUI(Menu playerMenu) {
         super(playerMenu);
         this.file = plugin.guiFiles.get("shop_special");
         this.flamethrower_id = "flamethrower";
+        this.lightning_id = "lightning";
     }
 
     @Override
@@ -42,6 +44,8 @@ public class ShopSpecialGUI extends GUI {
         if (file.contains(String.valueOf(slot))) {
             if (file.getStringList(slot + ".OPTIONS").contains("DRONE_FLAMETHROWER_BUY")) {
                 plugin.guiManager.shopGUI(slot, player, uuid, playerConnect, file, flamethrower_id, flamethrower_id);
+            } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_LIGHTNING_BUY")) {
+                plugin.guiManager.shopGUI(slot, player, uuid, playerConnect, file, lightning_id, lightning_id);
             } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
                 new ShopGUI(plugin.getPlayerMenu(player)).open();
             }

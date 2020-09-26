@@ -233,6 +233,8 @@ public class DroneManager {
                             plugin.rocket.shot(player, "faf_missile", true, false);
                         } else if (drone.equalsIgnoreCase("mortar")) {
                             plugin.rocket.shot(player, "mortar", false, true);
+                        } else if (drone.equalsIgnoreCase("lightning")) {
+                            plugin.lightning.shot(player);
                         }
                         playerConnect.setActive(drone);
                         playerConnect.setRegen(true);

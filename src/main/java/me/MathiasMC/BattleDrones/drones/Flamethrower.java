@@ -28,11 +28,11 @@ public class Flamethrower {
         final PlayerConnect playerConnect = plugin.get(uuid);
         final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
         final String group = playerConnect.getGroup();
-        final FileConfiguration rocket = plugin.droneFiles.get(drone);
+        final FileConfiguration file = plugin.droneFiles.get(drone);
         final String path = group + "." + droneHolder.getLevel() + ".";
         final ArmorStand armorStand = playerConnect.head;
         final FileConfiguration particleFile = plugin.particles.get;
-        final String customParticle = rocket.getString(path + "particle.1");
+        final String customParticle = file.getString(path + "particle.1");
         final String particleType = particleFile.getString(customParticle + ".particle");
         final int size = particleFile.getInt(customParticle + ".size");
         final int amount = particleFile.getInt(customParticle + ".amount");
@@ -50,10 +50,10 @@ public class Flamethrower {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
                     if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
-                        line(location.add(0, 0.4, 0), targetLocation, player, target, rocket, path, customParticle, delay, size, amount, distance, space, r, g, b, yOffset, particleType);
-                        plugin.droneManager.checkAmmo(rocket, path, droneHolder.getAmmo(), player.getName());
-                        plugin.droneManager.checkShot(player, target, rocket, location, path, "run");
-                        plugin.droneManager.takeAmmo(playerConnect, droneHolder, rocket, path, player.getName());
+                        line(location.add(0, 0.4, 0), targetLocation, player, target, file, path, customParticle, delay, size, amount, distance, space, r, g, b, yOffset, particleType);
+                        plugin.droneManager.checkAmmo(file, path, droneHolder.getAmmo(), player.getName());
+                        plugin.droneManager.checkShot(player, target, file, location, path, "run");
+                        plugin.droneManager.takeAmmo(playerConnect, droneHolder, file, path, player.getName());
 
                     }
                 }
@@ -61,7 +61,7 @@ public class Flamethrower {
             } else {
                 playerConnect.setRegen(true);
             }
-        }, 0, rocket.getLong(path + "cooldown")).getTaskId();
+        }, 0, file.getLong(path + "cooldown")).getTaskId();
     }
 
     private void line(final Location start, final Location end, final Player player, final LivingEntity target, final FileConfiguration file, final String path

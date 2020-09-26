@@ -54,6 +54,7 @@ public class PlayerGUI extends GUI {
                 new ProtectiveGUI(plugin.getPlayerMenu(player)).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYER_SPECIAL")) {
                 plugin.loadDroneHolder(uuid, "flamethrower");
+                plugin.loadDroneHolder(uuid, "lightning");
                 new SpecialGUI(plugin.getPlayerMenu(player)).open();
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_SHOP")) {
                 new ShopGUI(plugin.getPlayerMenu(player)).open();

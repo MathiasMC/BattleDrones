@@ -23,6 +23,9 @@ public class SpecialGUI extends GUI {
     private final String flamethrower_id;
     private final DroneHolder flamethrower_droneHolder;
     private final FileConfiguration flamethrower_file;
+    private final String lightning_id;
+    private final DroneHolder lightning_droneHolder;
+    private final FileConfiguration lightning_file;
 
     public SpecialGUI(Menu playerMenu) {
         super(playerMenu);
@@ -30,6 +33,9 @@ public class SpecialGUI extends GUI {
         this.flamethrower_id = "flamethrower";
         this.flamethrower_droneHolder = plugin.getDroneHolder(uuid, flamethrower_id);
         this.flamethrower_file = plugin.droneFiles.get(flamethrower_id);
+        this.lightning_id = "lightning";
+        this.lightning_droneHolder = plugin.getDroneHolder(uuid, lightning_id);
+        this.lightning_file = plugin.droneFiles.get(lightning_id);
     }
 
     @Override
@@ -47,6 +53,8 @@ public class SpecialGUI extends GUI {
         final int slot = e.getSlot();
         if (flamethrower_file.getInt("gui.POSITION") == slot && flamethrower_droneHolder.getUnlocked() == 1) {
             plugin.guiManager.playerGUI(e, player, playerConnect, flamethrower_droneHolder, flamethrower_id, flamethrower_file);
+        } else if (lightning_file.getInt("gui.POSITION") == slot && lightning_droneHolder.getUnlocked() == 1) {
+            plugin.guiManager.playerGUI(e, player, playerConnect, lightning_droneHolder, lightning_id, lightning_file);
         } else if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
             new PlayerGUI(plugin.getPlayerMenu(player)).open();
         }
@@ -58,6 +66,9 @@ public class SpecialGUI extends GUI {
         final HashMap<String, Integer> drones = new HashMap<>();
         if (flamethrower_droneHolder.getUnlocked() == 1) {
             drones.put(flamethrower_id, flamethrower_droneHolder.getLevel());
+        }
+        if (lightning_droneHolder.getUnlocked() == 1) {
+            drones.put(lightning_id, lightning_droneHolder.getLevel());
         }
         plugin.guiManager.setDrones(uuid, drones, inventory);
     }

@@ -56,7 +56,7 @@ public class DroneMenu extends GUI {
                     new ExplodeGUI(plugin.getPlayerMenu(player)).open();
                 } else if (drone.equalsIgnoreCase("shield_generator") || drone.equalsIgnoreCase("healing")) {
                     new ProtectiveGUI(plugin.getPlayerMenu(player)).open();
-                } else if (drone.equalsIgnoreCase("flamethrower")) {
+                } else if (drone.equalsIgnoreCase("flamethrower") || drone.equalsIgnoreCase("lightning")) {
                     new SpecialGUI(plugin.getPlayerMenu(player)).open();
                 }
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_MONSTERS")) {
@@ -167,9 +167,21 @@ public class DroneMenu extends GUI {
         if (file.contains(path + "chance")) {
             chance = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path + "chance")));
         }
+        String radius = "";
+        if (file.contains(path + "radius")) {
+            radius = file.getString(path + "radius");
+        }
         String setfire_chance = "";
         if (file.contains(path + "setfire-chance")) {
             setfire_chance = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path + "setfire-chance")));
+        }
+        String explosion_chance = "";
+        if (file.contains(path + "explosion-chance")) {
+            explosion_chance = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path + "explosion-chance")));
+        }
+        String explosion_power = "";
+        if (file.contains(path + "explosion-power")) {
+            explosion_power = file.getString(path + "explosion-power");
         }
         String burning_time = "";
         if (file.contains(path + "burning-time")) {
@@ -201,7 +213,10 @@ public class DroneMenu extends GUI {
         String cooldown_next = "";
         String shield_generator_damage_next = "";
         String chance_next = "";
+        String radius_next = "";
         String setfire_chance_next = "";
+        String explosion_chance_next = "";
+        String explosion_power_next = "";
         String burning_time_next = "";
         String rocket_speed_next = "";
         String rocket_radius_next = "";
@@ -223,8 +238,17 @@ public class DroneMenu extends GUI {
             if (file.contains(path_next + ".chance")) {
                 chance_next = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path_next + ".chance")));
             }
+            if (file.contains(path_next + ".radius")) {
+                radius_next = file.getString(path_next + ".radius");
+            }
             if (file.contains(path_next + ".setfire-chance")) {
                 setfire_chance_next = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path_next + ".setfire-chance")));
+            }
+            if (file.contains(path_next + ".explosion-chance")) {
+                explosion_chance_next = String.valueOf(plugin.calculateManager.getProcentFromDouble(file.getDouble(path_next + ".explosion-chance")));
+            }
+            if (file.contains(path_next + ".explosion-power")) {
+                explosion_power_next = file.getString(path_next + ".explosion-power");
             }
             if (file.contains(path_next + ".burning-time")) {
                 burning_time_next = file.getString(path_next + ".burning-time");
@@ -302,7 +326,10 @@ public class DroneMenu extends GUI {
                         .replace("{firerate}", firerate)
                         .replace("{cooldown}", cooldown)
                         .replace("{chance}", chance)
+                        .replace("{radius}", radius)
                         .replace("{setfire_chance}", setfire_chance)
+                        .replace("{explosion_chance}", explosion_chance)
+                        .replace("{explosion_power}", explosion_power)
                         .replace("{burning_time}", burning_time)
                         .replace("{knockback}", knockback)
                         .replace("{rocket_speed}", rocket_speed)
@@ -318,7 +345,10 @@ public class DroneMenu extends GUI {
                         .replace("{firerate_next}", firerate_next)
                         .replace("{cooldown_next}", cooldown_next)
                         .replace("{chance_next}", chance_next)
+                        .replace("{radius_next}", radius_next)
                         .replace("{setfire_chance_next}", setfire_chance_next)
+                        .replace("{explosion_chance_next}", explosion_chance_next)
+                        .replace("{explosion_power_next}", explosion_power_next)
                         .replace("{burning_time_next}", burning_time_next)
                         .replace("{knockback_next}", knockback_next)
                         .replace("{rocket_speed_next}", rocket_speed_next)
@@ -347,7 +377,10 @@ public class DroneMenu extends GUI {
                             .replace("{firerate}", firerate)
                             .replace("{cooldown}", cooldown)
                             .replace("{chance}", chance)
+                            .replace("{radius}", radius)
                             .replace("{setfire_chance}", setfire_chance)
+                            .replace("{explosion_chance}", explosion_chance)
+                            .replace("{explosion_power}", explosion_power)
                             .replace("{burning_time}", burning_time)
                             .replace("{knockback}", knockback)
                             .replace("{rocket_speed}", rocket_speed)
@@ -363,7 +396,10 @@ public class DroneMenu extends GUI {
                             .replace("{firerate_next}", firerate_next)
                             .replace("{cooldown_next}", cooldown_next)
                             .replace("{chance_next}", chance_next)
+                            .replace("{radius_next}", radius_next)
                             .replace("{setfire_chance_next}", setfire_chance_next)
+                            .replace("{explosion_chance_next}", explosion_chance_next)
+                            .replace("{explosion_power_next}", explosion_power_next)
                             .replace("{burning_time_next}", burning_time_next)
                             .replace("{knockback_next}", knockback_next)
                             .replace("{rocket_speed_next}", rocket_speed_next)

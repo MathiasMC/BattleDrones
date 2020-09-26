@@ -18,6 +18,7 @@ public class DronesFolder {
     final File flamethrower;
     final File faf_missile;
     final File mortar;
+    final File lightning;
 
     public DronesFolder(final BattleDrones plugin) {
         this.plugin = plugin;
@@ -117,6 +118,15 @@ public class DronesFolder {
                 plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
             }
         }
+        lightning = new File(folderSpecial, "lightning.yml");
+        if (!lightning.exists()) {
+            try {
+                lightning.createNewFile();
+                plugin.copy("drones/special/lightning.yml", lightning);
+            } catch (IOException exception) {
+                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            }
+        }
         load();
     }
 
@@ -129,5 +139,6 @@ public class DronesFolder {
         plugin.droneFiles.put("flamethrower", YamlConfiguration.loadConfiguration(flamethrower));
         plugin.droneFiles.put("faf_missile", YamlConfiguration.loadConfiguration(faf_missile));
         plugin.droneFiles.put("mortar", YamlConfiguration.loadConfiguration(mortar));
+        plugin.droneFiles.put("lightning", YamlConfiguration.loadConfiguration(lightning));
     }
 }
