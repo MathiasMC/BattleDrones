@@ -158,7 +158,7 @@ public class Rocket {
                         }
                     }
                     if (file.getBoolean(path + "rocket-explosion")) {
-                        world.createExplosion(armorStandLocation, file.getInt(path + "rocket-explosion-power"), file.getBoolean(path + "rocket-explosion-fire"), file.getBoolean(path + "rocket-explosion-block"));
+                        world.createExplosion(armorStandLocation.getX(), armorStandLocation.getY(), armorStandLocation.getZ(), file.getInt(path + "rocket-explosion-power"), file.getBoolean(path + "rocket-explosion-fire"), file.getBoolean(path + "rocket-explosion-block"));
                     }
                     plugin.droneManager.checkShot(player, target, file, armorStandLocation, path, "explode");
                     if (customParticle_1 != null) {

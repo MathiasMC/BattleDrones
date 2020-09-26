@@ -94,7 +94,7 @@ lands: false
 factions: false
 
 # Towny Advanced support (If in same town disable attack)
-towny-advanced: true
+towny-advanced: false
 
 # Automatic disable toggles on world change
 auto-disable:

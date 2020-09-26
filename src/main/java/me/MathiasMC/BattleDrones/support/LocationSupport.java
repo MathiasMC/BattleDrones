@@ -5,9 +5,6 @@ import com.iridium.iridiumskyblock.Island;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.Relation;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.WorldGuard;
@@ -23,12 +20,10 @@ import me.angeschossen.lands.api.player.LandPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import com.palmergames.bukkit.towny.TownyAPI;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class LocationSupport {
 
@@ -38,7 +33,7 @@ public class LocationSupport {
 
     private FPlayers fPlayers = null;
 
-    private TownyAPI townyAPI = null;
+    private TownyAdvanced towny = null;
 
     public LocationSupport(final BattleDrones plugin) {
         this.plugin = plugin;
@@ -49,7 +44,7 @@ public class LocationSupport {
             this.fPlayers = FPlayers.getInstance();
         }
         if (plugin.getServer().getPluginManager().getPlugin("Towny") != null) {
-            this.townyAPI = TownyAPI.getInstance();
+            this.towny = new TownyAdvanced(this.plugin);
         }
     }
 
@@ -189,20 +184,8 @@ public class LocationSupport {
                     } else return !fPlayer.getFaction().getRelationWish(fPlayerTarget.getFaction()).equals(Relation.ALLY);
                 }
             }
-            if (plugin.config.get.getBoolean("towny-advanced") && townyAPI != null) {
-                try {
-                    final Resident resident = townyAPI.getDataSource().getResident(player.getName());
-                    if (resident.hasTown()) {
-                        final Town town = townyAPI.getDataSource().getTown(resident.getTown().getName());
-                        Optional<Resident> playerResident = town.getResidents().stream()
-                                .filter(r -> r.getName().equals(target.getName()))
-                                .findFirst();
-                        return !playerResident.isPresent();
-                    }
-                    return true;
-                } catch (NotRegisteredException e) {
-                    return true;
-                }
+            if (plugin.config.get.getBoolean("towny-advanced") && towny != null) {
+                return towny.canTarget(player, target);
             }
         }
         return true;
