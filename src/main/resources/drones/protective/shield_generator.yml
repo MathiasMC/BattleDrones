@@ -48,6 +48,16 @@ default:
     # Custom head from config.yml
     head: shield-generator-1
 
+    # Drone head position (x z is best to keep the same value or it will not be a perfect circle around player)
+    # But you can create some awesome shapes around player if you have the values a little bit off like x: 1.875 z: 1.575
+    position:
+      # x position (1.575 is left -1.575 is right)
+      x: 1.575
+      # Drone head height (y offset you can use - values also)
+      y: 2
+      # z position (1.575 is left -1.575 is right)
+      z: 1.575
+
     # Damage off between min, max (0-1 example 0.30 = 30%)
     min: 0.20
     max: 0.30
@@ -118,6 +128,10 @@ default:
   2:
     find-target: 60
     head: shield-generator-2
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 0.18
     max: 0.35
     range: 11
@@ -159,6 +173,10 @@ default:
   3:
     find-target: 60
     head: shield-generator-3
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 0.18
     max: 0.40
     range: 12
@@ -200,6 +218,10 @@ default:
   4:
     find-target: 60
     head: shield-generator-4
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 0.25
     max: 0.50
     range: 13

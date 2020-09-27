@@ -48,6 +48,16 @@ default:
     # Custom head from config.yml
     head: mortar-1
 
+    # Drone head position (x z is best to keep the same value or it will not be a perfect circle around player)
+    # But you can create some awesome shapes around player if you have the values a little bit off like x: 1.875 z: 1.575
+    position:
+      # x position (1.575 is left -1.575 is right)
+      x: 1.575
+      # Drone head height (y offset you can use - values also)
+      y: 2
+      # z position (1.575 is left -1.575 is right)
+      z: 1.575
+
     # Damage between min, max
     min: 2
     max: 5
@@ -176,6 +186,10 @@ default:
   2:
     find-target: 60
     head: mortar-2
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 4
     max: 7
     range: 20
@@ -246,6 +260,10 @@ default:
   3:
     find-target: 60
     head: mortar-3
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 5
     max: 9
     range: 22
@@ -316,6 +334,10 @@ default:
   4:
     find-target: 60
     head: mortar-4
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 7
     max: 13
     range: 24

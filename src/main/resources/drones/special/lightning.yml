@@ -48,6 +48,16 @@ default:
     # Custom head from config.yml
     head: lightning-1
 
+    # Drone head position (x z is best to keep the same value or it will not be a perfect circle around player)
+    # But you can create some awesome shapes around player if you have the values a little bit off like x: 1.875 z: 1.575
+    position:
+      # x position (1.575 is left -1.575 is right)
+      x: 1.575
+      # Drone head height (y offset you can use - values also)
+      y: 2
+      # z position (1.575 is left -1.575 is right)
+      z: 1.575
+
     # Damage between min, max
     min: 3
     max: 8
@@ -156,6 +166,10 @@ default:
   2:
     find-target: 5
     head: lightning-2
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 5
     max: 8
     range: 16
@@ -214,6 +228,10 @@ default:
   3:
     find-target: 5
     head: lightning-3
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 7
     max: 10
     range: 20

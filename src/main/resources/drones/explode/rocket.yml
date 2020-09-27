@@ -48,6 +48,16 @@ default:
     # Custom head from config.yml
     head: rocket-1
 
+    # Drone head position (x z is best to keep the same value or it will not be a perfect circle around player)
+    # But you can create some awesome shapes around player if you have the values a little bit off like x: 1.875 z: 1.575
+    position:
+      # x position (1.575 is left -1.575 is right)
+      x: 1.575
+      # Drone head height (y offset you can use - values also)
+      y: 2
+      # z position (1.575 is left -1.575 is right)
+      z: 1.575
+
     # Damage between min, max
     min: 0.5
     max: 3
@@ -165,6 +175,10 @@ default:
   2:
     find-target: 20
     head: rocket-2
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 0.5
     max: 5
     range: 11
@@ -230,6 +244,10 @@ default:
   3:
     find-target: 20
     head: rocket-3
+    position:
+      x: 1.575
+      y: 2
+      z: 1.575
     min: 2.5
     max: 6
     range: 12

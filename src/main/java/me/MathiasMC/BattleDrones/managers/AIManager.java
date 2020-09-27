@@ -26,11 +26,26 @@ public class AIManager {
         final ArmorStand head = playerConnect.head;
         final ArmorStand name = playerConnect.name;
         final EulerAngle eulerAngle = new EulerAngle(0, 0, 0);
+        double xDCustom = 1.575;
+        double yDCustom = 2;
+        double zDCustom = 1.575;
+        if (file.contains(group + "." + drone_level + ".position.x")) {
+            xDCustom = file.getDouble(group + "." + drone_level + ".position.x");
+        }
+        if (file.contains(group + "." + drone_level + ".position.y")) {
+            yDCustom = file.getDouble(group + "." + drone_level + ".position.y");
+        }
+        if (file.contains(group + "." + drone_level + ".position.z")) {
+            zDCustom = file.getDouble(group + "." + drone_level + ".position.z");
+        }
         EulerAngle angle = null;
         if (file.contains(group + "." + drone_level + ".angle")) {
             angle = new EulerAngle(file.getDouble(group + "." + drone_level + ".angle"), 0, 0);
         }
         final EulerAngle finalAngle = angle;
+        final double finalXDCustom = xDCustom;
+        final double finalYDCustom = yDCustom;
+        final double finalZDCustom = zDCustom;
         final double radius = file.getDouble(group + "." + drone_level + ".range");
         int findTarget = 1;
         if (file.contains(group + "." + drone_level + ".find-target")) {
@@ -54,11 +69,11 @@ public class AIManager {
                 target = null;
             }
             if (!plugin.park.contains(uuid)) {
-                final Location location = player.getLocation().add(0, 2, 0);
+                final Location location = player.getLocation().add(0, finalYDCustom, 0);
                 float yaw = location.getYaw();
                 final Vector direction = location.getDirection();
-                final double xD = Math.sin(-0.0175 * yaw + 1.575) + location.getX();
-                final double zD = Math.cos(-0.0175 * yaw + 1.575) + location.getZ();
+                final double xD = Math.sin(-0.0175 * yaw + finalXDCustom) + location.getX();
+                final double zD = Math.cos(-0.0175 * yaw + finalZDCustom) + location.getZ();
                 final Location tp = new Location(player.getWorld(), xD, location.getY(), zD);
                 if (target != null) {
                     if (finalAngle != null) {

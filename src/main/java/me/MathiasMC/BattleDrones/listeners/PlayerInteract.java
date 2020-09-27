@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -33,7 +34,7 @@ public class PlayerInteract implements Listener {
                 if (key != null) {
                     if (plugin.getEntityLook(e.getPlayer(), entity)) {
                         e.setCancelled(true);
-                        if (!e.getPlayer().getUniqueId().toString().equalsIgnoreCase(key)) {
+                        if (!e.getPlayer().getUniqueId().toString().equalsIgnoreCase(key) && e.getAction() == Action.LEFT_CLICK_AIR) {
                             if (!plugin.locationSupport.inWorldGuardRegion(entity)) {
                                 return;
                             }
