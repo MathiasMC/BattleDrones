@@ -85,7 +85,7 @@ public class Rocket {
                                     ,customParticle_2, delay_2, size_2, amount_2, r_2, g_2, b_2, yOffset_2, particleType_2, tick_2
                                     ,customParticle_3, delay_3, size_3, amount_3, r_3, g_3, b_3, yOffset_3, particleType_3, tick_3
                             );
-                            plugin.droneManager.checkAmmo(rocket, path, droneHolder.getAmmo(), player.getName());
+                            plugin.droneManager.checkMessage(droneHolder.getAmmo(), rocket.getInt(path + "max-ammo-slots") * 64, player.getName(), "ammo");
                             plugin.droneManager.checkShot(player, target, rocket, location, path, "run");
                             plugin.droneManager.takeAmmo(playerConnect, droneHolder, rocket, path, player.getName());
                         }

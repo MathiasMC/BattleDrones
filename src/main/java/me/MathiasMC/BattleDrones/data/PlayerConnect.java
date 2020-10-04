@@ -113,19 +113,21 @@ public class PlayerConnect {
         droneHolder.save();
     }
 
-    public void spawn(final Player player, final ItemStack itemStack) {
+    public void spawn(final Player player, final ItemStack itemStack, final boolean hasName) {
         final Location location = player.getLocation();
         final ArmorStand armorStand = BattleDrones.call.armorStandManager.getArmorStand(location.add(0, 2, 0), false, true);
-        final ArmorStand armorStandName = BattleDrones.call.armorStandManager.getArmorStand(location.add(0, 2.3, 0), false, true);
         armorStand.setHelmet(itemStack);
         armorStand.setCustomName(" ");
         armorStand.setCustomNameVisible(true);
-        armorStandName.setCustomName(" ");
-        armorStandName.setCustomNameVisible(true);
         head = armorStand;
-        name = armorStandName;
         armorStand.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, uuid);
-        armorStandName.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, uuid);
+        if (hasName) {
+            final ArmorStand armorStandName = BattleDrones.call.armorStandManager.getArmorStand(location.add(0, 2.3, 0), false, true);
+            armorStandName.setCustomName(" ");
+            armorStandName.setCustomNameVisible(true);
+            name = armorStandName;
+            armorStandName.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, uuid);
+        }
     }
 
     public void save() {

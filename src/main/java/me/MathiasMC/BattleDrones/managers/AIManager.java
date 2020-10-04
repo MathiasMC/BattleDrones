@@ -108,6 +108,9 @@ public class AIManager {
                     head.teleport(tp.setDirection(direction));
                     plugin.armorStandManager.setCustomName(head, name, drone_level, group, file, "searching", player);
                 }
+                if (name == null) {
+                    return;
+                }
                 name.teleport(tp.add(0, 0.3, 0));
             } else {
                 final Location tp = head.getLocation();
@@ -129,6 +132,9 @@ public class AIManager {
                     head.setHeadPose(eulerAngle);
                     head.teleport(tp);
                     plugin.armorStandManager.setCustomName(head, name, drone_level, group, file, "searching", player);
+                }
+                if (name == null) {
+                    return;
                 }
                 name.teleport(tp.clone().add(0, 0.3, 0));
             }

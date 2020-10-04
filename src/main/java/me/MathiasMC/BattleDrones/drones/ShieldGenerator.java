@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -70,9 +69,10 @@ public class ShieldGenerator {
                             final double randomReduce = plugin.randomDouble(shield_generator.getDouble(path + "min"), shield_generator.getDouble(path + "max"));
                             final double reducedDamage = finalDamage - finalDamage * randomReduce;
                             e.setDamage(reducedDamage);
+                            plugin.droneManager.checkMessage(droneHolder.getAmmo(), shield_generator.getInt(path + "max-ammo-slots") * 64, e.getEntity().getName(), "ammo");
                             if (e.getDamager() instanceof Player) {
                                 shieldGeneratorRun(shield_generator, path + "run.player", playerConnect.head.getLocation(), e.getEntity().getName(), String.valueOf(plugin.calculateManager.getProcentFromDouble(randomReduce)));
-                            } else if (e.getDamager() instanceof Monster) {
+                            } else if (plugin.droneManager.isMonster(e.getDamager())) {
                                 shieldGeneratorRun(shield_generator, path + "run.monster", playerConnect.head.getLocation(), e.getEntity().getName(), String.valueOf(plugin.calculateManager.getProcentFromDouble(randomReduce)));
                             }
                             if (shield_generator.contains(path + "particle.2")) {

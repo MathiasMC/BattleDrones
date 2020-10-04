@@ -247,3 +247,29 @@ low-ammo:
   # if player has 50% left warn the player!
   50:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on ammo only 50% left.'
+
+low-health:
+
+  # if player has 0% left warn the player!
+  0:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have any more health left.'
+
+  # if player has 10% left warn the player!
+  10:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on health only 10% left.'
+    - 'battledrones actionbar {player} 1 &4Warning your drone is about to die. (10% health)'
+
+  # if player has 20% left warn the player!
+  20:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on health only 20% left.'
+    - 'battledrones actionbar {player} 1 &4Warning your drone is about to die. (20% health)'
+
+  # if player has 30% left warn the player!
+  30:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on health only 30% left.'
+    - 'battledrones actionbar {player} 1 &4Warning your drone is about to die. (30% health)'
+
+  # if player has 60% left warn the player!
+  60:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on health only 60% left.'
+    - 'battledrones actionbar {player} 1 &4Warning your drone only has 60% health'

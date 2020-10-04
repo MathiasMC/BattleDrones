@@ -47,6 +47,9 @@ public class LocationSupport {
 
     public LocationSupport(final BattleDrones plugin) {
         this.plugin = plugin;
+        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+            this.worldGuard = WorldGuard.getInstance();
+        }
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
             this.landsIntegration = new LandsIntegration(plugin);
         }
@@ -59,9 +62,6 @@ public class LocationSupport {
         if (plugin.getServer().getPluginManager().getPlugin("Residence") != null) {
             this.residence = Residence.getInstance();
             this.residenceManager = residence.getResidenceManager();
-        }
-        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            this.worldGuard = WorldGuard.getInstance();
         }
     }
 

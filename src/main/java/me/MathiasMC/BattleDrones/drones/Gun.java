@@ -67,7 +67,7 @@ public class Gun {
                             }
                         }
                         plugin.calculateManager.damage(target, damage);
-                        plugin.droneManager.checkAmmo(file, path, droneHolder.getAmmo(), player.getName());
+                        plugin.droneManager.checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player.getName(), "ammo");
                         plugin.droneManager.checkShot(player, target, file, location, path, "run");
                         plugin.droneManager.takeAmmo(playerConnect, droneHolder, file, path, player.getName());
                         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {

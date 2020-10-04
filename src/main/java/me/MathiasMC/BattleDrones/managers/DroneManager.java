@@ -21,23 +21,22 @@ public class DroneManager {
         this.plugin = plugin;
     }
 
-    public void checkAmmo(final FileConfiguration file, final String path, final long ammo, final String name) {
-        final int maxAmmo = file.getInt(path + "max-ammo-slots") * 64;
-        final long ammoLeft = Double.valueOf(Math.floor(ammo * (100D / maxAmmo))).longValue();
-        if (ammoLeft != 0L) {
-            if (ammoLeft != Double.valueOf(Math.floor((ammo + 1) * (100D / maxAmmo))).longValue()) {
-                ammoMessage(ammoLeft, name);
+    public void checkMessage(final long amount, final long maxAmount, final String name, final String type) {
+        final long left = Double.valueOf(Math.floor(amount * (100D / maxAmount))).longValue();
+        if (left != 0L) {
+            if (left != Double.valueOf(Math.floor((amount + 1) * (100D / maxAmount))).longValue()) {
+                sendCheckMessage(left, name, type);
             }
         } else {
-            if (ammo == 1) {
-                ammoMessage(ammoLeft, name);
+            if (amount == 1) {
+                sendCheckMessage(left, name, type);
             }
         }
     }
 
-    private void ammoMessage(final long ammoLeftProcent, final String name) {
-        if (plugin.config.get.contains("low-ammo." + ammoLeftProcent)) {
-            for (String command : plugin.config.get.getStringList("low-ammo." + ammoLeftProcent)) {
+    private void sendCheckMessage(final long left, final String name, final String type) {
+        if (plugin.config.get.contains("low-" + type + "." + left)) {
+            for (String command : plugin.config.get.getStringList("low-" + type + "." + left)) {
                 plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", name));
             }
         }
@@ -200,8 +199,11 @@ public class DroneManager {
                                 itemStack.setItemMeta(itemMeta);
                             }
                         }
-
-                        playerConnect.spawn(player, itemStack);
+                        boolean hasName = false;
+                        if (Objects.requireNonNull(file.getString(path + "messages.name.searching")).length() > 0 || Objects.requireNonNull(file.getString(path + "messages.name.target")).length() > 0) {
+                            hasName = true;
+                        }
+                        playerConnect.spawn(player, itemStack, hasName);
                         startAI(player, playerConnect, droneHolder, file, drone);
                         if (drone.equalsIgnoreCase("laser")) {
                             plugin.gun.shot(player, "laser");

@@ -7,7 +7,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -40,12 +39,15 @@ public class PlayerInteract implements Listener {
                             if (plugin.locationSupport.worldGuard != null && plugin.config.get.getBoolean("worldguard.use") && plugin.config.get.contains("worldguard." + playerConnect.getActive() + "." + droneHolder.getLevel() + ".damage") && plugin.locationSupport.inWorldGuardRegion(entity, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + droneHolder.getLevel() + ".damage"))) {
                                 return;
                             }
+                            final String name = plugin.getServer().getOfflinePlayer(UUID.fromString(key)).getName();
                             if (droneHolder.getHealth() - 1 >= 0) {
                                 droneHolder.setHealth(droneHolder.getHealth() - 1);
-                                hitCommands(armorStand, plugin.droneFiles.get(playerConnect.getActive()), playerConnect.getGroup(), droneHolder.getLevel());
+                                final FileConfiguration file = plugin.droneFiles.get(playerConnect.getActive());
+                                hitCommands(armorStand, file, playerConnect.getGroup(), droneHolder.getLevel());
+                                plugin.droneManager.checkMessage(droneHolder.getHealth(), file.getLong(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"), name, "health");
                                 return;
                             }
-                            droneDeath(plugin.getServer().getPlayer(UUID.fromString(key)), playerConnect, droneHolder);
+                            droneDeath(name, playerConnect, droneHolder);
                         }
                     }
                 }
@@ -64,11 +66,9 @@ public class PlayerInteract implements Listener {
         }
     }
 
-    private void droneDeath(final Player target, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
-        if (target != null) {
-            for (String command : plugin.config.get.getStringList("dead.player")) {
-                plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", target.getName()));
-            }
+    private void droneDeath(final String name, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
+        for (String command : plugin.config.get.getStringList("dead.player")) {
+            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", name));
         }
         droneHolder.setUnlocked(plugin.config.get.getInt("dead.unlocked"));
         if (plugin.config.get.getLong("dead.set-level") != 0) {

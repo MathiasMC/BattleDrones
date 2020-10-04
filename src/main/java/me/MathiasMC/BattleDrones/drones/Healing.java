@@ -56,7 +56,7 @@ public class Healing {
                             final Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
                             plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.particleManager.line(particleType, armorstand, targetLocation, armorstand.distance(targetLocation), space, r, g, b, amount, size), delay);
                         }
-                        plugin.droneManager.checkAmmo(healing, path, droneHolder.getAmmo(), player.getName());
+                        plugin.droneManager.checkMessage(droneHolder.getAmmo(), healing.getInt(path + "max-ammo-slots") * 64, player.getName(), "ammo");
                         plugin.droneManager.checkShot(player, target, healing, location, path, "run");
                         plugin.droneManager.takeAmmo(playerConnect, droneHolder, healing, path, player.getName());
                     }

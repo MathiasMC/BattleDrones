@@ -35,12 +35,32 @@ public class ArmorStandManager {
 
     public void setCustomName(final ArmorStand head, final ArmorStand name, final long droneLevel, final String group, final FileConfiguration file, final String message, final Player player) {
         final String text = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.text." + message)).replace("{name}", player.getName()));
-        if (!Objects.requireNonNull(head.getCustomName()).equalsIgnoreCase(text)) {
-            head.setCustomName(text);
+        if (text.length() > 0) {
+            if (!Objects.requireNonNull(head.getCustomName()).equalsIgnoreCase(text)) {
+                head.setCustomName(text);
+            }
+            if (!head.isCustomNameVisible()) {
+                head.setCustomNameVisible(true);
+            }
+        } else {
+            if (head.isCustomNameVisible()) {
+                head.setCustomNameVisible(false);
+            }
         }
-        final String nameText = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.name." + message)).replace("{name}", player.getName()));
-        if (!Objects.requireNonNull(name.getCustomName()).equalsIgnoreCase(nameText)) {
-            name.setCustomName(nameText);
+        if (name != null) {
+            final String nameText = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.name." + message)).replace("{name}", player.getName()));
+            if (nameText.length() > 0) {
+                if (!Objects.requireNonNull(name.getCustomName()).equalsIgnoreCase(nameText)) {
+                    name.setCustomName(nameText);
+                }
+                if (!name.isCustomNameVisible()) {
+                    name.setCustomNameVisible(true);
+                }
+            } else {
+                if (name.isCustomNameVisible()) {
+                    name.setCustomNameVisible(false);
+                }
+            }
         }
     }
 
