@@ -66,7 +66,9 @@ ammo-placeholder:
     color: '&c'
   amount: 20
 
-# WorldGuard support (disable attack & drone damage in regions)
+# WorldGuard support (disable attack & drone damage in regions) (you can add regions in the list remove [])
+# damage:
+#   - test
 worldguard:
   use: false
   # Drone type
@@ -79,6 +81,7 @@ worldguard:
       monsters: []
   # Drone type
   rocket:
+    # Drone level
     1:
       damage: []
       players: []
