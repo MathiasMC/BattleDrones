@@ -66,8 +66,24 @@ ammo-placeholder:
     color: '&c'
   amount: 20
 
-# WorldGuard support (disable attack in regions)
-worldguard: []
+# WorldGuard support (disable attack & drone damage in regions)
+worldguard:
+  use: false
+  # Drone type
+  laser:
+    # Drone level
+    1:
+      damage: []
+      players: []
+      animals: []
+      monsters: []
+  # Drone type
+  rocket:
+    1:
+      damage: []
+      players: []
+      animals: []
+      monsters: []
 
 # IridiumSkyblock support (allow only spawn in island)
 iridium-skyblock:
@@ -95,6 +111,9 @@ factions: false
 
 # Towny Advanced support (If in same town disable attack)
 towny-advanced: false
+
+# Residence support (if in same residence disable attack)
+residence: false
 
 # Automatic disable toggles on world change
 auto-disable:

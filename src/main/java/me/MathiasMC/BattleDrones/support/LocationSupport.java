@@ -1,5 +1,9 @@
 package me.MathiasMC.BattleDrones.support;
 
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.FlagPermissions;
+import com.bekvon.bukkit.residence.protection.ResidenceManager;
 import com.iridium.iridiumskyblock.IridiumSkyblock;
 import com.iridium.iridiumskyblock.Island;
 import com.massivecraft.factions.FPlayer;
@@ -35,6 +39,12 @@ public class LocationSupport {
 
     private TownyAdvanced towny = null;
 
+    private Residence residence = null;
+
+    private ResidenceManager residenceManager = null;
+
+    public WorldGuard worldGuard = null;
+
     public LocationSupport(final BattleDrones plugin) {
         this.plugin = plugin;
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
@@ -46,26 +56,29 @@ public class LocationSupport {
         if (plugin.getServer().getPluginManager().getPlugin("Towny") != null) {
             this.towny = new TownyAdvanced(this.plugin);
         }
+        if (plugin.getServer().getPluginManager().getPlugin("Residence") != null) {
+            this.residence = Residence.getInstance();
+            this.residenceManager = residence.getResidenceManager();
+        }
+        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+            this.worldGuard = WorldGuard.getInstance();
+        }
     }
 
-    public boolean inWorldGuardRegion(Entity entity) {
-        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            final List<String> list = plugin.config.get.getStringList("worldguard");
-            if (list.isEmpty()) {
+    public boolean inWorldGuardRegion(final Entity entity, final List<String> list) {
+        if (list.isEmpty()) {
+            return false;
+        }
+        final Location location = BukkitAdapter.adapt(entity.getLocation());
+        final RegionContainer container = worldGuard.getPlatform().getRegionContainer();
+        final RegionQuery query = container.createQuery();
+        final ApplicableRegionSet set = query.getApplicableRegions(location);
+        for (ProtectedRegion region : set) {
+            if (list.contains(region.getId())) {
                 return true;
             }
-            final Location location = BukkitAdapter.adapt(entity.getLocation());
-            final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-            final RegionQuery query = container.createQuery();
-            final ApplicableRegionSet set = query.getApplicableRegions(location);
-            for (ProtectedRegion region : set) {
-                if (list.contains(region.getId())) {
-                    return false;
-                }
-            }
-            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean inLocation(Player player, String drone) {
@@ -186,6 +199,22 @@ public class LocationSupport {
             }
             if (plugin.config.get.getBoolean("towny-advanced") && towny != null) {
                 return towny.canTarget(player, target);
+            }
+            if (plugin.config.get.getBoolean("residence") && residence != null && residenceManager != null) {
+                final ClaimedResidence claimed = residenceManager.getByLoc(player);
+                if (claimed != null) {
+                    if (!claimed.isOwner(player)) {
+                        if (!residence.getPermsByLoc(player.getLocation()).listPlayersFlags().contains(player.getName())) {
+                            return true;
+                        }
+                        return !claimed.getRPlayer().getUniqueId().toString().equalsIgnoreCase(target.getUniqueId().toString());
+                    }
+                    return !residence.getPermsByLoc(player.getLocation()).listPlayersFlags().contains(target.getName());
+                }
+                final FlagPermissions flagPermissions = residence.getPermsByLoc(target.getLocation());
+                if (flagPermissions != null) {
+                    return !residence.getPermsByLoc(target.getLocation()).listPlayersFlags().contains(player.getName());
+                }
             }
         }
         return true;

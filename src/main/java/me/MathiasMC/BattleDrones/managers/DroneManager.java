@@ -46,23 +46,9 @@ public class DroneManager {
     public void checkShot(final Player player, final LivingEntity target, final FileConfiguration file, final Location location, final String path, final String type) {
         if (target instanceof Player) {
             shotCommands(file, path + type + ".player", location, player.getName(), target.getName());
-        } else if (target instanceof Monster
-                || target instanceof Slime
-                || target instanceof Phantom
-                || target instanceof IronGolem
-                || target instanceof Ghast
-                || target instanceof Shulker) {
+        } else if (isMonster(target)) {
             shotCommands(file, path + type + ".monster", location, player.getName(), target.getName());
-        } else if (target instanceof Animals
-                || target instanceof Villager
-                || target instanceof WanderingTrader
-                || target instanceof Dolphin
-                || target instanceof PufferFish
-                || target instanceof Squid
-                || target instanceof TropicalFish
-                || target instanceof Bat
-                || target instanceof Cod
-                || target instanceof Salmon) {
+        } else if (isAnimal(target)) {
             shotCommands(file, path + type + ".animal", location, player.getName(), target.getName());
         }
     }
@@ -254,36 +240,58 @@ public class DroneManager {
     }
 
     public void startAI(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final String drone) {
-            if (drone.equalsIgnoreCase("shield_generator")) {
-                plugin.aiManager.defaultAI(player,
-                        playerConnect,
-                        file,
-                        droneHolder.getLevel(),
-                        droneHolder.getMonsters(),
-                        0,
-                        droneHolder.getPlayers(),
-                        droneHolder.getExclude(),
-                        false, false, true);
-            } else if (drone.equalsIgnoreCase("healing")) {
-                plugin.aiManager.defaultAI(player,
-                        playerConnect,
-                        file,
-                        droneHolder.getLevel(),
-                        droneHolder.getMonsters(),
-                        droneHolder.getAnimals(),
-                        1,
-                        droneHolder.getExclude(),
-                        true, true, true);
-            } else {
-                plugin.aiManager.defaultAI(player,
-                        playerConnect,
-                        file,
-                        droneHolder.getLevel(),
-                        droneHolder.getMonsters(),
-                        droneHolder.getAnimals(),
-                        droneHolder.getPlayers(),
-                        droneHolder.getExclude(),
-                        false, false, true);
-            }
+        if (drone.equalsIgnoreCase("shield_generator")) {
+            plugin.aiManager.defaultAI(player,
+                    playerConnect,
+                    file,
+                    droneHolder.getLevel(),
+                    droneHolder.getMonsters(),
+                    0,
+                    droneHolder.getPlayers(),
+                    droneHolder.getExclude(),
+                    false, false, true);
+        } else if (drone.equalsIgnoreCase("healing")) {
+            plugin.aiManager.defaultAI(player,
+                    playerConnect,
+                    file,
+                    droneHolder.getLevel(),
+                    droneHolder.getMonsters(),
+                    droneHolder.getAnimals(),
+                    1,
+                    droneHolder.getExclude(),
+                    true, true, true);
+        } else {
+            plugin.aiManager.defaultAI(player,
+                    playerConnect,
+                    file,
+                    droneHolder.getLevel(),
+                    droneHolder.getMonsters(),
+                    droneHolder.getAnimals(),
+                    droneHolder.getPlayers(),
+                    droneHolder.getExclude(),
+                    false, false, true);
+        }
+    }
+
+    public boolean isMonster(final Entity entity) {
+        return entity instanceof Monster
+                || entity instanceof Slime
+                || entity instanceof Phantom
+                || entity instanceof IronGolem
+                || entity instanceof Ghast
+                || entity instanceof Shulker;
+    }
+
+    public boolean isAnimal(final Entity entity) {
+        return entity instanceof org.bukkit.entity.Animals
+                || entity instanceof Villager
+                || entity instanceof WanderingTrader
+                || entity instanceof Dolphin
+                || entity instanceof PufferFish
+                || entity instanceof Squid
+                || entity instanceof TropicalFish
+                || entity instanceof Bat
+                || entity instanceof Cod
+                || entity instanceof Salmon;
     }
 }

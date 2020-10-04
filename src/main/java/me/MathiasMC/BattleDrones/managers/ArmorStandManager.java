@@ -50,31 +50,14 @@ public class ArmorStandManager {
     }
 
     public ArrayList<LivingEntity> getEntityAround(final Entity entity, final double radius, final int monsters, final int animal, final int player, final List<String> excludePlayers, final boolean reverseExclude) {
-        if (!plugin.locationSupport.inWorldGuardRegion(entity)) {
-            return new ArrayList<>();
-        }
         final ArrayList<LivingEntity> list = new ArrayList<>();
         final List<String> entityList = plugin.config.get.getStringList("exclude");
         for (Entity currentEntity : entity.getNearbyEntities(radius, radius, radius)) {
             if (!entityList.contains(currentEntity.getName().toLowerCase())) {
-                if (monsters == 1 && currentEntity instanceof org.bukkit.entity.Monster
-                        || currentEntity instanceof Slime
-                        || currentEntity instanceof Phantom
-                        || currentEntity instanceof IronGolem
-                        || currentEntity instanceof Ghast
-                        || currentEntity instanceof Shulker) {
+                if (monsters == 1 && plugin.droneManager.isMonster(currentEntity)) {
                     list.add((LivingEntity) currentEntity);
                 }
-                if (animal == 1 && currentEntity instanceof org.bukkit.entity.Animals
-                        || currentEntity instanceof Villager
-                        || currentEntity instanceof WanderingTrader
-                        || currentEntity instanceof Dolphin
-                        || currentEntity instanceof PufferFish
-                        || currentEntity instanceof Squid
-                        || currentEntity instanceof TropicalFish
-                        || currentEntity instanceof Bat
-                        || currentEntity instanceof Cod
-                        || currentEntity instanceof Salmon) {
+                if (animal == 1 && plugin.droneManager.isAnimal(currentEntity)) {
                     list.add((LivingEntity) currentEntity);
                 }
                 if (player == 1 && currentEntity instanceof org.bukkit.entity.Player) {
