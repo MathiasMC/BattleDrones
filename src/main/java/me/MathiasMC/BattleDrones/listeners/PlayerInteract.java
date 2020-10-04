@@ -37,7 +37,7 @@ public class PlayerInteract implements Listener {
                         if (!e.getPlayer().getUniqueId().toString().equalsIgnoreCase(key) && e.getAction() == Action.LEFT_CLICK_AIR) {
                             final PlayerConnect playerConnect = plugin.get(key);
                             final DroneHolder droneHolder = plugin.getDroneHolder(key, playerConnect.getActive());
-                            if (plugin.locationSupport.worldGuard != null && plugin.config.get.getBoolean("worldguard.use") && plugin.locationSupport.inWorldGuardRegion(entity, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + droneHolder.getLevel() + ".damage"))) {
+                            if (plugin.locationSupport.worldGuard != null && plugin.config.get.getBoolean("worldguard.use") && plugin.config.get.contains("worldguard." + playerConnect.getActive() + "." + droneHolder.getLevel() + ".damage") && plugin.locationSupport.inWorldGuardRegion(entity, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + droneHolder.getLevel() + ".damage"))) {
                                 return;
                             }
                             if (droneHolder.getHealth() - 1 >= 0) {
