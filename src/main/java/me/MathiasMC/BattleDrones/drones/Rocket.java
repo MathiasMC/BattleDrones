@@ -68,7 +68,11 @@ public class Rocket {
         }
         final int finalPoint = points;
         final double finalHeight = height;
-        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
+        List<String> tempList = null;
+        if (rocket.contains(path + "block-check")) {
+            tempList = rocket.getStringList(path + "block-check");
+        }
+        final List<String> list = tempList;
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {

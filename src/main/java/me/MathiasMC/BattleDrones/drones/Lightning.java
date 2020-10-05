@@ -31,7 +31,11 @@ public class Lightning {
         final FileConfiguration file = plugin.droneFiles.get(drone);
         final String path = group + "." + droneHolder.getLevel() + ".";
         final ArmorStand armorStand = playerConnect.head;
-        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
+        List<String> tempList = null;
+        if (file.contains(path + "block-check")) {
+            tempList = file.getStringList(path + "block-check");
+        }
+        final List<String> list = tempList;
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {

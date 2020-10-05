@@ -43,7 +43,11 @@ public class Flamethrower {
         final double yOffset = particleFile.getDouble(customParticle + ".y-offset");
         final double space = particleFile.getDouble(customParticle + ".space");
         final double distance = particleFile.getDouble(customParticle + ".distance");
-        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
+        List<String> tempList = null;
+        if (file.contains(path + "block-check")) {
+            tempList = file.getStringList(path + "block-check");
+        }
+        final List<String> list = tempList;
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {

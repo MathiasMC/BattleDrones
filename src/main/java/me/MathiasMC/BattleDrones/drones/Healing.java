@@ -42,7 +42,11 @@ public class Healing {
         final int delay = particleFile.getInt(customParticle + ".delay");
         final double yOffset = particleFile.getDouble(customParticle + ".y-offset");
         final double space = particleFile.getDouble(customParticle + ".space");
-        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
+        List<String> tempList = null;
+        if (healing.contains(path + "block-check")) {
+            tempList = healing.getStringList(path + "block-check");
+        }
+        final List<String> list = tempList;
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {

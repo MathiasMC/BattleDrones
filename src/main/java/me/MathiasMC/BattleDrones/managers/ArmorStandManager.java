@@ -122,7 +122,7 @@ public class ArmorStandManager {
     }
 
     public boolean hasBlockSight(final ArmorStand armorStand, final Location start, final Location end, final List<String> list) {
-        if (plugin.config.get.getBoolean("better-block-check.use")) {
+        if (list != null) {
             final World world = start.getWorld();
             if (world == null) {
                 return false;

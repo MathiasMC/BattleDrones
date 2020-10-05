@@ -58,6 +58,12 @@ default:
       # z position (1.575 is left -1.575 is right)
       z: 1.575
 
+    # List of blocks the drone cannot shoot thru
+    #block-check:
+    #  - WATER
+    #  - LAVA
+    #  - VINE
+
     # Heal amount between min and max
     min: 1
     max: 3
@@ -131,6 +137,10 @@ default:
       x: 1.575
       y: 2
       z: 1.575
+    #block-check:
+    #  - WATER
+    #  - LAVA
+    #  - VINE
     min: 1
     max: 4
     range: 11
@@ -175,6 +185,10 @@ default:
       x: 1.575
       y: 2
       z: 1.575
+    #block-check:
+    #  - WATER
+    #  - LAVA
+    #  - VINE
     min: 1
     max: 6
     range: 12
