@@ -21,7 +21,7 @@ public class PlayerChangedWorld implements Listener {
         final String uuid = player.getUniqueId().toString();
         final String worldName = e.getPlayer().getWorld().getName();
         if (plugin.config.get.contains("auto-disable." + worldName)) {
-            plugin.locationSupport.toggle(player, plugin.config.get.getStringList("auto-disable." + worldName + ".list"), "auto-disable." + worldName + ".commands");
+            plugin.support.toggle(player, plugin.config.get.getStringList("auto-disable." + worldName + ".list"), "auto-disable." + worldName + ".commands");
         }
         if (plugin.config.get.contains("player-world-change-commands")) {
             if (plugin.list().contains(uuid)) {

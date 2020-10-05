@@ -149,18 +149,23 @@ public class Support {
 
     public boolean canTarget(final Player player, final LivingEntity target) {
         if (target instanceof Player) {
-            if (plugin.config.get.getBoolean("lands")) {
-                return lands.canTarget(player, target);
+            boolean Lands = true;
+            boolean Factions = true;
+            boolean Towny = true;
+            boolean Residence = true;
+            if (plugin.config.get.getBoolean("lands") && lands != null) {
+                Lands = lands.canTarget(player, target);
             }
-            if (plugin.config.get.getBoolean("factions")) {
-                return factions.canTarget(player, target);
+            if (plugin.config.get.getBoolean("factions") && factions != null) {
+                Factions = factions.canTarget(player, target);
             }
-            if (plugin.config.get.getBoolean("towny-advanced")) {
-                return towny.canTarget(player, target);
+            if (plugin.config.get.getBoolean("towny-advanced") && towny != null) {
+                Towny = towny.canTarget(player, target);
             }
-            if (plugin.config.get.getBoolean("residence")) {
-                return residence.canTarget(player, target);
+            if (plugin.config.get.getBoolean("residence") && residence != null) {
+                Residence = residence.canTarget(player, target);
             }
+            return Lands && Factions && Towny && Residence;
         }
         return true;
     }

@@ -25,7 +25,7 @@ public class TownyAdvanced {
             final Resident resident = townyAPI.getDataSource().getResident(player.getName());
             if (resident.hasTown()) {
                 final Town town = townyAPI.getDataSource().getTown(resident.getTown().getName());
-                Optional<Resident> playerResident = town.getResidents().stream()
+                final Optional<Resident> playerResident = town.getResidents().stream()
                         .filter(r -> r.getName().equals(target.getName()))
                         .findFirst();
                 return !playerResident.isPresent();

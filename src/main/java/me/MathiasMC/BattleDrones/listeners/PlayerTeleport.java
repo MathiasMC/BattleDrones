@@ -19,7 +19,7 @@ public class PlayerTeleport implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
         final Player player = e.getPlayer();
         final String uuid = player.getUniqueId().toString();
-        plugin.locationSupport.tp(player);
+        plugin.support.tp(player);
         plugin.drone_targets.remove(uuid);
         if (plugin.list().contains(uuid)) {
             final PlayerConnect playerConnect = plugin.get(uuid);

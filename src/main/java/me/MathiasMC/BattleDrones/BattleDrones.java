@@ -87,7 +87,7 @@ public class BattleDrones extends JavaPlugin {
     public final HashSet<ArmorStand> projectiles = new HashSet<>();
     public final HashSet<String> park = new HashSet<>();
 
-    public Support locationSupport;
+    public Support support;
 
     private Economy econ = null;
 
@@ -132,7 +132,7 @@ public class BattleDrones extends JavaPlugin {
         gun = new Gun(this);
         lightning = new Lightning(this);
 
-        locationSupport = new Support(this);
+        support = new Support(this);
 
         database = new Database(this);
         if (database.set()) {

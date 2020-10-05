@@ -56,14 +56,14 @@ public class AIManager {
             if (target != null && !head.hasLineOfSight(target)) {
                 target = null;
             }
-            if (plugin.locationSupport.worldGuard != null && plugin.config.get.getBoolean("worldguard.use")) {
+            if (plugin.support.worldGuard != null && plugin.config.get.getBoolean("worldguard.use")) {
                 String type = "players";
                 if (plugin.droneManager.isMonster(target)) {
                     type = "monsters";
                 } else if (plugin.droneManager.isAnimal(target)) {
                     type = "animals";
                 }
-                if (plugin.config.get.contains("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type) && plugin.locationSupport.worldGuard.canTarget(player, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type))) {
+                if (plugin.config.get.contains("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type) && plugin.support.worldGuard.canTarget(player, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type))) {
                     if (plugin.drone_targets.get(uuid) != null) {
                         plugin.drone_targets.put(uuid, null);
                     }
@@ -71,7 +71,7 @@ public class AIManager {
                 }
             }
             if (plugin.drone_targets.get(uuid) != target) {
-                if (plugin.locationSupport.canTarget(player, target)) {
+                if (plugin.support.canTarget(player, target)) {
                     plugin.drone_targets.put(uuid, target);
                 }
             }
