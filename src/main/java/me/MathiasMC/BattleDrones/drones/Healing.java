@@ -49,7 +49,7 @@ public class Healing {
                     final double maxHealth = Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
                     final Location location = armorStand.getEyeLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && health < maxHealth && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && health < maxHealth && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
                         final double add = plugin.randomDouble(healing.getDouble(path + "min"), healing.getDouble(path + "max"));
                         target.setHealth(Math.min(health + add, maxHealth));
                         if (customParticle != null) {

@@ -74,7 +74,7 @@ public class Rocket {
                 if (droneHolder.getAmmo() > 0) {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
                             ArmorStand rock = plugin.armorStandManager.getArmorStand(armorStand.getLocation(), false, true);
                             if (rocket.contains(path + "rocket-head")) {
                                 rock.setHelmet(plugin.drone_heads.get(rocket.getString(path + "rocket-head")));

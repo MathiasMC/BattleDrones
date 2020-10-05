@@ -63,7 +63,7 @@ public class AIManager {
                 } else if (plugin.droneManager.isAnimal(target)) {
                     type = "animals";
                 }
-                if (plugin.config.get.contains("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type) && plugin.locationSupport.inWorldGuardRegion(player, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type))) {
+                if (plugin.config.get.contains("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type) && plugin.locationSupport.worldGuard.canTarget(player, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type))) {
                     if (plugin.drone_targets.get(uuid) != null) {
                         plugin.drone_targets.put(uuid, null);
                     }

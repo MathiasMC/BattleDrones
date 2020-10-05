@@ -1,84 +1,52 @@
 package me.MathiasMC.BattleDrones.support;
 
-import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import com.bekvon.bukkit.residence.protection.FlagPermissions;
-import com.bekvon.bukkit.residence.protection.ResidenceManager;
 import com.iridium.iridiumskyblock.IridiumSkyblock;
 import com.iridium.iridiumskyblock.Island;
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.struct.Relation;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.util.Location;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
-import me.angeschossen.lands.api.integration.LandsIntegration;
-import me.angeschossen.lands.api.player.LandPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class LocationSupport {
+public class Support {
 
     private final BattleDrones plugin;
 
-    private LandsIntegration landsIntegration = null;
+    private Lands lands = null;
 
-    private FPlayers fPlayers = null;
+    private Factions factions = null;
 
     private TownyAdvanced towny = null;
 
     private Residence residence = null;
 
-    private ResidenceManager residenceManager = null;
-
     public WorldGuard worldGuard = null;
 
-    public LocationSupport(final BattleDrones plugin) {
+    public Support(final BattleDrones plugin) {
         this.plugin = plugin;
         if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            this.worldGuard = WorldGuard.getInstance();
+            this.worldGuard = new WorldGuard();
+            plugin.textUtils.info("Found WorldGuard");
         }
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
-            this.landsIntegration = new LandsIntegration(plugin);
+            this.lands = new Lands(this.plugin);
+            plugin.textUtils.info("Found Lands");
         }
         if (plugin.getServer().getPluginManager().getPlugin("Factions") != null) {
-            this.fPlayers = FPlayers.getInstance();
+            this.factions = new Factions();
+            plugin.textUtils.info("Found Factions");
         }
         if (plugin.getServer().getPluginManager().getPlugin("Towny") != null) {
-            this.towny = new TownyAdvanced(this.plugin);
+            this.towny = new TownyAdvanced();
+            plugin.textUtils.info("Found Towny");
         }
         if (plugin.getServer().getPluginManager().getPlugin("Residence") != null) {
-            this.residence = Residence.getInstance();
-            this.residenceManager = residence.getResidenceManager();
+            this.residence = new Residence();
+            plugin.textUtils.info("Found Residence");
         }
-    }
-
-    public boolean inWorldGuardRegion(final Entity entity, final List<String> list) {
-        if (list.isEmpty()) {
-            return false;
-        }
-        final Location location = BukkitAdapter.adapt(entity.getLocation());
-        final RegionContainer container = worldGuard.getPlatform().getRegionContainer();
-        final RegionQuery query = container.createQuery();
-        final ApplicableRegionSet set = query.getApplicableRegions(location);
-        for (ProtectedRegion region : set) {
-            if (list.contains(region.getId())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean inLocation(Player player, String drone) {
@@ -181,40 +149,17 @@ public class LocationSupport {
 
     public boolean canTarget(final Player player, final LivingEntity target) {
         if (target instanceof Player) {
-            if (plugin.config.get.getBoolean("lands") && landsIntegration != null) {
-                final LandPlayer landPlayer = landsIntegration.getLandPlayer(player.getUniqueId());
-                final LandPlayer targetLandPlayer = landsIntegration.getLandPlayer(target.getUniqueId());
-                if (landPlayer != null && targetLandPlayer != null) {
-                    return Collections.disjoint(landPlayer.getLands(), targetLandPlayer.getLands());
-                }
+            if (plugin.config.get.getBoolean("lands")) {
+                return lands.canTarget(player, target);
             }
-            if (plugin.config.get.getBoolean("factions") && fPlayers != null) {
-                final FPlayer fPlayer = fPlayers.getByPlayer(player);
-                final FPlayer fPlayerTarget = fPlayers.getByPlayer((Player) target);
-                if (fPlayer.hasFaction() && fPlayerTarget.hasFaction()) {
-                    if (fPlayer.getFaction().getFPlayers().contains(fPlayerTarget)) {
-                        return false;
-                    } else return !fPlayer.getFaction().getRelationWish(fPlayerTarget.getFaction()).equals(Relation.ALLY);
-                }
+            if (plugin.config.get.getBoolean("factions")) {
+                return factions.canTarget(player, target);
             }
-            if (plugin.config.get.getBoolean("towny-advanced") && towny != null) {
+            if (plugin.config.get.getBoolean("towny-advanced")) {
                 return towny.canTarget(player, target);
             }
-            if (plugin.config.get.getBoolean("residence") && residence != null && residenceManager != null) {
-                final ClaimedResidence claimed = residenceManager.getByLoc(player);
-                if (claimed != null) {
-                    if (!claimed.isOwner(player)) {
-                        if (!residence.getPermsByLoc(player.getLocation()).listPlayersFlags().contains(player.getName())) {
-                            return true;
-                        }
-                        return !claimed.getRPlayer().getUniqueId().toString().equalsIgnoreCase(target.getUniqueId().toString());
-                    }
-                    return !residence.getPermsByLoc(player.getLocation()).listPlayersFlags().contains(target.getName());
-                }
-                final FlagPermissions flagPermissions = residence.getPermsByLoc(target.getLocation());
-                if (flagPermissions != null) {
-                    return !residence.getPermsByLoc(target.getLocation()).listPlayersFlags().contains(player.getName());
-                }
+            if (plugin.config.get.getBoolean("residence")) {
+                return residence.canTarget(player, target);
             }
         }
         return true;

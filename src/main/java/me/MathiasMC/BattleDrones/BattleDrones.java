@@ -16,7 +16,7 @@ import me.MathiasMC.BattleDrones.managers.*;
 import me.MathiasMC.BattleDrones.placeholders.InternalPlaceholders;
 import me.MathiasMC.BattleDrones.placeholders.MVdWPlaceholderAPI;
 import me.MathiasMC.BattleDrones.placeholders.PlaceholderAPI;
-import me.MathiasMC.BattleDrones.support.LocationSupport;
+import me.MathiasMC.BattleDrones.support.Support;
 import me.MathiasMC.BattleDrones.utils.MetricsLite;
 import me.MathiasMC.BattleDrones.utils.TextUtils;
 import me.MathiasMC.BattleDrones.utils.UpdateUtils;
@@ -87,7 +87,7 @@ public class BattleDrones extends JavaPlugin {
     public final HashSet<ArmorStand> projectiles = new HashSet<>();
     public final HashSet<String> park = new HashSet<>();
 
-    public LocationSupport locationSupport;
+    public Support locationSupport;
 
     private Economy econ = null;
 
@@ -132,7 +132,7 @@ public class BattleDrones extends JavaPlugin {
         gun = new Gun(this);
         lightning = new Lightning(this);
 
-        locationSupport = new LocationSupport(this);
+        locationSupport = new Support(this);
 
         database = new Database(this);
         if (database.set()) {

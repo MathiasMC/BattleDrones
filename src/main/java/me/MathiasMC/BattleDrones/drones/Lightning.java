@@ -36,7 +36,7 @@ public class Lightning {
                 if (droneHolder.getAmmo() > 0) {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
                         line(targetLocation, player, target, file, path);
                         plugin.droneManager.checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player.getName(), "ammo");
                         plugin.droneManager.checkShot(player, target, file, location, path, "run");

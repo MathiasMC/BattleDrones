@@ -4,10 +4,13 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+import java.util.Set;
 
 public class Gun {
 
@@ -44,7 +47,7 @@ public class Gun {
                 if (droneHolder.getAmmo() > 0) {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
                         if (customParticle != null) {
                             final Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
                             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {

@@ -4,7 +4,6 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import me.MathiasMC.BattleDrones.BattleDrones;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -12,16 +11,16 @@ import java.util.Optional;
 
 public class TownyAdvanced {
 
-    private final BattleDrones plugin;
-
     private TownyAPI townyAPI;
 
-    public TownyAdvanced(final BattleDrones plugin) {
-        this.plugin = plugin;
+    public TownyAdvanced() {
         this.townyAPI = TownyAPI.getInstance();
     }
 
     public boolean canTarget(final Player player, final LivingEntity target) {
+        if (townyAPI == null) {
+            return true;
+        }
         try {
             final Resident resident = townyAPI.getDataSource().getResident(player.getName());
             if (resident.hasTown()) {

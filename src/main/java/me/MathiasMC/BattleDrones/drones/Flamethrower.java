@@ -49,7 +49,7 @@ public class Flamethrower {
                 if (droneHolder.getAmmo() > 0) {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
                         line(location.add(0, 0.4, 0), targetLocation, player, target, file, path, customParticle, delay, size, amount, distance, space, r, g, b, yOffset, particleType);
                         plugin.droneManager.checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player.getName(), "ammo");
                         plugin.droneManager.checkShot(player, target, file, location, path, "run");
