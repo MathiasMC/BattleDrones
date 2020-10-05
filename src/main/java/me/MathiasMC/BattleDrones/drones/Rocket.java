@@ -68,13 +68,14 @@ public class Rocket {
         }
         final int finalPoint = points;
         final double finalHeight = height;
+        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
                 if (droneHolder.getAmmo() > 0) {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation, list)) {
                             ArmorStand rock = plugin.armorStandManager.getArmorStand(armorStand.getLocation(), false, true);
                             if (rocket.contains(path + "rocket-head")) {
                                 rock.setHelmet(plugin.drone_heads.get(rocket.getString(path + "rocket-head")));

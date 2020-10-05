@@ -43,13 +43,14 @@ public class Flamethrower {
         final double yOffset = particleFile.getDouble(customParticle + ".y-offset");
         final double space = particleFile.getDouble(customParticle + ".space");
         final double distance = particleFile.getDouble(customParticle + ".distance");
+        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
                 if (droneHolder.getAmmo() > 0) {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation, list)) {
                         line(location.add(0, 0.4, 0), targetLocation, player, target, file, path, customParticle, delay, size, amount, distance, space, r, g, b, yOffset, particleType);
                         plugin.droneManager.checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player.getName(), "ammo");
                         plugin.droneManager.checkShot(player, target, file, location, path, "run");

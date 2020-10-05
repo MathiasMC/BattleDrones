@@ -12,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Lightning {
 
@@ -30,13 +31,14 @@ public class Lightning {
         final FileConfiguration file = plugin.droneFiles.get(drone);
         final String path = group + "." + droneHolder.getLevel() + ".";
         final ArmorStand armorStand = playerConnect.head;
+        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
                 if (droneHolder.getAmmo() > 0) {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation, list)) {
                         line(targetLocation, player, target, file, path);
                         plugin.droneManager.checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player.getName(), "ammo");
                         plugin.droneManager.checkShot(player, target, file, location, path, "run");

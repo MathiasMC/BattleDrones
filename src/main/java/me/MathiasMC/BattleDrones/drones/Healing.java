@@ -10,6 +10,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Healing {
@@ -41,6 +42,7 @@ public class Healing {
         final int delay = particleFile.getInt(customParticle + ".delay");
         final double yOffset = particleFile.getDouble(customParticle + ".y-offset");
         final double space = particleFile.getDouble(customParticle + ".space");
+        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
@@ -49,7 +51,7 @@ public class Healing {
                     final double maxHealth = Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
                     final Location location = armorStand.getEyeLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && health < maxHealth && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && health < maxHealth && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation, list)) {
                         final double add = plugin.randomDouble(healing.getDouble(path + "min"), healing.getDouble(path + "max"));
                         target.setHealth(Math.min(health + add, maxHealth));
                         if (customParticle != null) {

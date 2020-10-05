@@ -10,6 +10,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Set;
 
 public class Gun {
@@ -40,6 +41,7 @@ public class Gun {
         final int delay = particleFile.getInt(customParticle + ".delay");
         final double yOffset = particleFile.getDouble(customParticle + ".y-offset");
         final double space = particleFile.getDouble(customParticle + ".space");
+        final List<String> list = plugin.config.get.getStringList("better-block-check.list");
         playerConnect.ShootTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             double damage = minDamage;
             final LivingEntity target = plugin.drone_targets.get(uuid);
@@ -47,7 +49,7 @@ public class Gun {
                 if (droneHolder.getAmmo() > 0) {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation)) {
+                    if (armorStand.hasLineOfSight(target) && plugin.armorStandManager.hasBlockSight(armorStand, location, targetLocation, list)) {
                         if (customParticle != null) {
                             final Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
                             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {

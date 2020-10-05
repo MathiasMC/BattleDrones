@@ -121,14 +121,14 @@ public class ArmorStandManager {
         return livingEntity;
     }
 
-    public boolean hasBlockSight(final ArmorStand armorStand, final Location start, final Location end) {
-        if (plugin.config.get.getBoolean("better-block-check")) {
+    public boolean hasBlockSight(final ArmorStand armorStand, final Location start, final Location end, final List<String> list) {
+        if (plugin.config.get.getBoolean("better-block-check.use")) {
             final World world = start.getWorld();
             if (world == null) {
                 return false;
             }
             final Material material = armorStand.getTargetBlock(null, (int) Math.floor(start.distanceSquared(end))).getType();
-            return !material.equals(Material.LAVA) && !material.equals(Material.WATER);
+            return !list.contains(material.name());
         }
         return true;
     }

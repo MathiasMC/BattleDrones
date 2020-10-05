@@ -128,7 +128,12 @@ auto-disable:
       - PLAYERS
 
 # Better block check (disable shoot thru lava, water)
-better-block-check: false
+better-block-check:
+  use: false
+  list:
+    - WATER
+    - LAVA
+    - VINE
 
 # Exclude entity´s (Example silverfish) (entity´s in this list will not be attacked)
 exclude:
