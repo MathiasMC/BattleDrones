@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -26,17 +27,19 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        for (Entity entity : e.getPlayer().getNearbyEntities(2, 2, 2)) {
+        final Player player = e.getPlayer();
+        plugin.droneControllerManager.selectTarget(player, e.getHand(), e.getAction());
+        for (Entity entity : player.getNearbyEntities(2, 2, 2)) {
             if (entity instanceof ArmorStand) {
                 final ArmorStand armorStand = (ArmorStand) entity;
                 final String key = armorStand.getPersistentDataContainer().get(new NamespacedKey(plugin, "drone_uuid"), PersistentDataType.STRING);
                 if (key != null) {
-                    if (plugin.getEntityLook(e.getPlayer(), entity)) {
+                    if (plugin.getEntityLook(player, entity)) {
                         e.setCancelled(true);
-                        if (!e.getPlayer().getUniqueId().toString().equalsIgnoreCase(key) && e.getAction() == Action.LEFT_CLICK_AIR) {
+                        if (!player.getUniqueId().toString().equalsIgnoreCase(key) && e.getAction() == Action.LEFT_CLICK_AIR) {
                             final PlayerConnect playerConnect = plugin.get(key);
                             final DroneHolder droneHolder = plugin.getDroneHolder(key, playerConnect.getActive());
-                            if (plugin.support.worldGuard != null && plugin.config.get.getBoolean("worldguard.use") && plugin.config.get.contains("worldguard." + playerConnect.getActive() + "." + droneHolder.getLevel() + ".damage") && plugin.support.worldGuard.canTarget(entity, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + droneHolder.getLevel() + ".damage"))) {
+                            if (!plugin.support.worldGuard.canTarget(entity, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + droneHolder.getLevel() + ".damage"))) {
                                 return;
                             }
                             final String name = plugin.getServer().getOfflinePlayer(UUID.fromString(key)).getName();
@@ -57,7 +60,7 @@ public class PlayerInteract implements Listener {
     }
 
     private void hitCommands(final ArmorStand armorStand, final FileConfiguration file, final String group, final long drone_level) {
-        for (String command : file.getStringList(group+ "." + drone_level + ".hit-commands")) {
+        for (String command : file.getStringList(group + "." + drone_level + ".hit-commands")) {
             plugin.getServer().dispatchCommand(plugin.consoleSender, command
                     .replace("{world}", armorStand.getWorld().getName())
                     .replace("{x}", String.valueOf(armorStand.getLocation().getBlockX()))
@@ -78,5 +81,6 @@ public class PlayerInteract implements Listener {
             droneHolder.setAmmo(0);
         }
         playerConnect.stopDrone();
+        playerConnect.setLast_active("");
     }
 }

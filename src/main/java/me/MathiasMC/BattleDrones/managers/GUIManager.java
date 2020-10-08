@@ -71,7 +71,7 @@ public class GUIManager {
                 }
                 itemMeta.setLore(list);
                 itemStack.setItemMeta(itemMeta);
-                plugin.guiManager.glow(itemStack, file, key + ".OPTIONS");
+                glow(itemStack, file, key + ".OPTIONS");
                 inventory.setItem(Integer.parseInt(key), itemStack);
             }
         }

@@ -32,7 +32,7 @@ public class ArmorStandManager {
     }
 
     public void setCustomName(final ArmorStand head, final ArmorStand name, final long droneLevel, final String group, final FileConfiguration file, final String message, final Player player) {
-        final String text = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.text." + message)).replace("{name}", player.getName()));
+        final String text = plugin.replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.text." + message)).replace("{name}", player.getName())));
         if (text.length() > 0) {
             if (!Objects.requireNonNull(head.getCustomName()).equalsIgnoreCase(text)) {
                 head.setCustomName(text);
@@ -46,7 +46,7 @@ public class ArmorStandManager {
             }
         }
         if (name != null) {
-            final String nameText = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.name." + message)).replace("{name}", player.getName()));
+            final String nameText = plugin.replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".messages.name." + message)).replace("{name}", player.getName())));
             if (nameText.length() > 0) {
                 if (!Objects.requireNonNull(name.getCustomName()).equalsIgnoreCase(nameText)) {
                     name.setCustomName(nameText);
@@ -71,7 +71,7 @@ public class ArmorStandManager {
         final ArrayList<LivingEntity> list = new ArrayList<>();
         final List<String> entityList = plugin.config.get.getStringList("exclude");
         for (Entity currentEntity : entity.getNearbyEntities(radius, radius, radius)) {
-            if (!entityList.contains(currentEntity.getName().toLowerCase())) {
+            if (!entityList.contains(currentEntity.getType().name().toLowerCase().replace(" ", "_"))) {
                 if (monsters == 1 && plugin.droneManager.isMonster(currentEntity)) {
                     list.add((LivingEntity) currentEntity);
                 }

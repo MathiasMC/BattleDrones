@@ -120,6 +120,8 @@ public class DroneMenu extends GUI {
                         plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
+            } else if (file.getStringList(slot + ".OPTIONS").contains("CLOSE")) {
+                player.closeInventory();
             }
             if (plugin.config.get.getBoolean("update-toggle") && updateAI) {
                 if (playerConnect.hasActive()) {

@@ -40,6 +40,7 @@ help:
     - 'battledrones message {player} &7&l> &f/battledrones broadcast <null/permission> <text>'
     - 'battledrones message {player} &7&l> &f/battledrones coins set/add/remove <player> <amount>'
     - 'battledrones message {player} &7&l> &f/battledrones give ammo <droneType> <player> <1-64>'
+    - 'battledrones message {player} &7&l> &f/battledrones give controller <player> <range>'
     - 'battledrones message {player} &7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
     - 'battledrones message {player} &7&l> &f/battledrones actionbar <player> <seconds> <text>'
     - 'battledrones message {player} &c&m---------------------------------------------'
@@ -218,16 +219,23 @@ give:
   permission:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
   usage:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones give ammo'
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones give ammo, controller'
   online:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cThe player is not online!'
-  number:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
   ammo:
     usage:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <1-64>'
     message:
       - 'battledrones message {player} &7[&dBattleDrones&7] &aAdded &6{amount} {drone} &aammo to &6{target}'
+    number:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
+  controller:
+    usage:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones give controller <player> <range>'
+    message:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &aAdded &6controller &ato &6{target}'
+    number:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a number or the amount must be over 0!'
 gui:
   whitelist:
     seconds: 15
@@ -255,6 +263,36 @@ gui:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your drone right now maximum drone count reached.'
     enabled: Enabled
     disabled: Disabled
+swap:
+  activate:
+    - 'battledrones actionbar {player} 0 &6{drone} &aspawned!'
+  deactivate:
+    - 'battledrones actionbar {player} 0 &6{drone} &aremoved!'
+  deactivate-cost:
+    - 'battledrones actionbar {player} 0 &6{drone} &aremoved &7(cost &a{cost}&7)'
+  enough:
+    - 'battledrones actionbar {player} 0 &6{drone} &cNot enough coins to use quick swap!'
+controller:
+  select:
+    - 'battledrones actionbar {player} 0 &6{drone} &aselected &d{target}'
+  found:
+    - 'battledrones actionbar {player} 0 &6{drone} &aNo target found, try again'
+  cannot:
+    - 'battledrones actionbar {player} 0 &6{drone} &c{target} cannot be selected'
+  far:
+    - 'battledrones actionbar {player} 0 &6{drone} &c{target} cannot be selected you are too far away'
+  location:
+    - 'battledrones actionbar {player} 0 &6{drone} &c{target} cannot be selected at this location'
+  plugin:
+    - 'battledrones actionbar {player} 0 &6{drone} &c{target} cannot be selected you are an ally'
+  remove:
+    - 'battledrones actionbar {player} 0 &6{drone} &c{target} is now removed as target'
+  no-target:
+    - 'battledrones actionbar {player} 0 &6{drone} &cYou dont currently have any target'
+  manual:
+    - 'battledrones actionbar {player} 0 &6{drone} &aMode is now set to manual'
+  automatic:
+    - 'battledrones actionbar {player} 0 &6{drone} &aMode is now set to automatic'
 drone-name:
   laser: 'Laser'
   rocket: 'Rocket'
@@ -264,6 +302,7 @@ drone-name:
   shield-generator: 'Shield Generator'
   healing: 'Healing'
   flamethrower: 'Flamethrower'
+  lightning: 'Lightning'
 console:
   command:
     unknown:
@@ -295,6 +334,7 @@ console:
       - '&7&l> &f/battledrones broadcast <null/permission> <text>'
       - '&7&l> &f/battledrones coins set/add/remove <player> <amount>'
       - '&7&l> &f/battledrones give ammo <droneType> <player> <1-64>'
+      - '&7&l> &f/battledrones give controller <player> <range>'
       - '&7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
       - '&7&l> &f/battledrones actionbar <player> <seconds> <text>'
       - '&c&m---------------------------------------------'
@@ -437,18 +477,25 @@ console:
       - '&7[&dBattleDrones&7] &cThe amount must be over 0!'
   give:
     usage:
-      - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo'
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo, controller'
     online:
       - '&7[&dBattleDrones&7] &cThe player is not online!'
-    number:
-      - '&7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
     ammo:
       usage:
         - '&7[&dBattleDrones&7] &cUsage: /battledrones give ammo <droneType> <player> <1-64>'
       message:
         - '&7[&dBattleDrones&7] &aAdded &6{amount} {drone} &aammo to &6{target}'
+      number:
+        - '&7[&dBattleDrones&7] &cNot a number or the amount must only be between 1-64!'
+    controller:
+      usage:
+        - '&7[&dBattleDrones&7] &cUsage: /battledrones give controller <player> <range>'
+      message:
+        - '&7[&dBattleDrones&7] &aAdded &6controller &ato &6{target}'
+      number:
+        - '&7[&dBattleDrones&7] &cNot a number or the amount must be over 0!'
 
-# This section is for placeholders for entity names (Remove section "translate" to just use default names)
+# This section is for placeholders for entity/drone names (Remove section "translate" to just use default names) (you can just remove the ones you don't want translated)
 translate:
   BAT: Bat
   BEE: Bee
@@ -519,3 +566,14 @@ translate:
   ZOMBIE_VILLAGER: Zombie villager
   ZOMBIE: Zombie
   ZOMBIFIED_PIGLIN: Zombified piglin
+
+  # Name of the drone in the commands
+  LASER: laser
+  ROCKET: rocket
+  MACHINE_GUN: machine_gun
+  SHIELD_GENERATOR: shield_generator
+  HEALING: healing
+  FLAMETHROWER: flamethrower
+  FAF_MISSILE: faf_missile
+  MORTAR: mortar
+  LIGHTNING: lightning

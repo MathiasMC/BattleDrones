@@ -52,7 +52,10 @@ public class AIManager {
             findTarget = file.getInt(group + "." + drone_level + ".find-target");
         }
         playerConnect.AIfindTargetID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-            LivingEntity target = plugin.armorStandManager.getClose(player, radius, monsters, animals, players, exclude, reverseExclude, hpCheck);
+            if (plugin.manual.contains(uuid)) {
+                return;
+            }
+            LivingEntity target = plugin.armorStandManager.getClose(head, radius, monsters, animals, players, exclude, reverseExclude, hpCheck);
             if (target != null && !head.hasLineOfSight(target)) {
                 target = null;
             }
@@ -63,7 +66,7 @@ public class AIManager {
                 } else if (plugin.droneManager.isAnimal(target)) {
                     type = "animals";
                 }
-                if (plugin.config.get.contains("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type) && plugin.support.worldGuard.canTarget(player, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type))) {
+                if (!plugin.support.worldGuard.canTarget(player, plugin.config.get.getStringList("worldguard." + playerConnect.getActive() + "." + drone_level + "." + type))) {
                     if (plugin.drone_targets.get(uuid) != null) {
                         plugin.drone_targets.put(uuid, null);
                     }

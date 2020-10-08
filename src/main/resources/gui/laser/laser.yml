@@ -128,3 +128,16 @@ settings:
   AMOUNT: 1
   OPTIONS:
     - BACK
+53:
+  NAME: '&6Park'
+  LORES: []
+  MATERIAL: CLOCK
+  AMOUNT: 1
+  OPTIONS:
+    - CLOSE
+  COMMANDS:
+    PERMISSION: battledrones
+    NO-PERMISSION:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use park!'
+    CONSOLE:
+      - 'bd park {player}'

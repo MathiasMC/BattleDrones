@@ -59,7 +59,7 @@ public class Database {
                 return false;
             }
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `players` (`uuid` char(36) PRIMARY KEY, `active` text(255), `coins` BIGINT(255), `group` text(255));");
-            for (String drone : plugin.drones) {
+            for (String drone : plugin.drones.values()) {
                 connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + drone + "` (`uuid` char(36) PRIMARY KEY, `unlocked` TINYINT(1), `level` SMALLINT(255), `ammo` SMALLINT(255), `monsters` TINYINT(1), `animals` TINYINT(1), `players` TINYINT(1), `exclude` LONGTEXT, `health` SMALLINT(255), `left` SMALLINT(255));");
             }
         }

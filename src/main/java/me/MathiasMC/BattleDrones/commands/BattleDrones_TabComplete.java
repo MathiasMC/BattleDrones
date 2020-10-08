@@ -50,7 +50,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     commands.add("activate");
                 } else if (args.length > 1 && args[0].equalsIgnoreCase("activate")) {
                     if (args.length == 2) {
-                        commands.addAll(plugin.drones);
+                        commands.addAll(plugin.drones.keySet());
                     }
                 }
             }
@@ -62,7 +62,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                         if (args.length == 2) {
                             commands.add("all");
                             commands.addAll(getPlayers(args[1]));
-                            commands.addAll(plugin.drones);
+                            commands.addAll(plugin.drones.keySet());
                         } else if (args.length == 3) {
                             commands.add("seconds");
                         }
@@ -100,7 +100,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                 } else if (args.length == 2 || args.length == 3) {
                     if (args[0].equalsIgnoreCase("unlock")) {
                         if (args.length == 2) {
-                            commands.addAll(plugin.drones);
+                            commands.addAll(plugin.drones.keySet());
                         } else {
                             commands.addAll(getPlayers(args[2]));
                         }
@@ -113,7 +113,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
                 } else if (args.length == 2 || args.length == 3) {
                     if (args[0].equalsIgnoreCase("lock")) {
                         if (args.length == 2) {
-                            commands.addAll(plugin.drones);
+                            commands.addAll(plugin.drones.keySet());
                         } else {
                             commands.addAll(getPlayers(args[2]));
                         }
@@ -192,12 +192,23 @@ public class BattleDrones_TabComplete implements TabCompleter {
                 } else if (args.length > 1 && args[0].equalsIgnoreCase("give")) {
                     if (args.length == 2) {
                         commands.add("ammo");
+                        commands.add("controller");
                     } else if (args.length == 3) {
-                        commands.addAll(plugin.drones);
+                        if (args[1].equalsIgnoreCase("ammo")) {
+                            commands.addAll(plugin.drones.keySet());
+                        } else if (args[1].equalsIgnoreCase("controller")) {
+                            commands.addAll(getPlayers(args[2]));
+                        }
                     } else if (args.length == 4) {
-                        commands.addAll(getPlayers(args[3]));
+                        if (args[1].equalsIgnoreCase("ammo")) {
+                            commands.addAll(getPlayers(args[3]));
+                        } else if (args[1].equalsIgnoreCase("controller")) {
+                            commands.add("range");
+                        }
                     } else if (args.length == 5) {
-                        commands.add("64");
+                        if (args[1].equalsIgnoreCase("ammo")) {
+                            commands.add("64");
+                        }
                     }
                 }
             }

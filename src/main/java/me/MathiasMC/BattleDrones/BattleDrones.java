@@ -62,6 +62,7 @@ public class BattleDrones extends JavaPlugin {
     public DroneManager droneManager;
     public AIManager aiManager;
     public ParticleManager particleManager;
+    public DroneControllerManager droneControllerManager;
 
     public Rocket rocket;
     public ShieldGenerator shieldGenerator;
@@ -82,10 +83,11 @@ public class BattleDrones extends JavaPlugin {
     public final HashMap<String, ItemStack> drone_heads = new HashMap<>();
     public final HashMap<String, LivingEntity> drone_targets = new HashMap<>();
     public final HashSet<String> drone_players = new HashSet<>();
-    public final ArrayList<String> drones = new ArrayList<>();
+    public final HashMap<String, String> drones = new HashMap<>();
     public final HashSet<String> drone_amount = new HashSet<>();
     public final HashSet<ArmorStand> projectiles = new HashSet<>();
     public final HashSet<String> park = new HashSet<>();
+    public final HashSet<String> manual = new HashSet<>();
 
     public Support support;
 
@@ -98,20 +100,12 @@ public class BattleDrones extends JavaPlugin {
             getDataFolder().mkdir();
         }
 
-        drones.add("laser");
-        drones.add("rocket");
-        drones.add("machine_gun");
-        drones.add("shield_generator");
-        drones.add("healing");
-        drones.add("flamethrower");
-        drones.add("faf_missile");
-        drones.add("mortar");
-        drones.add("lightning");
-
         textUtils = new TextUtils(this);
         config = new Config(this);
         language = new Language(this);
         particles = new Particles(this);
+
+        addDrones();
 
         dronesFolder = new DronesFolder(this);
         guiFolder = new GUIFolder(this);
@@ -122,6 +116,7 @@ public class BattleDrones extends JavaPlugin {
         droneManager = new DroneManager(this);
         aiManager = new AIManager(this);
         particleManager = new ParticleManager(this);
+        droneControllerManager = new DroneControllerManager(this);
 
         internalPlaceholders = new InternalPlaceholders(this);
 
@@ -147,6 +142,9 @@ public class BattleDrones extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new EntityDamageByEntity(this), this);
             getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
             getServer().getPluginManager().registerEvents(new PlayerTeleport(this), this);
+            if (config.get.getBoolean("swap.use")) {
+                getServer().getPluginManager().registerEvents(new PlayerSwapHandItems(this), this);
+            }
             getCommand("battledrones").setExecutor(new BattleDrones_Command(this));
             getCommand("battledrones").setTabCompleter(new BattleDrones_TabComplete(this));
             addHeads();
@@ -368,6 +366,63 @@ public class BattleDrones extends JavaPlugin {
             ByteStreams.copy(getResource(filename), new FileOutputStream(file));
         } catch (IOException exception) {
             textUtils.exception(exception.getStackTrace(), exception.getMessage());
+        }
+    }
+
+    public void addDrones() {
+        drones.clear();
+        if (language.get.contains("translate.LASER")) {
+            drones.put(language.get.getString("translate.LASER"), "laser");
+        } else {
+            drones.put("laser", "laser");
+        }
+
+        if (language.get.contains("translate.ROCKET")) {
+            drones.put(language.get.getString("translate.ROCKET"), "rocket");
+        } else {
+            drones.put("rocket", "rocket");
+        }
+
+        if (language.get.contains("translate.MACHINE_GUN")) {
+            drones.put(language.get.getString("translate.MACHINE_GUN"), "machine_gun");
+        } else {
+            drones.put("machine_gun", "machine_gun");
+        }
+
+        if (language.get.contains("translate.SHIELD_GENERATOR")) {
+            drones.put(language.get.getString("translate.SHIELD_GENERATOR"), "shield_generator");
+        } else {
+            drones.put("shield_generator", "shield_generator");
+        }
+
+        if (language.get.contains("translate.HEALING")) {
+            drones.put(language.get.getString("translate.HEALING"), "healing");
+        } else {
+            drones.put("healing", "healing");
+        }
+
+        if (language.get.contains("translate.FLAMETHROWER")) {
+            drones.put(language.get.getString("translate.FLAMETHROWER"), "flamethrower");
+        } else {
+            drones.put("flamethrower", "flamethrower");
+        }
+
+        if (language.get.contains("translate.FAF_MISSILE")) {
+            drones.put(language.get.getString("translate.FAF_MISSILE"), "faf_missile");
+        } else {
+            drones.put("faf_missile", "faf_missile");
+        }
+
+        if (language.get.contains("translate.MORTAR")) {
+            drones.put(language.get.getString("translate.MORTAR"), "mortar");
+        } else {
+            drones.put("mortar", "mortar");
+        }
+
+        if (language.get.contains("translate.LIGHTNING")) {
+            drones.put(language.get.getString("translate.LIGHTNING"), "lightning");
+        } else {
+            drones.put("lightning", "lightning");
         }
     }
 }

@@ -62,6 +62,7 @@ public class DroneManager {
                 droneHolder.setHealth(droneHolder.getHealth() - 1);
             } else {
                 playerConnect.stopDrone();
+                playerConnect.setLast_active("");
                 for (String command : plugin.config.get.getStringList("dead.wear")) {
                     plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", name));
                 }
@@ -225,6 +226,7 @@ public class DroneManager {
                             plugin.lightning.shot(player);
                         }
                         playerConnect.setActive(drone);
+                        playerConnect.setLast_active(drone);
                         playerConnect.setRegen(true);
                         plugin.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
                     } else {

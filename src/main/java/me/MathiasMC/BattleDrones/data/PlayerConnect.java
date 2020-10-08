@@ -23,6 +23,7 @@ public class PlayerConnect {
     private long coins;
     private String group;
     private boolean regen;
+    private String last_active;
 
     public PlayerConnect(final String uuid) {
         this.uuid = uuid;
@@ -30,6 +31,7 @@ public class PlayerConnect {
         this.active = data[0];
         this.coins = Long.parseLong(data[1]);
         this.group = data[2];
+        this.last_active = "";
     }
 
     public void setActive(final String set) {
@@ -67,6 +69,18 @@ public class PlayerConnect {
 
     public boolean canRegen() {
         return this.regen;
+    }
+
+    public void setLast_active(final String set) {
+        this.last_active = set;
+    }
+
+    public String getLast_active() {
+        return this.last_active;
+    }
+
+    public boolean hasLast_active() {
+        return !this.last_active.isEmpty();
     }
 
     public void remove() {
@@ -107,6 +121,7 @@ public class PlayerConnect {
         stopRegen();
         setActive("");
         BattleDrones.call.drone_amount.remove(uuid);
+        BattleDrones.call.manual.remove(uuid);
     }
 
     public void saveDrone(DroneHolder droneHolder) {
@@ -127,6 +142,9 @@ public class PlayerConnect {
             armorStandName.setCustomNameVisible(true);
             name = armorStandName;
             armorStandName.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, uuid);
+        }
+        if (!BattleDrones.call.config.get.getBoolean("controller.automatic")) {
+            BattleDrones.call.manual.add(uuid);
         }
     }
 

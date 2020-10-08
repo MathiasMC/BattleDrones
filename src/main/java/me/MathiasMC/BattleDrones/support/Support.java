@@ -23,14 +23,11 @@ public class Support {
 
     private Residence residence = null;
 
-    public WorldGuard worldGuard = null;
+    public WorldGuard worldGuard;
 
     public Support(final BattleDrones plugin) {
         this.plugin = plugin;
-        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            this.worldGuard = new WorldGuard();
-            plugin.textUtils.info("Found WorldGuard");
-        }
+        this.worldGuard = new WorldGuard(plugin);
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
             this.lands = new Lands(this.plugin);
             plugin.textUtils.info("Found Lands");

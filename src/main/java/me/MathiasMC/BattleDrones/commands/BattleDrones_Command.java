@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -182,9 +183,9 @@ public class BattleDrones_Command implements CommandExecutor {
                         if (sender.hasPermission("battledrones.player.activate")) {
                             if (type.equalsIgnoreCase("player")) {
                                 if (args.length == 2) {
-                                    if (plugin.drones.contains(args[1])) {
+                                    if (plugin.drones.containsKey(args[1])) {
                                         final Player player = (Player) sender;
-                                        plugin.droneManager.spawnDrone(player, args[1], true, false);
+                                        plugin.droneManager.spawnDrone(player, plugin.drones.get(args[1]), true, false);
                                     } else {
                                         for (String message : plugin.language.get.getStringList("activate.valid")) {
                                             plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName()).replace("{drone}", args[1])));
@@ -199,8 +200,8 @@ public class BattleDrones_Command implements CommandExecutor {
                                 if (args.length == 3) {
                                     final Player target = plugin.getServer().getPlayer(args[2]);
                                     if (target != null) {
-                                        if (plugin.drones.contains(args[1])) {
-                                            plugin.droneManager.spawnDrone(target, args[1], true, true);
+                                        if (plugin.drones.containsKey(args[1])) {
+                                            plugin.droneManager.spawnDrone(target, plugin.drones.get(args[1]), true, true);
                                         } else {
                                             for (String message : plugin.language.get.getStringList("console.activate.valid")) {
                                                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{drone}", args[1])));
@@ -267,13 +268,13 @@ public class BattleDrones_Command implements CommandExecutor {
                                                         plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{amount}", args[2]));
                                                     }
                                                 }
-                                            } else if (plugin.drones.contains(args[1])) {
+                                            } else if (plugin.drones.containsKey(args[1])) {
                                                 plugin.drone_players.clear();
                                                 for (String uuidConnect : plugin.list()) {
                                                     final PlayerConnect playerConnect = plugin.get(uuidConnect);
                                                     if (playerConnect.hasActive()) {
                                                         final String droneType = playerConnect.getActive();
-                                                        if (args[1].equalsIgnoreCase(droneType)) {
+                                                        if (plugin.drones.get(args[1]).equalsIgnoreCase(droneType)) {
                                                             playerConnect.stopDrone();
                                                             plugin.drone_players.add(uuidConnect);
                                                             plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.drone_players.remove(uuidConnect), Integer.parseInt(args[2]) * 20);
@@ -406,6 +407,7 @@ public class BattleDrones_Command implements CommandExecutor {
                                     plugin.particles.load();
                                     plugin.particleManager.load();
                                     plugin.addHeads();
+                                    plugin.addDrones();
                                     if (type.equalsIgnoreCase("player")) {
                                         for (String message : plugin.language.get.getStringList("reload.all")) {
                                             plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
@@ -428,6 +430,7 @@ public class BattleDrones_Command implements CommandExecutor {
                                     }
                                 } else if (args[1].equalsIgnoreCase("language")) {
                                     plugin.language.load();
+                                    plugin.addDrones();
                                     if (type.equalsIgnoreCase("player")) {
                                         for (String message : plugin.language.get.getStringList("reload.language")) {
                                             plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
@@ -534,16 +537,16 @@ public class BattleDrones_Command implements CommandExecutor {
                         unknown = false;
                         if (sender.hasPermission("battledrones.admin.unlock")) {
                             if (args.length == 3) {
-                                if (plugin.drones.contains(args[1])) {
+                                if (plugin.drones.containsKey(args[1])) {
                                     final Player target = plugin.getServer().getPlayer(args[2]);
                                     if (target != null) {
                                         final String targetUUID = target.getUniqueId().toString();
-                                        BattleDrones.call.loadDroneHolder(targetUUID, args[1]);
+                                        BattleDrones.call.loadDroneHolder(targetUUID, plugin.drones.get(args[1]));
                                         PlayerConnect playerConnect = plugin.get(targetUUID);
-                                        DroneHolder droneHolder = plugin.getDroneHolder(targetUUID, args[1]);
+                                        DroneHolder droneHolder = plugin.getDroneHolder(targetUUID, plugin.drones.get(args[1]));
                                         if (droneHolder.getUnlocked() != 1) {
                                             droneHolder.setUnlocked(1);
-                                            droneHolder.setHealth(BattleDrones.call.droneFiles.get(args[1]).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
+                                            droneHolder.setHealth(BattleDrones.call.droneFiles.get(plugin.drones.get(args[1])).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
                                         }
                                         droneHolder.save();
                                         if (type.equalsIgnoreCase("player")) {
@@ -599,12 +602,12 @@ public class BattleDrones_Command implements CommandExecutor {
                         unknown = false;
                         if (sender.hasPermission("battledrones.admin.lock")) {
                             if (args.length == 3) {
-                                if (plugin.drones.contains(args[1])) {
+                                if (plugin.drones.containsKey(args[1])) {
                                     final Player target = plugin.getServer().getPlayer(args[2]);
                                     if (target != null) {
                                         final String targetUUID = target.getUniqueId().toString();
-                                        BattleDrones.call.loadDroneHolder(targetUUID, args[1]);
-                                        DroneHolder droneHolder = plugin.getDroneHolder(targetUUID, args[1]);
+                                        BattleDrones.call.loadDroneHolder(targetUUID, plugin.drones.get(args[1]));
+                                        DroneHolder droneHolder = plugin.getDroneHolder(targetUUID, plugin.drones.get(args[1]));
                                         if (droneHolder.getUnlocked() != 0) {
                                             droneHolder.setUnlocked(0);
                                             droneHolder.setHealth(0);
@@ -839,19 +842,23 @@ public class BattleDrones_Command implements CommandExecutor {
                                         }
                                         try {
                                             int seconds = Integer.parseInt(args[2]);
-                                            new BukkitRunnable() {
-                                                int time = 0;
+                                            if (seconds != 0) {
+                                                new BukkitRunnable() {
+                                                    int time = 0;
 
-                                                @Override
-                                                public void run() {
-                                                    if (time >= seconds) {
-                                                        this.cancel();
-                                                    } else {
-                                                        time++;
-                                                        target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', plugin.replacePlaceholders(target, sb.toString().trim()))));
+                                                    @Override
+                                                    public void run() {
+                                                        if (time >= seconds) {
+                                                            this.cancel();
+                                                        } else {
+                                                            time++;
+                                                            target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', plugin.replacePlaceholders(target, sb.toString().trim()))));
+                                                        }
                                                     }
-                                                }
-                                            }.runTaskTimer(plugin, 0, 20);
+                                                }.runTaskTimer(plugin, 0, 20);
+                                            } else {
+                                                target.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', plugin.replacePlaceholders(target, sb.toString().trim()))));
+                                            }
                                         } catch (NoSuchMethodError exception) {
                                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThis command is not supported in this version."));
                                         }
@@ -1092,8 +1099,8 @@ public class BattleDrones_Command implements CommandExecutor {
                                         Player target = plugin.getServer().getPlayer(args[3]);
                                         if (target != null) {
                                             if (plugin.isInt(args[4]) && Integer.parseInt(args[4]) > 0 && Integer.parseInt(args[4]) < 65) {
-                                                if (plugin.drones.contains(args[2])) {
-                                                    FileConfiguration file = plugin.droneFiles.get(args[2]);
+                                                if (plugin.drones.containsKey(args[2])) {
+                                                    FileConfiguration file = plugin.droneFiles.get(plugin.drones.get(args[2]));
                                                     final String material = file.getString("gui.AMMO.MATERIAL");
                                                     try {
                                                         ItemStack itemStack = plugin.getItemStack(material, Integer.parseInt(args[4]));
@@ -1140,11 +1147,11 @@ public class BattleDrones_Command implements CommandExecutor {
                                                 }
                                             } else {
                                                 if (type.equalsIgnoreCase("player")) {
-                                                    for (String message : plugin.language.get.getStringList("give.number")) {
+                                                    for (String message : plugin.language.get.getStringList("give.ammo.number")) {
                                                         plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
                                                     }
                                                 } else {
-                                                    for (String message : plugin.language.get.getStringList("console.give.number")) {
+                                                    for (String message : plugin.language.get.getStringList("console.give.ammo.number")) {
                                                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                                                     }
                                                 }
@@ -1167,6 +1174,64 @@ public class BattleDrones_Command implements CommandExecutor {
                                             }
                                         } else {
                                             for (String message : plugin.language.get.getStringList("console.give.ammo.usage")) {
+                                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                                            }
+                                        }
+                                    }
+                                } else if (args[1].equalsIgnoreCase("controller")) {
+                                    if (args.length == 4) {
+                                        final Player target = plugin.getServer().getPlayer(args[2]);
+                                        if (target != null) {
+                                            if (plugin.isInt(args[3]) && Integer.parseInt(args[3]) != 0) {
+                                                final ItemStack itemStack = plugin.getItemStack(plugin.config.get.getString("controller.MATERIAL"), 1);
+                                                final ItemMeta itemMeta = itemStack.getItemMeta();
+                                                itemMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "drone_controller"), PersistentDataType.INTEGER, Integer.parseInt(args[3]));
+                                                itemMeta.setDisplayName(plugin.replacePlaceholders(target, ChatColor.translateAlternateColorCodes('&', plugin.config.get.getString("controller.NAME").replace("{range}", args[3]))));
+                                                final ArrayList<String> list = new ArrayList<>();
+                                                for (String lore : plugin.config.get.getStringList("controller.LORE")) {
+                                                    list.add(plugin.replacePlaceholders(target, ChatColor.translateAlternateColorCodes('&', lore.replace("{range}", args[3]))));
+                                                }
+                                                itemMeta.setLore(list);
+                                                itemStack.setItemMeta(itemMeta);
+                                                target.getInventory().addItem(itemStack);
+                                                if (type.equalsIgnoreCase("player")) {
+                                                    for (String message : plugin.language.get.getStringList("give.controller.message")) {
+                                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName()).replace("{target}", target.getName())));
+                                                    }
+                                                } else {
+                                                    for (String message : plugin.language.get.getStringList("console.give.controller.message")) {
+                                                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.replace("{target}", target.getName())));
+                                                    }
+                                                }
+                                            } else {
+                                                if (type.equalsIgnoreCase("player")) {
+                                                    for (String message : plugin.language.get.getStringList("give.controller.number")) {
+                                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                                    }
+                                                } else {
+                                                    for (String message : plugin.language.get.getStringList("console.give.controller.number")) {
+                                                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            if (type.equalsIgnoreCase("player")) {
+                                                for (String message : plugin.language.get.getStringList("give.online")) {
+                                                    plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                                }
+                                            } else {
+                                                for (String message : plugin.language.get.getStringList("console.give.online")) {
+                                                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        if (type.equalsIgnoreCase("player")) {
+                                            for (String message : plugin.language.get.getStringList("give.controller.usage")) {
+                                                plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                            }
+                                        } else {
+                                            for (String message : plugin.language.get.getStringList("console.give.controller.usage")) {
                                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                                             }
                                         }

@@ -66,6 +66,64 @@ ammo-placeholder:
     color: '&c'
   amount: 20
 
+# Quick spawn/despawn drone with the key you swap items from main hand, off hand
+swap:
+  # Will require a server restart to take effect
+  use: true
+
+  # Cost (vault support) (to disable drone) 0 to disable
+  cost: 100
+
+  # Shift + swap key?
+  shift: true
+
+  # Default mode on drone spawn (automatic or manual) ( true or false )
+  automatic: true
+
+# Drone controller (you can get the controller by using /bd give controller <player> <range>)
+controller:
+
+  use: true
+
+  NAME: '&dDrone controller'
+  LORE:
+    - '&f-----------------'
+    - ''
+    - '&7LMB to select target'
+    - ''
+    - '&7RMB to remove target'
+    - ''
+    - '&7Shift + RMB to switch mode'
+    - ''
+    - '&7Range: &6{range}'
+    - ''
+    - '&7Only works if has active drone'
+    - ''
+    - '&f-----------------'
+  MATERIAL: BLAZE_ROD
+
+  # Default mode on drone spawn (automatic or manual) ( true or false )
+  automatic: true
+
+  # Exclude entity´s (Example silverfish) (entity´s in this list cannot be selected as target)
+  exclude:
+    - villager
+    - vindicator
+    - iron_golem
+    - silverfish
+    # armor_stand is not recommended to remove (you can select your own drone and will cause errors)
+    - armor_stand
+
+  # Line of particles when selecting a target
+  particle:
+    use: true
+    r: 255
+    g: 255
+    b: 255
+    size: 1
+    amount: 1
+    space: 1.8
+
 # WorldGuard support (disable attack & drone damage in regions) (you can add regions in the list remove [])
 # damage:
 #   - test
