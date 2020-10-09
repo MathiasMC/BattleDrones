@@ -245,7 +245,7 @@ public class DroneManager {
     }
 
     public void startAI(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final String drone) {
-        final List<String> exclude = droneHolder.getExclude();
+        final List<String> exclude = new ArrayList<>(droneHolder.getExclude());
         exclude.add(player.getName().toLowerCase());
         if (drone.equalsIgnoreCase("shield_generator")) {
             plugin.aiManager.defaultAI(player,
