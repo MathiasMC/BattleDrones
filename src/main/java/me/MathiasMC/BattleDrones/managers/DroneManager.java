@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class DroneManager {
@@ -244,6 +245,8 @@ public class DroneManager {
     }
 
     public void startAI(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final String drone) {
+        final List<String> exclude = droneHolder.getExclude();
+        exclude.add(player.getName().toLowerCase());
         if (drone.equalsIgnoreCase("shield_generator")) {
             plugin.aiManager.defaultAI(player,
                     playerConnect,
@@ -252,7 +255,7 @@ public class DroneManager {
                     droneHolder.getMonsters(),
                     0,
                     droneHolder.getPlayers(),
-                    droneHolder.getExclude(),
+                    exclude,
                     false, false, true);
         } else if (drone.equalsIgnoreCase("healing")) {
             plugin.aiManager.defaultAI(player,
@@ -262,7 +265,7 @@ public class DroneManager {
                     droneHolder.getMonsters(),
                     droneHolder.getAnimals(),
                     1,
-                    droneHolder.getExclude(),
+                    exclude,
                     true, true, true);
         } else {
             plugin.aiManager.defaultAI(player,
@@ -272,7 +275,7 @@ public class DroneManager {
                     droneHolder.getMonsters(),
                     droneHolder.getAnimals(),
                     droneHolder.getPlayers(),
-                    droneHolder.getExclude(),
+                    exclude,
                     false, false, true);
         }
     }
