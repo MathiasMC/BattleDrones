@@ -7,7 +7,7 @@ import java.util.*;
 public class DroneHolder {
 
     private final String uuid;
-    private final String drone;
+    private final String droneName;
 
     private int unlocked;
     private int level;
@@ -17,12 +17,12 @@ public class DroneHolder {
     private int players;
     private List<String> exclude;
     private int health;
-    private int left;
+    private int wear;
 
-    public DroneHolder(final String uuid, final String drone) {
+    public DroneHolder(final String uuid, final String droneName) {
         this.uuid = uuid;
-        this.drone = drone;
-        final String[] data = BattleDrones.call.database.getDrone(uuid, drone);
+        this.droneName = droneName;
+        final String[] data = BattleDrones.getInstance().database.getDrone(uuid, droneName);
         this.unlocked = Integer.parseInt(data[0]);
         this.level = Integer.parseInt(data[1]);
         this.ammo = Integer.parseInt(data[2]);
@@ -35,7 +35,15 @@ public class DroneHolder {
             this.exclude = new LinkedList<>(Arrays.asList(data[6].split("\\s*:\\s*")));
         }
         this.health = Integer.parseInt(data[7]);
-        this.left = Integer.parseInt(data[8]);
+        this.wear = Integer.parseInt(data[8]);
+    }
+
+    public String getUniqueId() {
+        return this.uuid;
+    }
+
+    public String getDrone() {
+        return this.droneName;
     }
 
     public void setUnlocked(final int set) {
@@ -70,8 +78,8 @@ public class DroneHolder {
         this.health = set;
     }
 
-    public void setLeft(final int set) {
-        this.left = set;
+    public void setWear(final int set) {
+        this.wear = set;
     }
 
     public int getUnlocked() {
@@ -106,11 +114,11 @@ public class DroneHolder {
         return this.health;
     }
 
-    public int getLeft() {
-        return this.left;
+    public int getWear() {
+        return this.wear;
     }
 
-    public String exclude() {
+    private String exclude() {
         final StringJoiner stringJoiner = new StringJoiner(":");
         for (String player : this.exclude) {
             stringJoiner.add(player);
@@ -119,6 +127,6 @@ public class DroneHolder {
     }
 
     public void save() {
-        BattleDrones.call.database.setDrone(uuid, drone, unlocked, level, ammo, monsters, animals, players, exclude(), health, left);
+        BattleDrones.getInstance().database.setDrone(uuid, droneName, unlocked, level, ammo, monsters, animals, players, exclude(), health, wear);
     }
 }

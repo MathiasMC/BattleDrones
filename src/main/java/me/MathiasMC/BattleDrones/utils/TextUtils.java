@@ -46,4 +46,5 @@ public class TextUtils {
     public void gui(final CommandSender target, final String itemType, final String material) {
         target.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cAn error has occurred, " + itemType + " item &7" + material + " &cis not found."));
     }
+
 }

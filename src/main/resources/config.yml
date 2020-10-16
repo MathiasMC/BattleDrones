@@ -71,14 +71,8 @@ swap:
   # Will require a server restart to take effect
   use: true
 
-  # Cost (vault support) (to disable drone) 0 to disable
-  cost: 100
-
   # Shift + swap key?
   shift: true
-
-  # Default mode on drone spawn (automatic or manual) ( true or false )
-  automatic: true
 
 # Drone controller (you can get the controller by using /bd give controller <player> <range>)
 controller:
@@ -95,15 +89,22 @@ controller:
     - ''
     - '&7Shift + RMB to switch mode'
     - ''
+    - '&7Shift + LMB to follow target'
+    - ''
     - '&7Range: &6{range}'
     - ''
     - '&7Only works if has active drone'
     - ''
     - '&f-----------------'
-  MATERIAL: BLAZE_ROD
+  MATERIAL: GOLDEN_AXE
 
-  # Default mode on drone spawn (automatic or manual) ( true or false )
-  automatic: true
+  # Damage item 0 to disable
+  damage:
+    select: 2
+    remove: 1
+    follow: 5
+    automatic: 1
+    manual: 1
 
   # Exclude entity´s (Example silverfish) (entity´s in this list cannot be selected as target)
   exclude:
@@ -124,27 +125,44 @@ controller:
     amount: 1
     space: 1.8
 
-# WorldGuard support (disable attack & drone damage in regions) (you can add regions in the list remove [])
-# damage:
-#   - test
-worldguard:
-  use: false
-  # Drone type
-  laser:
-    # Drone level
+# Follow path
+follow:
+
+  close:
+    # Range it will apply new speed (drone distance to target is lower than range)
+    range: 5
+    # Speed the drone will fly (0.value is recommend or it will be too fast)
+    speed: 0.25
+
+  middle:
+    speed: 0.2
+
+  far:
+    # Range it will apply new speed (drone distance to target is higher than range)
+    range: 6
+    speed: 0.14
+
+  # You can add as many as you want this is an big circle and small circle with locations around target
+  # Example high point and low point in the y axis
+  locations:
     1:
-      damage: []
-      players: []
-      animals: []
-      monsters: []
-  # Drone type
-  rocket:
-    # Drone level
-    1:
-      damage: []
-      players: []
-      animals: []
-      monsters: []
+      # Distance is the amount of points in the circle (only integers)
+      distance: 10
+      # Radius and y-offset can be values of 0.0 example)
+      radius: 4
+      y-offset: 1.2
+    2:
+      # Distance is the amount of points in the circle (only integers)
+      distance: 16
+      # Radius and y-offset can be values of 0.0 example)
+      radius: 8
+      y-offset: 2.9
+    3:
+      # Distance is the amount of points in the circle (only integers)
+      distance: 20
+      # Radius and y-offset can be values of 0.0 example)
+      radius: 12
+      y-offset: 4.8
 
 # IridiumSkyblock support (allow only spawn in island)
 iridium-skyblock:
@@ -185,13 +203,6 @@ auto-disable:
     list:
       - PLAYERS
 
-# Exclude entity´s (Example silverfish) (entity´s in this list will not be attacked)
-exclude:
-  - villager
-  - vindicator
-  - iron_golem
-  - silverfish
-
 # Look for armorstands that is a drone on startup and remove it
 cleanup: true
 
@@ -218,11 +229,6 @@ drone-worlds:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot use the laser drone in this world.'
       rocket:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot use the rocket drone in this world.'
-
-# Save every x amount of minutes
-save:
-  use: true
-  interval: 60
 
 # Player death (if section is removed the drone will not be removed) [] (to disable commands)
 player-death-commands:
@@ -270,24 +276,6 @@ heads:
   lightning-1: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzNkMTQ1NjFiYmQwNjNmNzA0MjRhOGFmY2MzN2JmZTljNzQ1NjJlYTM2ZjdiZmEzZjIzMjA2ODMwYzY0ZmFmMSJ9fX0=
   lightning-2: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg1YmNmN2Y4MmQzNGRiODlhOTVhZGRmOGU1MzI1M2UyZDk1NTRjNmZkMmYyZTM5ZTI0MzYyZDI0M2EwY2NmNyJ9fX0=
   lightning-3: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI5Y2EzY2VjODQwMWNhZmUyN2EzN2ZlNjAxZWUwZTMzM2IwZjUyMWI2NWI5YTczMWU0MjRmZjZhYTFhNGI0NCJ9fX0=
-
-# Drone dead
-dead:
-
-  # Level to set the drone to when dead (0 = disable, the level must be found for the drone)
-  set-level: 1
-
-  # This value can only be 0-1 (0 the drone will be locked)
-  unlocked: 0
-
-  # Keep ammo on drone dead?
-  ammo: false
-
-  player:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYour drone was destroyed by the enemy.'
-
-  wear:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYour drone was destroyed by wear and tear.'
 
 low-ammo:
 

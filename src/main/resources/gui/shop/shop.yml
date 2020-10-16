@@ -144,8 +144,7 @@ settings:
     - '&7Click to open category'
   MATERIAL: REDSTONE_BLOCK
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_SHOP_ENERGY
+  CATEGORY: energy
 21:
   NAME: '&6Kinetic weapons'
   LORES:
@@ -156,8 +155,7 @@ settings:
     - '&7Click to open category'
   MATERIAL: IRON_BLOCK
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_SHOP_KINETIC
+  CATEGORY: kinetic
 22:
   NAME: '&6Explode weapons'
   LORES:
@@ -168,8 +166,7 @@ settings:
     - '&7Click to open category'
   MATERIAL: TNT
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_SHOP_EXPLODE
+  CATEGORY: explode
 23:
   NAME: '&6Protective'
   LORES:
@@ -180,8 +177,7 @@ settings:
     - '&7Click to open category'
   MATERIAL: SHIELD
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_SHOP_PROTECTIVE
+  CATEGORY: protective
 24:
   NAME: ' '
   LORES: []
@@ -217,5 +213,4 @@ settings:
     - '&7Click to open category'
   MATERIAL: ENDER_CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_SHOP_SPECIAL
+  CATEGORY: special

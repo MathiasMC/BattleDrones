@@ -76,7 +76,7 @@ settings:
     - '&7damage off: &b{shield_generator_damage} % &7> &b{shield_generator_damage_next} %'
     - '&7Detection Range: &b{range} &7> &b{range_next}'
     - '&7Cooldown: &b{cooldown} sec &7> &b{cooldown_next} sec'
-    - '&7Regen: &b{regen_health} HP/{regen_delay} sec &7> &b{regen_health_next} HP/{regen_delay_next} sec'
+    - '&7Healing: &b{healing_health} HP/{healing_delay} sec &7> &b{healing_health_next} HP/{healing_delay_next} sec'
     - '&7Max ammo slots: &b{max_ammo_slots} &7> &b{max_ammo_slots_next}'
     - '&7Cost: &b{cost}'
   MATERIAL: EMERALD
@@ -86,13 +86,13 @@ settings:
 15:
   NAME: '&6Current drone parameters'
   LORES:
-    - '&7Health: &b{health} {health_percentage}%'
+    - '&7Health: &b{health} {health_bar} {health_percentage}%'
     - '&7Level: &b{level}'
     - '&7Damage off: &b{shield_generator_damage} %'
     - '&7Ammo: &b{ammo} {ammo_bar} {ammo_percentage}%'
     - '&7Detection Range: &b{range}'
     - '&7Cooldown: &b{cooldown} sec'
-    - '&7Regen: &b{regen_health} HP/{regen_delay} sec'
+    - '&7Healing: &b{healing_health} HP/{healing_delay} sec'
     - '&7Max ammo slots: &b{max_ammo_slots}'
   MATERIAL: BOOK
   AMOUNT: 1

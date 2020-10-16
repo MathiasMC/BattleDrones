@@ -25,7 +25,7 @@ public class BattleDrones_TabComplete implements TabCompleter {
             final Player player = (Player) sender;
             final List<String> commands = new ArrayList<>();
             final List<String> list = new ArrayList<>();
-            if (player.hasPermission("battledrones.player.help")) {
+            if (player.hasPermission("battledrones.player.help") || player.hasPermission("battledrones.admin.help")) {
                 if (args.length == 1) {
                     commands.add("help");
                 }
@@ -235,6 +235,11 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     } else if (args.length == 9) {
                         commands.addAll(getPlayers(args[8]));
                     }
+                }
+            }
+            if (player.hasPermission("battledrones.admin.update")) {
+                if (args.length == 1) {
+                    commands.add("update");
                 }
             }
             StringUtil.copyPartialMatches(args[args.length - 1], commands, list);

@@ -135,49 +135,15 @@ settings:
   MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
 20:
-  NAME: '&6Flamethrower drone'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fspecial weapons.'
-    - ' '
-    - '&7Cost: 100 coin(s)'
-  HEAD: flamethrower-1
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_FLAMETHROWER_BUY
-  SHOP-COMMANDS:
-    BOUGHT:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Flamethrower Drone&a!'
-    COINS:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
-    HAVE:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
-    PERMISSION:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this flamethrower drone.'
-  COST: 100
 21:
-  NAME: '&6Lightning drone'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&flightning weapons.'
-    - ' '
-    - '&7Cost: 100 coin(s)'
-  HEAD: lightning-1
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_LIGHTNING_BUY
-  SHOP-COMMANDS:
-    BOUGHT:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Lightning Drone&a!'
-    COINS:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
-    HAVE:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
-    PERMISSION:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this lightning drone.'
-  COST: 100
 22:
   NAME: ' '
   LORES: []

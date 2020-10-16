@@ -15,8 +15,10 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 
 public class CalculateManager {
 
@@ -25,6 +27,10 @@ public class CalculateManager {
     public CalculateManager(final BattleDrones plugin) {
         this.plugin = plugin;
     }
+
+    public final ArrayList<Double> x = new ArrayList<>();
+    public final ArrayList<Double> y = new ArrayList<>();
+    public final ArrayList<Double> z = new ArrayList<>();
 
     public void damage(final LivingEntity livingEntity, final double damage) {
         final PotionEffect effect = livingEntity.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
@@ -58,7 +64,7 @@ public class CalculateManager {
                 (boot != null ? boot.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0);
     }
 
-    public double dialed(final double damage, final double armor, final double toughness, final int resistance, final int enchant) {
+    private double dialed(final double damage, final double armor, final double toughness, final int resistance, final int enchant) {
         return damage * (1 - Math.min(20, Math.max(armor / 5, armor - damage / (2 + toughness / 4))) / 25) * (1 - (resistance * 0.2)) * (1 - (Math.min(20.0, enchant) / 25));
     }
 
@@ -69,11 +75,11 @@ public class CalculateManager {
     }
 
     public String getBar(final int current, final int max, final String path, final String extra) {
-        final char xp = (char) Integer.parseInt(Objects.requireNonNull(plugin.config.get.getString(path + extra + "." + path + ".symbol")).substring(2), 16);
-        final char none = (char) Integer.parseInt(Objects.requireNonNull(plugin.config.get.getString(path + extra + ".none.symbol")).substring(2), 16);
-        final ChatColor xpColor = getChatColor(Objects.requireNonNull(plugin.config.get.getString(path + extra + "." + path + ".color")));
-        final ChatColor noneColor = getChatColor(Objects.requireNonNull(plugin.config.get.getString(path + extra + ".none.color")));
-        final int bars = plugin.config.get.getInt(path + extra + ".amount");
+        final char xp = (char) Integer.parseInt(Objects.requireNonNull(plugin.getFileUtils().config.getString(path + extra + "." + path + ".symbol")).substring(2), 16);
+        final char none = (char) Integer.parseInt(Objects.requireNonNull(plugin.getFileUtils().config.getString(path + extra + ".none.symbol")).substring(2), 16);
+        final ChatColor xpColor = getChatColor(Objects.requireNonNull(plugin.getFileUtils().config.getString(path + extra + "." + path + ".color")));
+        final ChatColor noneColor = getChatColor(Objects.requireNonNull(plugin.getFileUtils().config.getString(path + extra + ".none.color")));
+        final int bars = plugin.getFileUtils().config.getInt(path + extra + ".amount");
         final int progressBars = (bars * getPercent(current, max) / 100);
         try {
             return Strings.repeat("" + xpColor + xp, progressBars) + Strings.repeat("" + noneColor + none, bars - progressBars);
@@ -93,6 +99,36 @@ public class CalculateManager {
     public int getProcentFromDouble(final double current) {
         final double percent = current * 100;
         return (int) Math.round(percent);
+    }
+
+    public boolean isInt(final String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isFloat(final String s) {
+        try {
+            Float.parseFloat(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isString(final String text) {
+        return text.matches("^[a-zA-Z]*$");
+    }
+
+    public double randomDouble(final double min, final double max) {
+        return min + Math.random() * (max - min);
+    }
+
+    public float randomChance() {
+        return new Random().nextFloat();
     }
 
     public ChatColor getChatColor(final String colorCode){

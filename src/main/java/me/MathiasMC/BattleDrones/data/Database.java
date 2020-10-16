@@ -1,7 +1,6 @@
 package me.MathiasMC.BattleDrones.data;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -31,17 +30,17 @@ public class Database {
 
     private Connection get() {
         try {
-            if (plugin.config.get.getBoolean("mysql.use")) {
-                plugin.textUtils.info("Database ( Connected ) ( MySQL )");
+            if (plugin.getFileUtils().config.getBoolean("mysql.use")) {
+                plugin.getTextUtils().info("Database ( Connected ) ( MySQL )");
                 Class.forName("com.mysql.jdbc.Driver");
-                return DriverManager.getConnection("jdbc:mysql://" + plugin.config.get.getString("mysql.host") + ":" + plugin.config.get.getString("mysql.port") + "/" + plugin.config.get.getString("mysql.database"), plugin.config.get.getString("mysql.username"), plugin.config.get.getString("mysql.password"));
+                return DriverManager.getConnection("jdbc:mysql://" + plugin.getFileUtils().config.getString("mysql.host") + ":" + plugin.getFileUtils().config.getString("mysql.port") + "/" + plugin.getFileUtils().config.getString("mysql.database"), plugin.getFileUtils().config.getString("mysql.username"), plugin.getFileUtils().config.getString("mysql.password"));
             } else {
-                plugin.textUtils.info("Database ( Connected ) ( SQLite )");
+                plugin.getTextUtils().info("Database ( Connected ) ( SQLite )");
                 Class.forName("org.sqlite.JDBC");
                 return DriverManager.getConnection("jdbc:sqlite:" + new File(plugin.getDataFolder(), "data.db"));
             }
         } catch (ClassNotFoundException | SQLException e) {
-            plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
             return null;
         }
     }
@@ -59,18 +58,24 @@ public class Database {
                 return false;
             }
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `players` (`uuid` char(36) PRIMARY KEY, `active` text(255), `coins` BIGINT(255), `group` text(255));");
-            for (String drone : plugin.drones.values()) {
-                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + drone + "` (`uuid` char(36) PRIMARY KEY, `unlocked` TINYINT(1), `level` SMALLINT(255), `ammo` SMALLINT(255), `monsters` TINYINT(1), `animals` TINYINT(1), `players` TINYINT(1), `exclude` LONGTEXT, `health` SMALLINT(255), `left` SMALLINT(255));");
-            }
         }
         return true;
+    }
+
+    public void createDroneTable(final String drone) {
+        try {
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + drone + "` (`uuid` char(36) PRIMARY KEY, `unlocked` TINYINT(1), `level` SMALLINT(255), `ammo` SMALLINT(255), `monsters` TINYINT(1), `animals` TINYINT(1), `players` TINYINT(1), `exclude` LONGTEXT, `health` SMALLINT(255), `left` SMALLINT(255));");
+        } catch (SQLException e) {
+            plugin.getTextUtils().error("Could not create " + drone + " database table");
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
+        }
     }
 
     public boolean set() {
         try {
             return check();
         } catch (SQLException e) {
-            plugin.textUtils.exception(e.getStackTrace(), e.getMessage());
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
             return false;
         }
     }
@@ -93,19 +98,19 @@ public class Database {
                             preparedStatement.executeUpdate();
                         }
                     } catch (SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                        plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                     } finally {
                         if (resultSet != null)
                             try {
                                 resultSet.close();
                             } catch (SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                             }
                         if (preparedStatement != null)
                             try {
                                 preparedStatement.close();
                             } catch (SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                             }
                     }
                 }
@@ -113,6 +118,7 @@ public class Database {
             r.runTaskAsynchronously(plugin);
         }
     }
+
     public void insertDrone(final String uuid, final String drone) {
         if (set()) {
             BukkitRunnable r = new BukkitRunnable() {
@@ -137,19 +143,19 @@ public class Database {
                             preparedStatement.executeUpdate();
                         }
                     } catch (SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                        plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                     } finally {
                         if (resultSet != null)
                             try {
                                 resultSet.close();
                             } catch (SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                             }
                         if (preparedStatement != null)
                             try {
                                 preparedStatement.close();
                             } catch (SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                             }
                     }
                 }
@@ -175,19 +181,19 @@ public class Database {
                             preparedStatement.executeUpdate();
                         }
                     } catch (SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                        plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                     } finally {
                         if (resultSet != null)
                             try {
                                 resultSet.close();
                             } catch (SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                             }
                         if (preparedStatement != null)
                             try {
                                 preparedStatement.close();
                             } catch (SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                             }
                     }
                 }
@@ -219,19 +225,19 @@ public class Database {
                             preparedStatement.executeUpdate();
                         }
                     } catch (SQLException exception) {
-                        plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                        plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                     } finally {
                         if (resultSet != null)
                             try {
                                 resultSet.close();
                             } catch (SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                             }
                         if (preparedStatement != null)
                             try {
                                 preparedStatement.close();
                             } catch (SQLException exception) {
-                                plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                             }
                     }
                 }
@@ -247,25 +253,25 @@ public class Database {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM players WHERE uuid= '" + uuid + "';");
             if (resultSet.next()) {
-                return new String[]{ resultSet.getString("active"), String.valueOf(resultSet.getLong("coins")), resultSet.getString("group")};
+                return new String[]{resultSet.getString("active"), String.valueOf(resultSet.getLong("coins")), resultSet.getString("group")};
             }
         } catch (SQLException exception) {
-            plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
         } finally {
             if (resultSet != null)
                 try {
                     resultSet.close();
                 } catch (SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                    plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                 }
             if (statement != null)
                 try {
                     statement.close();
                 } catch (SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                    plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                 }
         }
-        return new String[] { "", String.valueOf(0), "default" };
+        return new String[]{"", String.valueOf(0), "default"};
     }
 
     public String[] getDrone(final String uuid, final String drone) {
@@ -279,32 +285,21 @@ public class Database {
                 };
             }
         } catch (SQLException exception) {
-            plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+            plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
         } finally {
             if (resultSet != null)
                 try {
                     resultSet.close();
                 } catch (SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                    plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                 }
             if (statement != null)
                 try {
                     statement.close();
                 } catch (SQLException exception) {
-                    plugin.textUtils.exception(exception.getStackTrace(), exception.getMessage());
+                    plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
                 }
         }
-        return new String[] { String.valueOf(0), String.valueOf(1), String.valueOf(0), String.valueOf(1), String.valueOf(1), String.valueOf(1), "", String.valueOf(0), String.valueOf(0) };
-    }
-
-    public void loadOnlinePlayers() {
-        if (set()) {
-            for (Player player : plugin.getServer().getOnlinePlayers()) {
-                final String uuid = player.getUniqueId().toString();
-                if (!plugin.list().contains(uuid)) {
-                    plugin.load(uuid);
-                }
-            }
-        }
+        return new String[]{String.valueOf(0), String.valueOf(1), String.valueOf(0), String.valueOf(1), String.valueOf(1), String.valueOf(1), "", String.valueOf(0), String.valueOf(0)};
     }
 }

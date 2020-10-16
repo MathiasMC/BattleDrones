@@ -100,7 +100,7 @@ settings:
     - '&7Damage Radius: &b{rocket_radius} &7> &b{rocket_radius_next}'
     - '&7Time in air: &b{rocket_time} sec &7> &b{rocket_time_next} sec'
     - '&7Firerate: &b{firerate} &7> &b{firerate_next}'
-    - '&7Regen: &b{regen_health} HP/{regen_delay} sec &7> &b{regen_health_next} HP/{regen_delay_next} sec'
+    - '&7Healing: &b{healing_health} HP/{healing_delay} sec &7> &b{healing_health_next} HP/{healing_delay_next} sec'
     - '&7Max ammo slots: &b{max_ammo_slots} &7> &b{max_ammo_slots_next}'
     - '&7Cost: &b{cost}'
   MATERIAL: EMERALD
@@ -110,7 +110,7 @@ settings:
 34:
   NAME: '&6Current drone parameters'
   LORES:
-    - '&7Health: &b{health} {health_percentage}%'
+    - '&7Health: &b{health} {health_bar} {health_percentage}%'
     - '&7Level: &b{level}'
     - '&7Damage: &b{min_max}'
     - '&7Ammo: &b{ammo} {ammo_bar} {ammo_percentage}%'
@@ -119,7 +119,7 @@ settings:
     - '&7Damage Radius: &b{rocket_radius}'
     - '&7Time in air: &b{rocket_time} sec'
     - '&7Firerate: &b{firerate}'
-    - '&7Regen: &b{regen_health} HP/{regen_delay} sec'
+    - '&7Healing: &b{healing_health} HP/{healing_delay} sec'
     - '&7Max ammo slots: &b{max_ammo_slots}'
   MATERIAL: BOOK
   AMOUNT: 1

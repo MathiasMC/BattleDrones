@@ -135,71 +135,20 @@ settings:
   MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
 20:
-  NAME: '&6Rocket drone'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&frocket weapons.'
-    - ' '
-    - '&7Cost: 100 coin(s)'
-  HEAD: rocket-1
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_ROCKET_BUY
-  SHOP-COMMANDS:
-    BOUGHT:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Rocket Drone&a!'
-    COINS:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
-    HAVE:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
-    PERMISSION:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this rocket drone.'
-  COST: 100
 21:
-  NAME: '&6F&&6F Missile drone'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fhoming missiles weapons.'
-    - ' '
-    - '&7Cost: 100 coin(s)'
-  HEAD: faf-missile-1
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_FAFMISSILE_BUY
-  SHOP-COMMANDS:
-    BOUGHT:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6F&&6F Missile Drone&a!'
-    COINS:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
-    HAVE:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
-    PERMISSION:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this &6f&&6f missile drone.'
-  COST: 100
 22:
-  NAME: '&6Mortar drone'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fmortar.'
-    - ' '
-    - '&7Cost: 100 coin(s)'
-  HEAD: mortar-1
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_MORTAR_BUY
-  SHOP-COMMANDS:
-    BOUGHT:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Mortar Drone&a!'
-    COINS:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
-    HAVE:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
-    PERMISSION:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this &6mortar drone.'
-  COST: 100
 23:
   NAME: ' '
   LORES: []

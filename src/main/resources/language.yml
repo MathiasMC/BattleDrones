@@ -22,7 +22,16 @@ command:
 help:
   permission:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
-  message:
+  player:
+    - 'battledrones message {player} &c&m---------------------------------------------'
+    - 'battledrones message {player} &7&l> &f/battledrones shop'
+    - 'battledrones message {player} &7&l> &f/battledrones menu'
+    - 'battledrones message {player} &7&l> &f/battledrones drone'
+    - 'battledrones message {player} &7&l> &f/battledrones park'
+    - 'battledrones message {player} &7&l> &f/battledrones activate <droneType>'
+    - 'battledrones message {player} &7&l> &f/battledrones deactivate'
+    - 'battledrones message {player} &c&m---------------------------------------------'
+  admin:
     - 'battledrones message {player} &c&m---------------------------------------------'
     - 'battledrones message {player} &7&l> &f/battledrones reload <all, config, language, particles, gui, drones, heads>'
     - 'battledrones message {player} &7&l> &f/battledrones shop'
@@ -87,8 +96,6 @@ activate:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones activate <droneType>'
   valid:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cThe drone {drone} is not valid!'
-  unlocked:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou have not unlocked this drone!'
 deactivate:
   permission:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
@@ -236,33 +243,30 @@ give:
       - 'battledrones message {player} &7[&dBattleDrones&7] &aAdded &6controller &ato &6{target}'
     number:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a number or the amount must be over 0!'
-gui:
-  whitelist:
-    seconds: 15
-    time:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &eYou have 15 seconds to type an whitelist name in the chat!'
-    add:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &eAdded {name} to your drone whitelist!'
-    same:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot whitelist the same name!'
-    active:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot do that!'
-    own:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cant whitelist yourself. You are funny'
-    name-color: '&6'
-    lores:
-      - '&cRight Click to remove this player'
-      - '&cfrom the whitelist'
-  ammo:
-    full:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYour drone ammo storage is full!'
-    not:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cThat item is not the right ammo for your drone!'
-  drone:
-    amount-reached:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your drone right now maximum drone count reached.'
-    enabled: Enabled
-    disabled: Disabled
+update:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+enabled: Enabled
+disabled: Disabled
+whitelist:
+  seconds: 15
+  time:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eYou have 15 seconds to type an whitelist name in the chat!'
+  add:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eAdded {name} to your drone whitelist!'
+  same:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot whitelist the same name!'
+  active:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot do that!'
+  own:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cant whitelist yourself. You are funny'
+toggle:
+  players:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to change this toggle!'
+  animals:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to change this toggle!'
+  monsters:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to change this toggle!'
 swap:
   activate:
     - 'battledrones actionbar {player} 0 &6{drone} &aspawned!'
@@ -273,6 +277,8 @@ swap:
   enough:
     - 'battledrones actionbar {player} 0 &6{drone} &cNot enough coins to use quick swap!'
 controller:
+  permission:
+    - 'battledrones actionbar {player} 0 &6{drone} &cYou dont have access to use the drone controller'
   select:
     - 'battledrones actionbar {player} 0 &6{drone} &aselected &d{target}'
   found:
@@ -283,26 +289,26 @@ controller:
     - 'battledrones actionbar {player} 0 &6{drone} &c{target} cannot be selected you are too far away'
   location:
     - 'battledrones actionbar {player} 0 &6{drone} &c{target} cannot be selected at this location'
-  plugin:
-    - 'battledrones actionbar {player} 0 &6{drone} &c{target} cannot be selected you are an ally'
   remove:
-    - 'battledrones actionbar {player} 0 &6{drone} &c{target} is now removed as target'
+    - 'battledrones actionbar {player} 0 &6{drone} &d{target} &ais now removed as target'
   no-target:
     - 'battledrones actionbar {player} 0 &6{drone} &cYou dont currently have any target'
   manual:
     - 'battledrones actionbar {player} 0 &6{drone} &aMode is now set to manual'
   automatic:
     - 'battledrones actionbar {player} 0 &6{drone} &aMode is now set to automatic'
-drone-name:
-  laser: 'Laser'
-  rocket: 'Rocket'
-  faf-missile: 'F&&fF Missile'
-  mortar: 'Mortar'
-  machine-gun: 'Machine Gun'
-  shield-generator: 'Shield Generator'
-  healing: 'Healing'
-  flamethrower: 'Flamethrower'
-  lightning: 'Lightning'
+  follow-permission:
+    - 'battledrones actionbar {player} 0 &6{drone} &cYou dont have access to use follow'
+  follow-no-target:
+    - 'battledrones actionbar {player} 0 &6{drone} &cYou dont currently have any target'
+  follow-select:
+    - 'battledrones actionbar {player} 0 &6{drone} &awill now follow &d{target}'
+  follow-select-cost:
+    - 'battledrones actionbar {player} 0 &6{drone} &awill now follow &d{target} &7(cost &a{cost}&7)'
+  follow-select-enough:
+    - 'battledrones actionbar {player} 0 &6{drone} &cNot enough coins to use follow target!'
+  follow-remove:
+    - 'battledrones actionbar {player} 0 &6{drone} &d{target} &ais now removed as follow target'
 console:
   command:
     unknown:
@@ -566,14 +572,3 @@ translate:
   ZOMBIE_VILLAGER: Zombie villager
   ZOMBIE: Zombie
   ZOMBIFIED_PIGLIN: Zombified piglin
-
-  # Name of the drone in the commands
-  LASER: laser
-  ROCKET: rocket
-  MACHINE_GUN: machine_gun
-  SHIELD_GENERATOR: shield_generator
-  HEALING: healing
-  FLAMETHROWER: flamethrower
-  FAF_MISSILE: faf_missile
-  MORTAR: mortar
-  LIGHTNING: lightning

@@ -135,27 +135,10 @@ settings:
   MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
 20:
-  NAME: '&6Laser drone'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&flaser weapons.'
-    - ' '
-    - '&7Cost: 100 coin(s)'
-  HEAD: laser-1
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_LASER_BUY
-  SHOP-COMMANDS:
-    BOUGHT:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Laser Drone&a!'
-    COINS:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
-    HAVE:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
-    PERMISSION:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this laser drone.'
-  COST: 100
 21:
   NAME: ' '
   LORES: []

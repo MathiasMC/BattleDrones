@@ -4,6 +4,7 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
@@ -17,7 +18,7 @@ public class AsyncPlayerChat implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onChat(AsyncPlayerChatEvent e) {
         final Player player = e.getPlayer();
         final String uuid = player.getUniqueId().toString();
@@ -31,20 +32,20 @@ public class AsyncPlayerChat implements Listener {
                         droneHolder.setExclude(players);
                         droneHolder.save();
                         plugin.getServer().getScheduler().runTask(plugin, () -> {
-                            for (String command : plugin.language.get.getStringList("gui.whitelist.add")) {
+                            for (String command : plugin.getFileUtils().language.getStringList("whitelist.add")) {
                                 plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
                             }
                         });
                     } else {
                         plugin.getServer().getScheduler().runTask(plugin, () -> {
-                            for (String command : plugin.language.get.getStringList("gui.whitelist.own")) {
+                            for (String command : plugin.getFileUtils().language.getStringList("whitelist.own")) {
                                 plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
                             }
                         });
                     }
                 } else {
                     plugin.getServer().getScheduler().runTask(plugin, () -> {
-                    for (String command : plugin.language.get.getStringList("gui.whitelist.same")) {
+                    for (String command : plugin.getFileUtils().language.getStringList("whitelist.same")) {
                         plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()).replace("{name}", message));
                     }
                     });

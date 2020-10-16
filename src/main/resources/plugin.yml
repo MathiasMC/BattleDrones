@@ -4,7 +4,7 @@ name: ${project.name}
 author: MathiasMC
 description: ${project.description}
 api-version: 1.14
-softdepend: [PlaceholderAPI, MVdWPlaceholderAPI, WorldGuard, Vault, IridiumSkyblock, Lands, Factions, Towny, Residence]
+softdepend: [PlaceholderAPI, WorldGuard, Vault, IridiumSkyblock, Lands, Factions, Towny, Residence]
 commands:
   battledrones:
     description: "BattleDrones main command"
@@ -15,6 +15,9 @@ permissions:
     children:
       battledrones.player.*: true
       battledrones.admin.*: true
+      battledrones.bypass.*: true
+      battledrones.gui.*: true
+      battledrones.gui.toggle.*: true
   battledrones.player.*:
     description: "Access to use all player commands"
     children:
@@ -25,9 +28,12 @@ permissions:
       battledrones.player.activate: true
       battledrones.player.deactivate: true
       battledrones.player.park: true
+      battledrones.player.controller: true
+      battledrones.player.controller.follow: true
   battledrones.admin.*:
     description: "Access to use all admin commands"
     children:
+      battledrones.admin.help: true
       battledrones.admin.reload: true
       battledrones.admin.save: true
       battledrones.admin.unlock: true
@@ -40,6 +46,7 @@ permissions:
       battledrones.admin.coins: true
       battledrones.admin.give: true
       battledrones.admin.sound: true
+      battledrones.admin.update: true
   battledrones.bypass.*:
     default: "op"
     description: "Access to bypass everything"
@@ -47,6 +54,8 @@ permissions:
       battledrones.bypass.drone-amount: true
       battledrones.bypass.activate: true
       battledrones.bypass.drone-worlds: true
+      battledrones.bypass.ammo: true
+      battledrones.bypass.controller.durability: true
   battledrones.gui.*:
     default: "op"
     description: "Access to buy and use all drones"
@@ -65,6 +74,7 @@ permissions:
       battledrones.gui.shop.shield_generator: true
       battledrones.gui.shop.healing: true
       battledrones.gui.shop.flamethrower: true
+      battledrones.gui.shop.lightning: true
   battledrones.gui.menu.*:
     default: "op"
     description: "Access to use all drones"
@@ -77,6 +87,27 @@ permissions:
       battledrones.gui.menu.shield_generator: true
       battledrones.gui.menu.healing: true
       battledrones.gui.menu.flamethrower: true
+      battledrones.gui.menu.lightning: true
+  battledrones.bypass.ammo.*:
+    default: "op"
+    description: "Access to bypass ammo on all drones"
+    children:
+      battledrones.bypass.ammo.laser: true
+      battledrones.bypass.ammo.rocket: true
+      battledrones.bypass.ammo.faf_missile: true
+      battledrones.bypass.ammo.mortar: true
+      battledrones.bypass.ammo.machine_gun: true
+      battledrones.bypass.ammo.shield_generator: true
+      battledrones.bypass.ammo.healing: true
+      battledrones.bypass.ammo.flamethrower: true
+      battledrones.bypass.ammo.lightning: true
+  battledrones.gui.toggle.*:
+    default: "op"
+    description: "Access to use all toggles in the drone menu"
+    children:
+      battledrones.gui.toggle.players: true
+      battledrones.gui.toggle.animals: true
+      battledrones.gui.toggle.monsters: true
   battledrones.player.help:
     default: "op"
     description: "Access to use help"
@@ -98,6 +129,15 @@ permissions:
   battledrones.player.park:
     default: "op"
     description: "Access to use park"
+  battledrones.player.controller:
+    default: "op"
+    description: "Access to use the drone controller"
+  battledrones.player.controller.follow:
+    default: "op"
+    description: "Access to use follow with the drone controller"
+  battledrones.admin.help:
+    default: "op"
+    description: "Access to use help"
   battledrones.admin.reload:
     default: "op"
     description: "Access to use reload"
@@ -134,6 +174,9 @@ permissions:
   battledrones.admin.sound:
     default: "op"
     description: "Access to use sound"
+  battledrones.admin.update:
+    default: "op"
+    description: "Access to use update"
   battledrones.bypass.drone-amount:
     default: "op"
     description: "Access to bypass drone amount"
@@ -143,6 +186,36 @@ permissions:
   battledrones.bypass.drone-worlds.*:
     default: "op"
     description: "Access to bypass drone worlds"
+  battledrones.bypass.ammo.laser:
+    default: "op"
+    description: "Access to bypass ammo with laser"
+  battledrones.bypass.ammo.rocket:
+    default: "op"
+    description: "Access to bypass ammo with rocket"
+  battledrones.bypass.ammo.faf_missile:
+    default: "op"
+    description: "Access to bypass ammo with faf missile"
+  battledrones.bypass.ammo.mortar:
+    default: "op"
+    description: "Access to bypass ammo with mortar"
+  battledrones.bypass.ammo.machine_gun:
+    default: "op"
+    description: "Access to bypass ammo with machine gun"
+  battledrones.bypass.ammo.shield_generator:
+    default: "op"
+    description: "Access to bypass ammo with shield generator"
+  battledrones.bypass.ammo.healing:
+    default: "op"
+    description: "Access to bypass ammo with healing"
+  battledrones.bypass.ammo.flamethrower:
+    default: "op"
+    description: "Access to bypass ammo with flamethrower"
+  battledrones.bypass.ammo.lightning:
+    default: "op"
+    description: "Access to bypass ammo with lightning"
+  battledrones.bypass.controller.durability:
+    default: "op"
+    description: "Access to bypass durability with drone controller"
   battledrones.gui.shop.laser:
     default: "op"
     description: "Access to buy laser drone"
@@ -167,6 +240,9 @@ permissions:
   battledrones.gui.shop.flamethrower:
     default: "op"
     description: "Access to buy flamethrower drone"
+  battledrones.gui.shop.lightning:
+    default: "op"
+    description: "Access to buy lightning drone"
   battledrones.gui.menu.laser:
     default: "op"
     description: "Access to use laser drone"
@@ -191,3 +267,15 @@ permissions:
   battledrones.gui.menu.flamethrower:
     default: "op"
     description: "Access to use flamethrower drone"
+  battledrones.gui.menu.lightning:
+    default: "op"
+    description: "Access to use lightning drone"
+  battledrones.gui.toggle.players:
+    default: "op"
+    description: "Access to toggle players on or off"
+  battledrones.gui.toggle.animals:
+    default: "op"
+    description: "Access to toggle animals on or off"
+  battledrones.gui.toggle.monsters:
+    default: "op"
+    description: "Access to toggle monsters on or off"

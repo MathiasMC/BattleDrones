@@ -6,7 +6,51 @@
 #           contact me on spigot          #
 #                                         #
 
+# Name of the drone in the commands
+name: 'faf_missile'
+
+# Name of the drone in the placeholders
+drone-name: 'F&&fF Missile'
+
+# Follow Cost (vault support) (to use follow target) 0 to disable
+follow-cost: 200
+
+# Swap (you can remove this section only if swap is disabled in config.yml)
+swap:
+  # Cost to remove drone on swap
+  cost: 100
+  # List of particles to display from particles.yml
+  activate:
+    - activate
+    - activate-1
+    - activate-2
+    - activate-3
+  deactivate:
+    - deactivate
+    - deactivate-1
+    - deactivate-2
+    - deactivate-3
+
+dead:
+  # Level to set the drone to when dead (0 = disable, the level must be found for the drone)
+  set-level: 1
+  # This value can only be 0-1 (0 the drone will be locked)
+  unlocked: 0
+  # Keep ammo on drone dead?
+  ammo: false
+  player:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYour F&&fF Missile &cdrone was destroyed by the enemy.'
+  wear:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYour F&&fF Missile &cdrone was destroyed by wear and tear.'
+
 gui:
+
+  MAX-REACHED:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6F&&6F Missile &cdrone right now maximum drone count reached.'
+
+  UNLOCKED:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou have not unlocked the &6F&&6F Missile drone&c!'
+
   NAME: '&6F&&6F Missile drone'
   LORES:
     - '&f-----------------'
@@ -38,9 +82,50 @@ gui:
     MATERIAL: LEVER
     OPTIONS:
       - GLOW
+    FULL:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYour &6F&&6F Missile drone ammo storage is full!'
+    NOT:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cThat item is not the right ammo for your &6F&&6F Missile drone!'
+
+  # Whitelist player item used by this drone
+  # You can replace head with example MATERIAL: REDSTONE
+  WHITELIST:
+    NAME: '&6{player}'
+    LORES:
+      - '&cRight Click to remove this player'
+      - '&cfrom the whitelist'
+    HEAD: whitelist
+
+  SHOP:
+    NAME: '&6F&&6F Missile drone'
+    LORES:
+      - '&f-----------------'
+      - '&fDrones armed with'
+      - '&fhoming missiles weapons.'
+      - ' '
+      - '&7Cost: 100 coin(s)'
+    HEAD: faf-missile-1
+    POSITION: 21
+    # 2D custom model data (used by bd shop)
+    #MODEL-DATA: 1234567
+    BOUGHT:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6F&&6F Missile Drone&a!'
+    COINS:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the &6F&&6F Missile Drone&a!'
+    HAVE:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the &6F&&6F Missile Drone&a!'
+    PERMISSION:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this drone.'
+    COST: 100
 
 default:
   1:
+
+    # 3D custom model data
+    #model-data: 123456
+
+    # 2D custom model data (used by bd menu)
+    #model-data-gui: 1234567
 
     # Check for targets around drone (ticks)
     find-target: 20
@@ -58,11 +143,42 @@ default:
       # z position (1.575 is left -1.575 is right)
       z: 1.575
 
+    # Follow mode (if removed it uses default values from config.yml)
+    follow:
+      # Close to target
+      close:
+        # Range it will apply new speed (drone distance to target is lower than range)
+        range: 5
+        # Speed the drone will fly (0.value is recommend)
+        speed: 0.25
+      # Between far and close
+      middle:
+        speed: 0.2
+      # Far from target
+      far:
+        # Range it will apply new speed (drone distance to target is higher than range)
+        range: 6
+        speed: 0.14
+
     # List of blocks the drone cannot shoot thru
     #block-check:
     #  - WATER
     #  - LAVA
     #  - VINE
+
+    # You can also use the __global__ to disable everywhere
+    #worldguard:
+    #  damage: []
+    #  players: []
+    #  animals: []
+    #  monsters: []
+
+    # Exclude entity´s (Example silverfish) (entity´s in this list will not be attacked)
+    exclude:
+      - villager
+      - vindicator
+      - iron_golem
+      - silverfish
 
     # Damage between min, max
     min: 1
@@ -109,21 +225,14 @@ default:
     # Health
     health: 50
 
-    # Regen drone
-    regen:
+    # Heal drone
+    healing:
 
       # Amount of health to add
       health: 1
 
       # Regen (health) every (x amount of seconds) (0 to disable)
       delay: 14
-
-    # Particles
-    particle:
-      1: faf-missile-explode
-      2: faf-missile-outside
-      3: faf-missile-inside
-
 
     # Commands when damaged
     hit-commands:
@@ -171,13 +280,12 @@ default:
       max:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYour f&&cf missile drone is at the max level already!'
 
-    messages:
-      name:
-        searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e1&7)'
-        target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e1&7)'
-      text:
-        searching: '&aSearching...'
-        target: '&cDetected Enemy...'
+    name:
+      searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e1&7)'
+      target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e1&7)'
+    text:
+      searching: '&aSearching...'
+      target: '&cDetected Enemy...'
   2:
     find-target: 20
     head: faf-missile-2
@@ -185,10 +293,29 @@ default:
       x: 1.575
       y: 2
       z: 1.575
+    follow:
+      close:
+        range: 5
+        speed: 0.25
+      middle:
+        speed: 0.2
+      far:
+        range: 6
+        speed: 0.14
     #block-check:
     #  - WATER
     #  - LAVA
     #  - VINE
+    #worldguard:
+    #  damage: []
+    #  players: []
+    #  animals: []
+    #  monsters: []
+    exclude:
+      - villager
+      - vindicator
+      - iron_golem
+      - silverfish
     min: 2
     max: 7
     range: 18
@@ -205,13 +332,9 @@ default:
     cost: 1000
     max-ammo-slots: 4
     health: 65
-    regen:
+    healing:
       health: 1
       delay: 12
-    particle:
-      1: faf-missile-explode
-      2: faf-missile-outside
-      3: faf-missile-inside
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     wear-and-tear: 4
@@ -244,13 +367,12 @@ default:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your f&&cf missile drone!'
       max:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYour f&&cf missile drone is at the max level already!'
-    messages:
-      name:
-        searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e2&7)'
-        target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e2&7)'
-      text:
-        searching: '&aSearching...'
-        target: '&cDetected Enemy...'
+    name:
+      searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e2&7)'
+      target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e2&7)'
+    text:
+      searching: '&aSearching...'
+      target: '&cDetected Enemy...'
   3:
     find-target: 20
     head: faf-missile-3
@@ -258,10 +380,29 @@ default:
       x: 1.575
       y: 2
       z: 1.575
+    follow:
+      close:
+        range: 5
+        speed: 0.25
+      middle:
+        speed: 0.2
+      far:
+        range: 6
+        speed: 0.14
     #block-check:
     #  - WATER
     #  - LAVA
     #  - VINE
+    #worldguard:
+    #  damage: []
+    #  players: []
+    #  animals: []
+    #  monsters: []
+    exclude:
+      - villager
+      - vindicator
+      - iron_golem
+      - silverfish
     min: 3
     max: 9
     range: 22
@@ -278,13 +419,9 @@ default:
     cost: 2000
     max-ammo-slots: 6
     health: 75
-    regen:
+    healing:
       health: 2
       delay: 10
-    particle:
-      1: faf-missile-explode
-      2: faf-missile-outside
-      3: faf-missile-inside
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
     wear-and-tear: 6
@@ -317,10 +454,9 @@ default:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your f&&cf missile drone!'
       max:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYour f&&cf missile drone is at the max level already!'
-    messages:
-      name:
-        searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e3&7)'
-        target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e3&7)'
-      text:
-        searching: '&aSearching...'
-        target: '&cDetected Enemy...'
+    name:
+      searching: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e3&7)'
+      target: '&6F&&6F MISSILE DRONE &7(&3{name}&7) &7(&e3&7)'
+    text:
+      searching: '&aSearching...'
+      target: '&cDetected Enemy...'

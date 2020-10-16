@@ -135,49 +135,15 @@ settings:
   MATERIAL: BLACK_STAINED_GLASS_PANE
   AMOUNT: 1
 20:
-  NAME: '&6Shield Generator drone'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fprotective systems.'
-    - ' '
-    - '&7Cost: 100 coin(s)'
-  HEAD: shield-generator-1
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_SHIELD_GENERATOR_BUY
-  SHOP-COMMANDS:
-    BOUGHT:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Shield Generator Drone&a!'
-    COINS:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
-    HAVE:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
-    PERMISSION:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this shield generator drone.'
-  COST: 100
 21:
-  NAME: '&6Healing drone'
-  LORES:
-    - '&f-----------------'
-    - '&fDrones armed with'
-    - '&fhealing systems.'
-    - ' '
-    - '&7Cost: 100 coin(s)'
-  HEAD: healing-1
+  NAME: ' '
+  LORES: []
+  MATERIAL: CHEST
   AMOUNT: 1
-  OPTIONS:
-    - DRONE_HEALING_BUY
-  SHOP-COMMANDS:
-    BOUGHT:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Healing Drone&a!'
-    COINS:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the drone!'
-    HAVE:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the drone!'
-    PERMISSION:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this healing drone.'
-  COST: 100
 22:
   NAME: ' '
   LORES: []

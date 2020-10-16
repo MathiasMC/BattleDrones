@@ -21,8 +21,5 @@ public class PlayerLogin implements Listener {
         for (String drone : plugin.drones.values()) {
             plugin.database.insertDrone(uuid, drone);
         }
-        if (!plugin.list().contains(uuid)) {
-            plugin.load(uuid);
-        }
     }
 }

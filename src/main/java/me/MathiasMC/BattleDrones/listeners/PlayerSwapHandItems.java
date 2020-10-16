@@ -1,12 +1,19 @@
 package me.MathiasMC.BattleDrones.listeners;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
+import me.MathiasMC.BattleDrones.api.Type;
+import me.MathiasMC.BattleDrones.api.events.DroneRemoveEvent;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
-import org.bukkit.ChatColor;
+import me.MathiasMC.BattleDrones.api.events.DroneSpawnEvent;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerSwapHandItems implements Listener {
 
@@ -16,55 +23,53 @@ public class PlayerSwapHandItems implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onSwap(PlayerSwapHandItemsEvent e) {
         final Player player = e.getPlayer();
         final String uuid = player.getUniqueId().toString();
-        if (plugin.list().contains(uuid)) {
-            if (plugin.config.get.getBoolean("swap.shift") && !player.isSneaking()) {
-                return;
-            }
-            final PlayerConnect playerConnect = plugin.get(uuid);
-            if (!playerConnect.hasActive()) {
-                if (playerConnect.hasLast_active()) {
-
-                    if (!plugin.config.get.getBoolean("swap.automatic")) {
-                        plugin.manual.add(uuid);
-                    }
-
-                    playerConnect.setActive(playerConnect.getLast_active());
-                    plugin.droneManager.spawnDrone(player, playerConnect.getLast_active(), false, true);
-                    for (String message : plugin.language.get.getStringList("swap.activate")) {
-                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName()).replace("{drone}", plugin.internalPlaceholders.getActiveDrone(playerConnect.getLast_active()))));
-                    }
+        if (plugin.getFileUtils().config.getBoolean("swap.shift") && !player.isSneaking()) {
+            return;
+        }
+        final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+        if (!playerConnect.isActive()) {
+            if (playerConnect.isLastActive()) {
+                final FileConfiguration file = plugin.droneFiles.get(playerConnect.getLastActive());
+                for (String get : file.getStringList("swap.activate")) {
+                    plugin.getParticleManager().displayParticle(get, plugin.getFileUtils().particles.getString(get + ".particle"), player.getLocation().add(0, plugin.getFileUtils().particles.getDouble(get + ".y-offset"), 0), plugin.getFileUtils().particles.getInt(get + ".rgb.r"), plugin.getFileUtils().particles.getInt(get + ".rgb.g"), plugin.getFileUtils().particles.getInt(get + ".rgb.b"), plugin.getFileUtils().particles.getInt(get + ".size"), plugin.getFileUtils().particles.getInt(get + ".amount"));
                 }
-            } else {
-                if (plugin.config.get.getInt("swap.cost") != 0) {
-                    final long coins = playerConnect.getCoins();
-                    final long cost = plugin.config.get.getLong("swap.cost");
-                    if (!plugin.config.get.getBoolean("vault") && coins >= cost ||
-                            plugin.config.get.getBoolean("vault") &&
-                                    plugin.getEconomy() != null &&
-                                    plugin.getEconomy().withdrawPlayer(player, cost).transactionSuccess()) {
-                        if (!plugin.config.get.getBoolean("vault")) {
-                            playerConnect.setCoins(coins - cost);
-                        }
-                        for (String message : plugin.language.get.getStringList("swap.deactivate-cost")) {
-                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName()).replace("{drone}", plugin.internalPlaceholders.getActiveDrone(playerConnect.getActive())).replace("{cost}", String.valueOf(cost))));
-                        }
-                    } else {
-                        for (String message : plugin.language.get.getStringList("swap.enough")) {
-                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName())));
-                        }
-                        return;
-                    }
+                final DroneSpawnEvent droneSpawnEvent = new DroneSpawnEvent(player, playerConnect, plugin.getDroneHolder(uuid, playerConnect.getLastActive()));
+                droneSpawnEvent.setBypassWait(true);
+                droneSpawnEvent.setBypassDroneAmount(false);
+                droneSpawnEvent.setBypassLocation(false);
+                droneSpawnEvent.setType(Type.SWAP);
+                droneSpawnEvent.setSpawnCommands(plugin.getFileUtils().language.getStringList("swap.activate"));
+                droneSpawnEvent.spawn();
+            }
+        } else {
+            final DroneRemoveEvent droneRemoveEvent = new DroneRemoveEvent(player, playerConnect, plugin.getDroneHolder(uuid, playerConnect.getActive()));
+            final FileConfiguration file = plugin.droneFiles.get(playerConnect.getActive());
+            if (file.getInt("swap.cost") != 0) {
+                final long cost = file.getLong("swap.cost");
+
+                if (!plugin.getSupport().vault.withdraw(player, cost)) {
+                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language.getStringList("swap.enough"));
+                    return;
                 } else {
-                    for (String message : plugin.language.get.getStringList("swap.deactivate")) {
-                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName()).replace("{drone}", plugin.internalPlaceholders.getActiveDrone(playerConnect.getActive()))));
+                    final List<String> list = new ArrayList<>();
+                    for (String command : plugin.getFileUtils().language.getStringList("swap.deactivate-cost")) {
+                        list.add(command.replace("{cost}", String.valueOf(cost)));
                     }
+                    droneRemoveEvent.setRemoveCommands(list);
                 }
-                playerConnect.stopDrone();
+
+            } else {
+                droneRemoveEvent.setRemoveCommands(plugin.getFileUtils().language.getStringList("swap.deactivate"));
             }
+            for (String get : file.getStringList("swap.deactivate")) {
+                plugin.getParticleManager().displayParticle(get, plugin.getFileUtils().particles.getString(get + ".particle"), player.getLocation().add(0, plugin.getFileUtils().particles.getDouble(get + ".y-offset"), 0), plugin.getFileUtils().particles.getInt(get + ".rgb.r"), plugin.getFileUtils().particles.getInt(get + ".rgb.g"), plugin.getFileUtils().particles.getInt(get + ".rgb.b"), plugin.getFileUtils().particles.getInt(get + ".size"), plugin.getFileUtils().particles.getInt(get + ".amount"));
+            }
+            droneRemoveEvent.setType(Type.SWAP);
+            droneRemoveEvent.remove();
         }
     }
 }

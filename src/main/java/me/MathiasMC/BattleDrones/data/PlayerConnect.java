@@ -2,41 +2,47 @@ package me.MathiasMC.BattleDrones.data;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 
 public class PlayerConnect {
 
+    private final BattleDrones plugin;
+
     public ArmorStand head;
     public ArmorStand name;
+    public Location dronePoint;
 
-    public int AItaskID;
-    public int AIfindTargetID;
-    public int ShootTaskID;
-    public int RegenTaskID;
+    private boolean automatic = true;
+
+    public int follow;
+    public int find;
+    public int ability;
+    public int healing;
 
     private final String uuid;
     private String active;
     private long coins;
     private String group;
-    private boolean regen;
-    private String last_active;
+    private boolean isHealing;
+    private String lastActive;
 
     public PlayerConnect(final String uuid) {
+        this.plugin = BattleDrones.getInstance();
         this.uuid = uuid;
-        final String[] data = BattleDrones.call.database.getPlayers(uuid);
+        final String[] data = plugin.database.getPlayers(uuid);
         this.active = data[0];
         this.coins = Long.parseLong(data[1]);
         this.group = data[2];
-        this.last_active = "";
+        this.lastActive = "";
     }
 
-    public void setActive(final String set) {
-        this.active = set;
-        BattleDrones.call.drone_amount.add(uuid);
+    public void setActive(final String droneName) {
+        this.active = droneName;
+        plugin.drone_amount.add(uuid);
+    }
+
+    public void setAutomatic(final boolean set) {
+        this.automatic = set;
     }
 
     public void setCoins(final long set) {
@@ -47,15 +53,19 @@ public class PlayerConnect {
         this.group = set;
     }
 
-    public void setRegen(final boolean set) {
-        this.regen = set;
+    public void setHealing(final boolean set) {
+        this.isHealing = set;
     }
 
     public String getActive() {
         return this.active;
     }
 
-    public boolean hasActive() {
+    public boolean isAutomatic() {
+        return this.automatic;
+    }
+
+    public boolean isActive() {
         return !this.active.isEmpty();
     }
 
@@ -67,30 +77,34 @@ public class PlayerConnect {
         return this.group;
     }
 
-    public boolean canRegen() {
-        return this.regen;
+    public String getUniqueId() {
+        return this.uuid;
     }
 
-    public void setLast_active(final String set) {
-        this.last_active = set;
+    public boolean isHealing() {
+        return this.isHealing;
     }
 
-    public String getLast_active() {
-        return this.last_active;
+    public void setLastActive(final String set) {
+        this.lastActive = set;
     }
 
-    public boolean hasLast_active() {
-        return !this.last_active.isEmpty();
+    public String getLastActive() {
+        return this.lastActive;
     }
 
-    public void remove() {
+    public boolean isLastActive() {
+        return !this.lastActive.isEmpty();
+    }
+
+    private void remove() {
         if (head != null) {
             head.remove();
         }
         if (name != null) {
             name.remove();
         }
-        for (ArmorStand armorStand : BattleDrones.call.projectiles) {
+        for (ArmorStand armorStand : plugin.projectiles) {
             armorStand.remove();
         }
         head = null;
@@ -98,57 +112,30 @@ public class PlayerConnect {
     }
 
     public void stopAI() {
-        BattleDrones.call.getServer().getScheduler().cancelTask(this.AItaskID);
+        plugin.getServer().getScheduler().cancelTask(this.follow);
+        plugin.getServer().getScheduler().cancelTask(this.ability);
+        plugin.getServer().getScheduler().cancelTask(this.find);
     }
 
-    public void stopFindTargetAI() {
-        BattleDrones.call.getServer().getScheduler().cancelTask(this.AIfindTargetID);
-    }
-
-    public void stopShoot() {
-        BattleDrones.call.getServer().getScheduler().cancelTask(this.ShootTaskID);
-    }
-
-    public void stopRegen() {
-        BattleDrones.call.getServer().getScheduler().cancelTask(this.RegenTaskID);
+    public void stopHealing() {
+        plugin.getServer().getScheduler().cancelTask(this.healing);
     }
 
     public void stopDrone() {
         remove();
         stopAI();
-        stopFindTargetAI();
-        stopShoot();
-        stopRegen();
+        stopHealing();
         setActive("");
-        BattleDrones.call.drone_amount.remove(uuid);
-        BattleDrones.call.manual.remove(uuid);
+        plugin.drone_amount.remove(uuid);
+        plugin.park.remove(uuid);
+        plugin.drone_targets.remove(uuid);
     }
 
-    public void saveDrone(DroneHolder droneHolder) {
+    public void saveDrone(final DroneHolder droneHolder) {
         droneHolder.save();
     }
 
-    public void spawn(final Player player, final ItemStack itemStack, final boolean hasName) {
-        final Location location = player.getLocation();
-        final ArmorStand armorStand = BattleDrones.call.armorStandManager.getArmorStand(location.add(0, 2, 0), false, true);
-        armorStand.setHelmet(itemStack);
-        armorStand.setCustomName(" ");
-        armorStand.setCustomNameVisible(true);
-        head = armorStand;
-        armorStand.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, uuid);
-        if (hasName) {
-            final ArmorStand armorStandName = BattleDrones.call.armorStandManager.getArmorStand(location.add(0, 2.3, 0), false, true);
-            armorStandName.setCustomName(" ");
-            armorStandName.setCustomNameVisible(true);
-            name = armorStandName;
-            armorStandName.getPersistentDataContainer().set(new NamespacedKey(BattleDrones.call, "drone_uuid"), PersistentDataType.STRING, uuid);
-        }
-        if (!BattleDrones.call.config.get.getBoolean("controller.automatic")) {
-            BattleDrones.call.manual.add(uuid);
-        }
-    }
-
     public void save() {
-        BattleDrones.call.database.setPlayers(this.uuid, this.active, this.coins, this.group);
+        plugin.database.setPlayers(this.uuid, this.active, this.coins, this.group);
     }
 }

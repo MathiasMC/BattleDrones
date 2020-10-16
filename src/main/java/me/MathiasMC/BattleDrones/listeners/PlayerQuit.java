@@ -18,14 +18,9 @@ public class PlayerQuit implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onQuit(PlayerQuitEvent e) {
         final String uuid = e.getPlayer().getUniqueId().toString();
-        if (plugin.list().contains(uuid)) {
-            final PlayerConnect playerConnect = plugin.get(uuid);
-            playerConnect.stopDrone();
-            plugin.unload(uuid);
-        }
-        if (plugin.listDroneHolder().contains(uuid)) {
-            plugin.unloadDroneHolder(uuid);
-        }
-        plugin.drone_targets.remove(uuid);
+        final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+        playerConnect.stopDrone();
+        plugin.unloadPlayerConnect(uuid);
+        plugin.unloadDroneHolder(uuid);
     }
 }

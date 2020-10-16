@@ -68,7 +68,7 @@ machine_gun:
     b: 105
   y-offset: 0.4
   delay: 0
-rocket-explode:
+rocket:
   type: circle
   particle: EXPLOSION_NORMAL
   distance: 12
@@ -79,7 +79,7 @@ rocket-explode:
     g: 0
     b: 0
   y-offset: -1
-rocket-outside:
+rocket_ability_1:
   type: sphere
   particle: FLAME
   radius: 0.1
@@ -93,7 +93,7 @@ rocket-outside:
   y-offset: 0.7
   tick: 2
   delay: 4
-rocket-inside:
+rocket_ability_2:
   type: sphere
   particle: CAMPFIRE_COSY_SMOKE
   radius: 0.2
@@ -120,7 +120,7 @@ flamethrower:
     b: 0
   y-offset: 0.4
   delay: 0
-faf-missile-explode:
+faf_missile:
   type: circle
   particle: EXPLOSION_NORMAL
   distance: 12
@@ -131,7 +131,7 @@ faf-missile-explode:
     g: 0
     b: 0
   y-offset: -1
-faf-missile-outside:
+faf_missile_ability_1:
   type: sphere
   particle: FLAME
   radius: 0.1
@@ -145,7 +145,7 @@ faf-missile-outside:
   y-offset: 0.7
   tick: 2
   delay: 4
-faf-missile-inside:
+faf_missile_ability_2:
   type: sphere
   particle: CAMPFIRE_COSY_SMOKE
   radius: 0.2
@@ -159,7 +159,7 @@ faf-missile-inside:
   y-offset: 0.7
   tick: 2
   delay: 7
-mortar-explode:
+mortar:
   type: circle
   particle: EXPLOSION_NORMAL
   distance: 12
@@ -170,7 +170,7 @@ mortar-explode:
     g: 0
     b: 0
   y-offset: -1
-mortar-line:
+mortar_ability_1:
   type: sphere
   particle: REDSTONE
   radius: 0
@@ -183,3 +183,113 @@ mortar-line:
     b: 255
   y-offset: 0.7
   delay: 3
+mortar_ability_2:
+  type: sphere
+  particle: CAMPFIRE_COSY_SMOKE
+  radius: 0.2
+  distance: 2
+  amount: 1
+  size: 1
+  rgb:
+    r: 255
+    g: 0
+    b: 0
+  y-offset: 0.7
+  tick: 2
+  delay: 7
+activate:
+  type: circle
+  particle: REDSTONE
+  distance: 12
+  radius: 0.8
+  amount: 6
+  size: 1
+  rgb:
+    r: 34
+    g: 188
+    b: 60
+  y-offset: 0.4
+activate-1:
+  type: circle
+  particle: REDSTONE
+  distance: 12
+  radius: 1.1
+  amount: 6
+  size: 1
+  rgb:
+    r: 30
+    g: 159
+    b: 52
+  y-offset: 0.8
+activate-2:
+  type: circle
+  particle: REDSTONE
+  distance: 12
+  radius: 1.3
+  amount: 6
+  size: 1
+  rgb:
+    r: 25
+    g: 132
+    b: 43
+  y-offset: 1.2
+activate-3:
+  type: circle
+  particle: REDSTONE
+  distance: 12
+  radius: 1.3
+  amount: 6
+  size: 1
+  rgb:
+    r: 19
+    g: 105
+    b: 34
+  y-offset: 1.6
+deactivate:
+  type: circle
+  particle: REDSTONE
+  distance: 12
+  radius: 0.8
+  amount: 6
+  size: 1
+  rgb:
+    r: 215
+    g: 31
+    b: 31
+  y-offset: 0.4
+deactivate-1:
+  type: circle
+  particle: REDSTONE
+  distance: 12
+  radius: 1.1
+  amount: 6
+  size: 1
+  rgb:
+    r: 179
+    g: 32
+    b: 32
+  y-offset: 0.8
+deactivate-2:
+  type: circle
+  particle: REDSTONE
+  distance: 12
+  radius: 1.3
+  amount: 6
+  size: 1
+  rgb:
+    r: 145
+    g: 27
+    b: 27
+  y-offset: 1.2
+deactivate-3:
+  type: circle
+  particle: REDSTONE
+  distance: 12
+  radius: 1.3
+  amount: 6
+  size: 1
+  rgb:
+    r: 108
+    g: 21
+    b: 21
+  y-offset: 1.6

@@ -3,16 +3,14 @@ package me.MathiasMC.BattleDrones.managers;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import me.MathiasMC.BattleDrones.api.events.DroneDamageEvent;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class DroneManager {
 
@@ -25,280 +23,135 @@ public class DroneManager {
     public void checkMessage(final long amount, final long maxAmount, final String name, final String type) {
         final long left = Double.valueOf(Math.floor(amount * (100D / maxAmount))).longValue();
         if (left != 0L) {
-            if (left != Double.valueOf(Math.floor((amount + 1) * (100D / maxAmount))).longValue()) {
-                sendCheckMessage(left, name, type);
+            if (left == Double.valueOf(Math.floor((amount + 1) * (100D / maxAmount))).longValue()) {
+                return;
             }
-        } else {
-            if (amount == 1) {
-                sendCheckMessage(left, name, type);
-            }
+        } else if (amount != 1) {
+            return;
         }
-    }
-
-    private void sendCheckMessage(final long left, final String name, final String type) {
-        if (plugin.config.get.contains("low-" + type + "." + left)) {
-            for (String command : plugin.config.get.getStringList("low-" + type + "." + left)) {
+        if (plugin.getFileUtils().config.contains("low-" + type + "." + left)) {
+            for (String command : plugin.getFileUtils().config.getStringList("low-" + type + "." + left)) {
                 plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", name));
             }
         }
     }
 
-    public void checkShot(final Player player, final LivingEntity target, final FileConfiguration file, final Location location, final String path, final String type) {
+
+    public void checkShot(final Player player, final LivingEntity target, final FileConfiguration file, final Location location, final String listPath, final String type) {
+        String path = "";
         if (target instanceof Player) {
-            shotCommands(file, path + type + ".player", location, player.getName(), target.getName());
-        } else if (isMonster(target)) {
-            shotCommands(file, path + type + ".monster", location, player.getName(), target.getName());
-        } else if (isAnimal(target)) {
-            shotCommands(file, path + type + ".animal", location, player.getName(), target.getName());
+            path = listPath + type + ".player";
+        } else if (plugin.getEntityManager().isMonster(target)) {
+            path = listPath + type + ".monster";
+        } else if (plugin.getEntityManager().isAnimal(target)) {
+            path = listPath + type + ".animal";
         }
-    }
-
-    public void takeAmmo(final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final String path, final String name) {
-        droneHolder.setAmmo(droneHolder.getAmmo() - 1);
-        if (droneHolder.getLeft() > 0) {
-            droneHolder.setLeft(droneHolder.getLeft() - 1);
-        } else {
-            if (droneHolder.getHealth() - 1 >= 0) {
-                droneHolder.setLeft(file.getInt(path + "wear-and-tear"));
-                droneHolder.setHealth(droneHolder.getHealth() - 1);
-            } else {
-                playerConnect.stopDrone();
-                playerConnect.setLast_active("");
-                for (String command : plugin.config.get.getStringList("dead.wear")) {
-                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", name));
-                }
-                droneHolder.setUnlocked(plugin.config.get.getInt("dead.unlocked"));
-                if (plugin.config.get.getLong("dead.set-level") != 0) {
-                    droneHolder.setLevel(plugin.config.get.getInt("dead.set-level"));
-                }
-                if (!plugin.config.get.getBoolean("dead.ammo")) {
-                    droneHolder.setAmmo(0);
-                }
-            }
-        }
-    }
-
-    private void shotCommands(final FileConfiguration laser, final String path, final Location location, final String player, String targetName) {
         final String x = String.valueOf(location.getBlockX());
         final String y = String.valueOf(location.getBlockY());
         final String z = String.valueOf(location.getBlockZ());
         final String world = Objects.requireNonNull(location.getWorld()).getName();
+        String targetName = target.getName();
         final String translate = targetName.toUpperCase().replace(" ", "_");
-        if (plugin.language.get.contains("translate." + translate)) {
-            targetName = String.valueOf(plugin.language.get.getString("translate." + translate));
+        if (plugin.getFileUtils().language.contains("translate." + translate)) {
+            targetName = String.valueOf(plugin.getFileUtils().language.getString("translate." + translate));
         }
-        if (laser.contains(path)) {
-            for (String command : laser.getStringList(path)) {
+        if (file.contains(path)) {
+            for (String command : file.getStringList(path)) {
                 plugin.getServer().dispatchCommand(plugin.consoleSender, command
                         .replace("{world}", world)
                         .replace("{x}", x)
                         .replace("{y}", y)
                         .replace("{z}", z)
-                        .replace("{player}", player)
+                        .replace("{player}", player.getName())
                         .replace("{target}", targetName));
             }
         }
     }
 
-    public void waitSchedule(final String uuid, final FileConfiguration file) {
-        plugin.drone_players.add(uuid);
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.drone_players.remove(uuid), file.getInt("gui.WAIT-SECONDS") * 20);
-    }
-
-    public void wait(final Player player, final FileConfiguration file) {
-        final Location location = player.getLocation();
-        final String x = String.valueOf(location.getBlockX());
-        final String y = String.valueOf(location.getBlockY());
-        final String z = String.valueOf(location.getBlockZ());
-        final String world = player.getWorld().getName();
-        final String name = player.getName();
-        for (String command : file.getStringList("gui.WAIT")) {
-            plugin.getServer().dispatchCommand(plugin.consoleSender, command
-                    .replace("{player}", name)
-                    .replace("{world}", world)
-                    .replace("{x}", x)
-                    .replace("{y}", y)
-                    .replace("{z}", z)
-            );
+    public void takeAmmo(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final String path) {
+        if (droneHolder.getAmmo() < 1) {
+            return;
         }
-    }
-
-    public void runCommands(final Player player, final PlayerConnect playerConnect, final FileConfiguration file, final String path, final boolean bypass) {
-        if ((!playerConnect.hasActive() && path.equalsIgnoreCase("gui.SPAWN-COMMANDS")) || (playerConnect.hasActive() && path.equalsIgnoreCase("gui.REMOVE-COMMANDS")) || bypass) {
-            final Location location = player.getLocation();
-            final String x = String.valueOf(location.getBlockX());
-            final String y = String.valueOf(location.getBlockY());
-            final String z = String.valueOf(location.getBlockZ());
-            final String world = player.getWorld().getName();
-            final String name = player.getName();
-            for (String command : file.getStringList(path)) {
-                plugin.getServer().dispatchCommand(plugin.consoleSender, command
-                        .replace("{player}", name)
-                        .replace("{world}", world)
-                        .replace("{x}", x)
-                        .replace("{y}", y)
-                        .replace("{z}", z)
-                );
-            }
-        }
-    }
-
-    public void cleanUP() {
-        final ArrayList<ArmorStand> armorStands = new ArrayList<>();
-        for (World world : plugin.getServer().getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (entity instanceof ArmorStand) {
-                    final ArmorStand armorStand = (ArmorStand) entity;
-                    final String key = armorStand.getPersistentDataContainer().get(new NamespacedKey(plugin, "drone_uuid"), PersistentDataType.STRING);
-                    if (key != null) {
-                        armorStands.add(armorStand);
-                        armorStand.remove();
-                    }
-                }
-            }
-        }
-        plugin.textUtils.info("CleanUP found: ( " + armorStands.size() + " ) drones removed.");
-        armorStands.clear();
-    }
-
-    public void regen(final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final long drone_level) {
-        final String group = playerConnect.getGroup();
-        final String path = group + "." + drone_level + ".";
-        final int health = file.getInt(path + "regen.health");
-        if (file.getLong(path + "regen.delay") != 0) {
-            playerConnect.RegenTaskID = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-                if (playerConnect.canRegen()) {
-                    final int add_health = droneHolder.getHealth() + health;
-                    if (file.getInt(path + "health") >= add_health) {
-                        droneHolder.setHealth(add_health);
-                    }
-                }
-            }, file.getLong(path + "regen.delay") * 20, file.getLong(path + "regen.delay") * 20).getTaskId();
-        }
-    }
-
-
-    public void spawnDrone(final Player player, final String drone, final boolean bypass, final boolean bypassChecks) {
-        if (plugin.support.inLocation(player, drone)) {
-            final String uuid = player.getUniqueId().toString();
-            final FileConfiguration file = plugin.droneFiles.get(drone);
-            if (!plugin.drone_players.contains(player.getUniqueId().toString()) || player.hasPermission("battledrones.bypass.activate") || bypassChecks) {
-                plugin.droneManager.waitSchedule(uuid, file);
-                plugin.loadDroneHolder(uuid, drone);
-                final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
-                if (droneHolder.getUnlocked() == 1) {
-                    final PlayerConnect playerConnect = plugin.get(uuid);
-                    if (plugin.drone_amount.size() < plugin.config.get.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount") || bypassChecks) {
-                        plugin.droneManager.runCommands(player, playerConnect, file, "gui.SPAWN-COMMANDS", bypass);
-                        playerConnect.stopDrone();
-                        final String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".";
-                        ItemStack itemStack = plugin.drone_heads.get(file.getString(path + "head"));
-                        if (file.contains(path + "model-data")) {
-                            itemStack = new ItemStack(Material.STICK);
-                            final ItemMeta itemMeta = itemStack.getItemMeta();
-                            if (itemMeta != null) {
-                                itemMeta.setCustomModelData(file.getInt(path + "model-data"));
-                                itemStack.setItemMeta(itemMeta);
-                            }
-                        }
-                        boolean hasName = false;
-                        if (Objects.requireNonNull(file.getString(path + "messages.name.searching")).length() > 0 || Objects.requireNonNull(file.getString(path + "messages.name.target")).length() > 0) {
-                            hasName = true;
-                        }
-                        playerConnect.spawn(player, itemStack, hasName);
-                        startAI(player, playerConnect, droneHolder, file, drone);
-                        if (drone.equalsIgnoreCase("laser")) {
-                            plugin.gun.shot(player, "laser");
-                        } else if (drone.equalsIgnoreCase("rocket")) {
-                            plugin.rocket.shot(player, "rocket", false, false);
-                        } else if (drone.equalsIgnoreCase("machine_gun")) {
-                            plugin.gun.shot(player, "machine_gun");
-                        } else if (drone.equalsIgnoreCase("shield_generator")) {
-                            plugin.shieldGenerator.shot(player);
-                        } else if (drone.equalsIgnoreCase("healing")) {
-                            plugin.healing.shot(player);
-                        } else if (drone.equalsIgnoreCase("flamethrower")) {
-                            plugin.flamethrower.shot(player);
-                        } else if (drone.equalsIgnoreCase("faf_missile")) {
-                            plugin.rocket.shot(player, "faf_missile", true, false);
-                        } else if (drone.equalsIgnoreCase("mortar")) {
-                            plugin.rocket.shot(player, "mortar", false, true);
-                        } else if (drone.equalsIgnoreCase("lightning")) {
-                            plugin.lightning.shot(player);
-                        }
-                        playerConnect.setActive(drone);
-                        playerConnect.setLast_active(drone);
-                        playerConnect.setRegen(true);
-                        plugin.droneManager.regen(playerConnect, droneHolder, file, droneHolder.getLevel());
-                    } else {
-                        plugin.droneManager.runCommands(player, playerConnect, BattleDrones.call.language.get, "gui.drone.amount-reached", true);
-                    }
-                } else {
-                    for (String message : plugin.language.get.getStringList("activate.unlocked")) {
-                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName())));
-                    }
-                }
-            } else {
-                plugin.droneManager.wait(player, file);
-            }
-        }
-    }
-
-    public void startAI(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final String drone) {
-        final List<String> exclude = new ArrayList<>(droneHolder.getExclude());
-        exclude.add(player.getName().toLowerCase());
-        if (drone.equalsIgnoreCase("shield_generator")) {
-            plugin.aiManager.defaultAI(player,
-                    playerConnect,
-                    file,
-                    droneHolder.getLevel(),
-                    droneHolder.getMonsters(),
-                    0,
-                    droneHolder.getPlayers(),
-                    exclude,
-                    false, false, true);
-        } else if (drone.equalsIgnoreCase("healing")) {
-            plugin.aiManager.defaultAI(player,
-                    playerConnect,
-                    file,
-                    droneHolder.getLevel(),
-                    droneHolder.getMonsters(),
-                    droneHolder.getAnimals(),
-                    1,
-                    exclude,
-                    true, true, true);
+        droneHolder.setAmmo(droneHolder.getAmmo() - 1);
+        if (droneHolder.getWear() > 0) {
+            droneHolder.setWear(droneHolder.getWear() - 1);
         } else {
-            plugin.aiManager.defaultAI(player,
-                    playerConnect,
-                    file,
-                    droneHolder.getLevel(),
-                    droneHolder.getMonsters(),
-                    droneHolder.getAnimals(),
-                    droneHolder.getPlayers(),
-                    exclude,
-                    false, false, true);
+            if (droneHolder.getHealth() - 1 >= 0) {
+                droneHolder.setWear(file.getInt(path + "wear-and-tear"));
+                droneHolder.setHealth(droneHolder.getHealth() - 1);
+            } else {
+                droneDeath(playerConnect, droneHolder, file);
+                for (String command : file.getStringList("dead.wear")) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
+                }
+            }
         }
     }
 
-    public boolean isMonster(final Entity entity) {
-        return entity instanceof Monster
-                || entity instanceof Slime
-                || entity instanceof Phantom
-                || entity instanceof IronGolem
-                || entity instanceof Ghast
-                || entity instanceof Shulker;
+    public void waitSchedule(final String uuid, final FileConfiguration file) {
+        plugin.drone_wait.add(uuid);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.drone_wait.remove(uuid), file.getInt("gui.WAIT-SECONDS") * 20);
     }
 
-    public boolean isAnimal(final Entity entity) {
-        return entity instanceof org.bukkit.entity.Animals
-                || entity instanceof Villager
-                || entity instanceof WanderingTrader
-                || entity instanceof Dolphin
-                || entity instanceof PufferFish
-                || entity instanceof Squid
-                || entity instanceof TropicalFish
-                || entity instanceof Bat
-                || entity instanceof Cod
-                || entity instanceof Salmon;
+    public boolean canBypassDroneAmount(final Player player) {
+        return plugin.drone_amount.size() < plugin.getFileUtils().config.getInt("drone-amount") || player.hasPermission("battledrones.bypass.drone-amount");
+    }
+
+    public void runCommands(final Player player, final List<String> list) {
+        for (String command : list) {
+            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', plugin.getPlaceholderManager().replacePlaceholders(player, command)));
+        }
+    }
+
+    public void damage(final Player damager, final String key, final ArmorStand entity) {
+        final PlayerConnect playerConnect = plugin.getPlayerConnect(key);
+        final DroneHolder droneHolder = plugin.getDroneHolder(key, playerConnect.getActive());
+        final DroneDamageEvent droneDamageEvent = new DroneDamageEvent(damager, playerConnect, droneHolder);
+        plugin.getServer().getPluginManager().callEvent(droneDamageEvent);
+        if (droneDamageEvent.isCancelled()) {
+            return;
+        }
+        final FileConfiguration file = plugin.droneFiles.get(playerConnect.getActive());
+        if (!plugin.getSupport().canTarget(damager, entity, file, playerConnect.getGroup() + "." + droneHolder.getLevel() + ".worldguard.damage")) {
+            return;
+        }
+        final String name = plugin.getServer().getOfflinePlayer(UUID.fromString(key)).getName();
+        if (droneHolder.getHealth() - 1 > 0) {
+            droneHolder.setHealth(droneHolder.getHealth() - 1);
+            for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".hit-commands")) {
+                plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                        .replace("{world}", entity.getWorld().getName())
+                        .replace("{x}", String.valueOf(entity.getLocation().getBlockX()))
+                        .replace("{y}", String.valueOf(entity.getLocation().getBlockY()))
+                        .replace("{z}", String.valueOf(entity.getLocation().getBlockZ())));
+            }
+            checkMessage(droneHolder.getHealth(), file.getLong(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"), name, "health");
+            return;
+        }
+        droneDeath(playerConnect, droneHolder, file);
+        for (String command : file.getStringList("dead.player")) {
+            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", name));
+        }
+    }
+
+    public void checkTarget(final Player player, final LivingEntity target, final FileConfiguration file, final Location end, final String path, final int ticks) {
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            if (target.isDead()) {
+                checkShot(player, target, file, end, path, "killed");
+            }
+        }, ticks);
+    }
+
+    private void droneDeath(final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file) {
+        playerConnect.stopDrone();
+        playerConnect.setLastActive("");
+        droneHolder.setUnlocked(file.getInt("dead.unlocked"));
+        if (file.getLong("dead.set-level") != 0) {
+            droneHolder.setLevel(file.getInt("dead.set-level"));
+        }
+        if (!file.getBoolean("dead.ammo")) {
+            droneHolder.setAmmo(0);
+        }
+        droneHolder.save();
     }
 }
