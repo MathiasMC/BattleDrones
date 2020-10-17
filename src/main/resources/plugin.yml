@@ -75,6 +75,7 @@ permissions:
       battledrones.gui.shop.healing: true
       battledrones.gui.shop.flamethrower: true
       battledrones.gui.shop.lightning: true
+      battledrones.gui.shop.teleport: true
   battledrones.gui.menu.*:
     default: "op"
     description: "Access to use all drones"
@@ -88,6 +89,7 @@ permissions:
       battledrones.gui.menu.healing: true
       battledrones.gui.menu.flamethrower: true
       battledrones.gui.menu.lightning: true
+      battledrones.gui.menu.teleport: true
   battledrones.bypass.ammo.*:
     default: "op"
     description: "Access to bypass ammo on all drones"
@@ -101,6 +103,7 @@ permissions:
       battledrones.bypass.ammo.healing: true
       battledrones.bypass.ammo.flamethrower: true
       battledrones.bypass.ammo.lightning: true
+      battledrones.bypass.ammo.teleport: true
   battledrones.gui.toggle.*:
     default: "op"
     description: "Access to use all toggles in the drone menu"
@@ -213,6 +216,9 @@ permissions:
   battledrones.bypass.ammo.lightning:
     default: "op"
     description: "Access to bypass ammo with lightning"
+  battledrones.bypass.ammo.teleport:
+    default: "op"
+    description: "Access to bypass ammo with teleport"
   battledrones.bypass.controller.durability:
     default: "op"
     description: "Access to bypass durability with drone controller"
@@ -243,6 +249,9 @@ permissions:
   battledrones.gui.shop.lightning:
     default: "op"
     description: "Access to buy lightning drone"
+  battledrones.gui.shop.teleport:
+    default: "op"
+    description: "Access to buy teleport drone"
   battledrones.gui.menu.laser:
     default: "op"
     description: "Access to use laser drone"
@@ -270,6 +279,9 @@ permissions:
   battledrones.gui.menu.lightning:
     default: "op"
     description: "Access to use lightning drone"
+  battledrones.gui.menu.teleport:
+    default: "op"
+    description: "Access to use teleport drone"
   battledrones.gui.toggle.players:
     default: "op"
     description: "Access to toggle players on or off"
