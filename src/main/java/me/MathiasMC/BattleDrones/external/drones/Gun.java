@@ -17,9 +17,9 @@ public class Gun extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Gun(Plugin plugin, String droneName, String droneCategory) {
+    public Gun(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
-        this.plugin = BattleDrones.getInstance();
+        this.plugin = plugin;
     }
 
     @Override

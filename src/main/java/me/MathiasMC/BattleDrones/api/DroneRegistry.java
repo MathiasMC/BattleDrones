@@ -401,6 +401,18 @@ public class DroneRegistry {
         if (placeholder.equals("healing_delay_next")) {
             return file.getString(path_next + ".healing.delay");
         }
+        if (placeholder.equals("teleport_ammo")) {
+            return String.valueOf(file.getInt(path + ".ammo"));
+        }
+        if (placeholder.equals("teleport_distance")) {
+            return String.valueOf(file.getDouble(path + ".teleport"));
+        }
+        if (placeholder.equals("teleport_ammo_next")) {
+            return String.valueOf(file.getInt(path_next + ".ammo"));
+        }
+        if (placeholder.equals("teleport_distance_next")) {
+            return String.valueOf(file.getDouble(path_next + ".teleport"));
+        }
         return null;
     }
 }

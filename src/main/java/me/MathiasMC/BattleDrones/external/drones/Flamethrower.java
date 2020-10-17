@@ -20,9 +20,9 @@ public class Flamethrower extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Flamethrower(Plugin plugin, String droneName, String droneCategory) {
+    public Flamethrower(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
-        this.plugin = BattleDrones.getInstance();
+        this.plugin = plugin;
     }
 
     @Override

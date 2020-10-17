@@ -1,0 +1,65 @@
+settings:
+  name: '&dYour drones > Teleport'
+  size: 54
+  upgrade:
+    NAME: '&6Upgrade'
+    LORES:
+      - '&fThis drone is at max level.'
+    MATERIAL: EMERALD
+    AMOUNT: 1
+    POSITION: 13
+11:
+  NAME: '&6Ammo'
+  LORES:
+    - '&fClick to open ammo menu'
+  MATERIAL: DISPENSER
+  AMOUNT: 1
+  OPTIONS:
+    - DRONE_AMMO
+13:
+  NAME: '&6Upgrade'
+  LORES:
+    - '&fClick to upgrade'
+    - '&7Current > Next:'
+    - '&7Level: &b{level} &7> &b{level_next}'
+    - '&7Ammo to teleport: &b{teleport_ammo} &7> &b{teleport_ammo_next}'
+    - '&7Teleport distance: &b{teleport_distance} &7> &b{teleport_distance_next}'
+    - '&7Healing: &b{healing_health} HP/{healing_delay} sec &7> &b{healing_health_next} HP/{healing_delay_next} sec'
+    - '&7Max ammo slots: &b{max_ammo_slots} &7> &b{max_ammo_slots_next}'
+    - '&7Cost: &b{cost}'
+  MATERIAL: EMERALD
+  AMOUNT: 1
+  OPTIONS:
+    - DRONE_UPGRADE
+15:
+  NAME: '&6Current drone parameters'
+  LORES:
+    - '&7Health: &b{health} {health_bar} {health_percentage}%'
+    - '&7Level: &b{level}'
+    - '&7Ammo: &b{ammo} {ammo_bar} {ammo_percentage}%'
+    - '&7Ammo to teleport: &b{teleport_ammo}'
+    - '&7Teleport distance: &b{teleport_distance}'
+    - '&7Healing: &b{healing_health} HP/{healing_delay} sec'
+    - '&7Max ammo slots: &b{max_ammo_slots}'
+  MATERIAL: BOOK
+  AMOUNT: 1
+45:
+  NAME: ' '
+  LORES: []
+  MATERIAL: RED_STAINED_GLASS_PANE
+  AMOUNT: 1
+  OPTIONS:
+    - BACK
+53:
+  NAME: '&6Park'
+  LORES: []
+  MATERIAL: CLOCK
+  AMOUNT: 1
+  OPTIONS:
+    - CLOSE
+  COMMANDS:
+    PERMISSION: battledrones
+    NO-PERMISSION:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use park!'
+    CONSOLE:
+      - 'bd park {player}'

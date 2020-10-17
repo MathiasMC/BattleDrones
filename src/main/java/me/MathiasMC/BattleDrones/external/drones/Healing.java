@@ -19,9 +19,9 @@ public class Healing extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Healing(Plugin plugin, String droneName, String droneCategory) {
+    public Healing(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
-        this.plugin = BattleDrones.getInstance();
+        this.plugin = plugin;
     }
 
     @Override

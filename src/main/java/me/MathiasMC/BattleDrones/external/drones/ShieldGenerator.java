@@ -21,7 +21,7 @@ public class ShieldGenerator extends DroneRegistry implements Listener {
 
     public ShieldGenerator(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
-        this.plugin = BattleDrones.getInstance();
+        this.plugin = plugin;
     }
 
     @Override

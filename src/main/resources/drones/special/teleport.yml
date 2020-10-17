@@ -1,0 +1,311 @@
+#                                         #
+#               BattleDrones              #
+#                   by                    #
+#                MathiasMC                #
+#  Any ideas for the plugin or need help? #
+#           contact me on spigot          #
+#                                         #
+
+# Name of the drone in the commands
+name: 'teleport'
+
+# Name of the drone in the placeholders
+drone-name: 'Teleport'
+
+# Follow Cost (vault support) (to use follow target) 0 to disable
+follow-cost: 200
+
+# Swap (you can remove this section only if swap is disabled in config.yml)
+swap:
+  # Cost to remove drone on swap
+  cost: 100
+  # List of particles to display from particles.yml
+  activate:
+    - activate
+    - activate-1
+    - activate-2
+    - activate-3
+  deactivate:
+    - deactivate
+    - deactivate-1
+    - deactivate-2
+    - deactivate-3
+
+dead:
+  # Level to set the drone to when dead (0 = disable, the level must be found for the drone)
+  set-level: 1
+  # This value can only be 0-1 (0 the drone will be locked)
+  unlocked: 0
+  # Keep ammo on drone dead?
+  ammo: false
+  player:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYour teleport drone was destroyed by the enemy.'
+  wear:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYour teleport drone was destroyed by wear and tear.'
+
+gui:
+
+  MAX-REACHED:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your Teleport drone right now maximum drone count reached.'
+
+  UNLOCKED:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou have not unlocked the Teleport drone!'
+
+  NAME: '&6Teleport drone'
+  LORES:
+    - '&f-----------------'
+    - '&fDrone armed with'
+    - '&fteleport weapons.'
+    - ' '
+    - '&fLMB &7- &aActivate'
+    - '&fRMB &7- &cDeactivate'
+    - '&fMiddle click &7- Open drone menu'
+  AMOUNT: 1
+  POSITION: 22
+  SPAWN-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have spawned the &6Teleport Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  REMOVE-COMMANDS:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have removed the &6Teleport Drone&a!'
+    - 'battledrones sound BLOCK_NOTE_BLOCK_BASS {world} {x} {y} {z} 1 1'
+  PERMISSION:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this teleport drone.'
+  WAIT:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your &6Teleport Drone &cright now try again later.'
+  WAIT-SECONDS: 20
+
+  # Ammo used by this drone and it must match (/bd give ammo)
+  AMMO:
+    NAME: '&6Teleport Ammo'
+    LORES:
+      - '&fThis is your drone ammo'
+    MATERIAL: PRISMARINE_SHARD
+    OPTIONS:
+      - GLOW
+    FULL:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYour teleport drone ammo storage is full!'
+    NOT:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cThat item is not the right ammo for your teleport drone!'
+
+  # Whitelist player item used by this drone
+  # You can replace head with example MATERIAL: REDSTONE
+  WHITELIST:
+    NAME: '&6{player}'
+    LORES:
+      - '&cRight Click to remove this player'
+      - '&cfrom the whitelist'
+    HEAD: whitelist
+
+  SHOP:
+    NAME: '&6Teleport drone'
+    LORES:
+      - '&f-----------------'
+      - '&fDrones armed with'
+      - '&fspecial weapons.'
+      - ' '
+      - '&7Cost: 100 coin(s)'
+    HEAD: teleport-1
+    POSITION: 22
+    # 2D custom model data (used by bd shop)
+    #MODEL-DATA: 1234567
+    BOUGHT:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &aYou have bought the &6Teleport Drone&a!'
+    COINS:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to buy the &6Teleport Drone&a!'
+    HAVE:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou already have bought the &6Teleport Drone&a!'
+    PERMISSION:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to buy this drone.'
+    COST: 100
+
+default:
+  1:
+
+    # 3D custom model data
+    #model-data: 123456
+
+    # 2D custom model data (used by bd menu)
+    #model-data-gui: 1234567
+
+    # Custom head from config.yml
+    head: teleport-1
+
+    # Drone head position (x z is best to keep the same value or it will not be a perfect circle around player)
+    # But you can create some awesome shapes around player if you have the values a little bit off like x: 1.875 z: 1.575
+    position:
+      # x position (1.575 is left -1.575 is right)
+      x: 1.575
+      # Drone head height (y offset you can use - values also)
+      y: 2
+      # z position (1.575 is left -1.575 is right)
+      z: 1.575
+
+    # Follow mode (if removed it uses default values from config.yml)
+    follow:
+      # Close to target
+      close:
+        # Range it will apply new speed (drone distance to target is lower than range)
+        range: 5
+        # Speed the drone will fly (0.value is recommend)
+        speed: 0.25
+      # Between far and close
+      middle:
+        speed: 0.2
+      # Far from target
+      far:
+        # Range it will apply new speed (drone distance to target is higher than range)
+        range: 6
+        speed: 0.16
+
+    # Distance from target to teleport to drone
+    teleport: 7
+
+    # Ammo cost to teleport
+    ammo: 2
+
+    # Ammo commands
+    ammo-commands:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou will need 2 ammo to do that'
+
+    # Teleport commands
+    teleport-commands:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &6You have been teleported to {target}'
+
+    # Teleport cancelled commands
+    teleport-cancelled:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cTeleport cancelled not enough space'
+
+    # cost: amount (this is not needed for level 1)
+
+    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    max-ammo-slots: 1
+
+    # Health
+    health: 50
+
+    # Heal drone
+    healing:
+
+      # Amount of health to add
+      health: 1
+
+      # Regen (health) every (x amount of seconds) (0 to disable)
+      delay: 22
+
+    # Commands when damaged
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+
+    # Amount it costs to park the drone (remove to disable for this level)
+    park: 50
+
+    # Upgrade commands
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour teleport drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your teleport drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour teleport drone is at the max level already!'
+
+    name:
+      searching: '&6TELEPORT DRONE &7(&3{name}&7) &7(&e1&7)'
+      target: '&6TELEPORT DRONE &7(&3{name}&7) &7(&e1&7)'
+    text:
+      searching: '&aSearching...'
+      target: '&cDetected Enemy...'
+  2:
+
+    # 3D custom model data
+    #model-data: 123456
+
+    # 2D custom model data (used by bd menu)
+    #model-data-gui: 1234567
+
+    # Custom head from config.yml
+    head: teleport-2
+
+    # Drone head position (x z is best to keep the same value or it will not be a perfect circle around player)
+    # But you can create some awesome shapes around player if you have the values a little bit off like x: 1.875 z: 1.575
+    position:
+      # x position (1.575 is left -1.575 is right)
+      x: 1.575
+      # Drone head height (y offset you can use - values also)
+      y: 2
+      # z position (1.575 is left -1.575 is right)
+      z: 1.575
+
+    # Follow mode (if removed it uses default values from config.yml)
+    follow:
+      # Close to target
+      close:
+        # Range it will apply new speed (drone distance to target is lower than range)
+        range: 5
+        # Speed the drone will fly (0.value is recommend)
+        speed: 0.25
+      # Between far and close
+      middle:
+        speed: 0.21
+      # Far from target
+      far:
+        # Range it will apply new speed (drone distance to target is higher than range)
+        range: 6
+        speed: 0.2
+
+    # Distance from target to teleport to drone
+    teleport: 5
+
+    # Ammo cost to teleport
+    ammo: 5
+
+    # Ammo commands
+    ammo-commands:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou will need 5 ammo to do that'
+
+    # Teleport commands
+    teleport-commands:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &6You have been teleported to {target}'
+
+    # Teleport cancelled commands
+    teleport-cancelled:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cTeleport cancelled not enough space'
+
+    # cost: amount (this is not needed for level 1)
+
+    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    max-ammo-slots: 2
+
+    # Health
+    health: 60
+
+    # Heal drone
+    healing:
+
+      # Amount of health to add
+      health: 2
+
+      # Regen (health) every (x amount of seconds) (0 to disable)
+      delay: 20
+
+    # Commands when damaged
+    hit-commands:
+      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
+
+    # Amount it costs to park the drone (remove to disable for this level)
+    park: 50
+
+    # Upgrade commands
+    commands:
+      levelup:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour teleport drone is now a level higher!'
+      enough:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your teleport drone!'
+      max:
+        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour teleport drone is at the max level already!'
+
+    name:
+      searching: '&6TELEPORT DRONE &7(&3{name}&7) &7(&e2&7)'
+      target: '&6TELEPORT DRONE &7(&3{name}&7) &7(&e2&7)'
+    text:
+      searching: '&aSearching...'
+      target: '&cDetected Enemy...'

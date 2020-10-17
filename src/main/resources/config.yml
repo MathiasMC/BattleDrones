@@ -9,6 +9,9 @@
 # Check for updates on startup?
 update-check: true
 
+# List of disabled drone names (this will completely disable this drone and files for that drone can be removed)
+disable: []
+
 # Database settings
 mysql:
   use: false
@@ -276,6 +279,8 @@ heads:
   lightning-1: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzNkMTQ1NjFiYmQwNjNmNzA0MjRhOGFmY2MzN2JmZTljNzQ1NjJlYTM2ZjdiZmEzZjIzMjA2ODMwYzY0ZmFmMSJ9fX0=
   lightning-2: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg1YmNmN2Y4MmQzNGRiODlhOTVhZGRmOGU1MzI1M2UyZDk1NTRjNmZkMmYyZTM5ZTI0MzYyZDI0M2EwY2NmNyJ9fX0=
   lightning-3: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI5Y2EzY2VjODQwMWNhZmUyN2EzN2ZlNjAxZWUwZTMzM2IwZjUyMWI2NWI5YTczMWU0MjRmZjZhYTFhNGI0NCJ9fX0=
+  teleport-1: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTMyMWFiMTY3M2M5NWRhMjA4ZTc1OTkwMjQyZTM5OGYxM2FjN2I2NDY3YmI0MzdmYjNiN2FhOWY3Y2YzY2U2ZCJ9fX0=
+  teleport-2: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVjMWMzZjdkMDljZTZjMGNiNDhlZDMwYjQ1OTZhNWMxNGZhZTc5ZGVmOGJmZDE0YTU5ZmMxOTM1NjAwYmM3YiJ9fX0=
 
 low-ammo:
 

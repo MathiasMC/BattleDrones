@@ -19,9 +19,9 @@ public class Rocket extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Rocket(Plugin plugin, String droneName, String droneCategory) {
+    public Rocket(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
-        this.plugin = BattleDrones.getInstance();
+        this.plugin = plugin;
     }
 
     @Override

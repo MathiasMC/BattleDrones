@@ -20,9 +20,9 @@ public class Lightning extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Lightning(Plugin plugin, String droneName, String droneCategory) {
+    public Lightning(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
-        this.plugin = BattleDrones.getInstance();
+        this.plugin = plugin;
     }
 
     @Override
