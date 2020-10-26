@@ -74,18 +74,24 @@ public class Support {
         }
         final String worldName = player.getWorld().getName();
         final String path = "drone-worlds.list." + worldName + "." + drone;
-        final String permission = "battledrones.bypass.drone-worlds." + worldName;
         final boolean blacklist = plugin.getFileUtils().config.getBoolean("drone-worlds.blacklist");
+        final boolean hasPermission = player.hasPermission("battledrones.bypass.drone-worlds." + worldName);
         if (plugin.getFileUtils().config.contains(path)) {
             if (blacklist) {
+                if (hasPermission) {
+                    return true;
+                }
                 plugin.getDroneManager().runCommands(player, plugin.getFileUtils().config.getStringList(path));
-                return player.hasPermission(permission);
+                return false;
             }
         } else if (!blacklist) {
+            if (hasPermission) {
+                return true;
+            }
             for (String command : plugin.getFileUtils().config.getStringList("drone-worlds.whitelist")) {
                 plugin.getServer().dispatchCommand(plugin.consoleSender, plugin.getPlaceholderManager().replacePlaceholders(player, command.replace("{drone}", plugin.getPlaceholderManager().getActiveDrone(drone))));
             }
-            return player.hasPermission(permission);
+            return false;
         }
         return true;
     }
