@@ -25,6 +25,9 @@ public class FileUtils {
     private final File languageFile;
     public FileConfiguration language;
 
+    private final File headsFile;
+    public FileConfiguration heads;
+
     private final File guiFolder;
 
     private final File dronesFolder;
@@ -42,9 +45,11 @@ public class FileUtils {
         this.configFile = copyFile(plugin, pluginFolder, "config.yml", "config.yml");
         this.particlesFile = copyFile(plugin, pluginFolder, "particles.yml", "particles.yml");
         this.languageFile = copyFile(plugin, pluginFolder, "language.yml", "language.yml");
+        this.headsFile = copyFile(plugin, pluginFolder, "heads.yml", "heads.yml");
         loadConfig();
         loadParticles();
         loadLanguage();
+        loadHeads();
         this.guiFolder = getFolder(pluginFolder + File.separator + "gui");
         this.dronesFolder = getFolder(pluginFolder + File.separator + "drones");
         this.guiPlayersFolder = getFolder(guiFolder + File.separator + "player");
@@ -73,6 +78,10 @@ public class FileUtils {
 
     public void loadParticles() {
         particles = YamlConfiguration.loadConfiguration(particlesFile);
+    }
+
+    public void loadHeads() {
+        heads = YamlConfiguration.loadConfiguration(headsFile);
     }
 
     public void saveParticles() {

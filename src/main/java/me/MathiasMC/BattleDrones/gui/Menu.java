@@ -6,8 +6,6 @@ import org.bukkit.entity.Player;
 
 public class Menu {
 
-    private final BattleDrones plugin;
-
     private final Player player;
 
     private final String uuid;
@@ -15,10 +13,9 @@ public class Menu {
     private final PlayerConnect playerConnect;
 
     public Menu(Player player) {
-        this.plugin = BattleDrones.getInstance();
         this.player = player;
         this.uuid = player.getUniqueId().toString();
-        this.playerConnect = plugin.getPlayerConnect(uuid);
+        this.playerConnect = BattleDrones.getInstance().getPlayerConnect(uuid);
     }
 
     public Player getPlayer() {

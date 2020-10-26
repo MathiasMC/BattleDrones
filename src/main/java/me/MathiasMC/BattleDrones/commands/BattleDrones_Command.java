@@ -508,6 +508,7 @@ public class BattleDrones_Command implements CommandExecutor {
                                         }
                                     }
                                 } else if (args[1].equalsIgnoreCase("heads")) {
+                                    plugin.getFileUtils().loadHeads();
                                     plugin.addHeads();
                                     if (type.equalsIgnoreCase("player")) {
                                         for (String message : plugin.getFileUtils().language.getStringList("reload.heads")) {

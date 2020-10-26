@@ -95,16 +95,12 @@ public class AmmoGUI extends GUI {
                     player.getInventory().setItem(slot, new ItemStack(Material.AIR));
                     new AmmoGUI(plugin.getPlayerMenu(player), drone).open();
                     droneHolder.save();
-                } else {
-                    for (String command : droneFile.getStringList("gui.AMMO.FULL")) {
-                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
-                    }
+                    return;
                 }
-            } else {
-                for (String command : droneFile.getStringList("gui.AMMO.NOT")) {
-                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
-                }
+                plugin.getDroneManager().runCommands(player, droneFile, "gui.AMMO.FULL");
+                return;
             }
+            plugin.getDroneManager().runCommands(player, droneFile, "gui.AMMO.NOT");
         }
     }
 

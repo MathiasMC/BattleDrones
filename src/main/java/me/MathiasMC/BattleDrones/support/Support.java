@@ -69,41 +69,42 @@ public class Support {
             }
             return false;
         }
-        if (plugin.getFileUtils().config.contains("drone-worlds")) {
-            final String worldName = player.getWorld().getName();
-            if (plugin.getFileUtils().config.contains("drone-worlds.list." + worldName + "." + drone)) {
-                if (plugin.getFileUtils().config.getBoolean("drone-worlds.blacklist")) {
-                    if (!player.hasPermission("battledrones.bypass.drone-worlds." + worldName)) {
-                        plugin.getDroneManager().runCommands(player, plugin.getFileUtils().config.getStringList("drone-worlds.list." + worldName + "." + drone));
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-            } else {
-                if (!plugin.getFileUtils().config.getBoolean("drone-worlds.blacklist")) {
-                    if (!player.hasPermission("battledrones.bypass.drone-worlds." + worldName)) {
-                        plugin.getDroneManager().runCommands(player, plugin.getFileUtils().config.getStringList("drone-worlds.whitelist"));
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
+        if (!plugin.getFileUtils().config.contains("drone-worlds")) {
+            return true;
+        }
+        final String worldName = player.getWorld().getName();
+        final String path = "drone-worlds.list." + worldName + "." + drone;
+        final String permission = "battledrones.bypass.drone-worlds." + worldName;
+        final boolean blacklist = plugin.getFileUtils().config.getBoolean("drone-worlds.blacklist");
+        if (plugin.getFileUtils().config.contains(path)) {
+            if (blacklist) {
+                plugin.getDroneManager().runCommands(player, plugin.getFileUtils().config.getStringList(path));
+                return player.hasPermission(permission);
             }
+        } else if (!blacklist) {
+            for (String command : plugin.getFileUtils().config.getStringList("drone-worlds.whitelist")) {
+                plugin.getServer().dispatchCommand(plugin.consoleSender, plugin.getPlaceholderManager().replacePlaceholders(player, command.replace("{drone}", plugin.getPlaceholderManager().getActiveDrone(drone))));
+            }
+            return player.hasPermission(permission);
         }
         return true;
     }
 
     public void tp(final Player player) {
-        if (plugin.getFileUtils().config.contains("iridium-skyblock.toggle") && plugin.getServer().getPluginManager().getPlugin("IridiumSkyblock") != null) {
-            final List<String> options = plugin.getFileUtils().config.getStringList("iridium-skyblock.toggle.disabled");
-            final Island island = IridiumSkyblock.getIslandManager().getIslandViaLocation(player.getLocation());
-            if (island != null && island.isVisit()) {
-                for (Player islandPlayer : island.getPlayersOnIsland()) {
-                    final String member = islandPlayer.getUniqueId().toString();
-                    if (island.getMembers().contains(member)) {
-                        toggle(islandPlayer, options, "iridium-skyblock.toggle.commands");
-                    }
+        if (plugin.getServer().getPluginManager().getPlugin("IridiumSkyblock") == null) {
+            return;
+        }
+        if (!plugin.getFileUtils().config.contains("iridium-skyblock.toggle")) {
+            return;
+        }
+
+        final List<String> options = plugin.getFileUtils().config.getStringList("iridium-skyblock.toggle.disabled");
+        final Island island = IridiumSkyblock.getIslandManager().getIslandViaLocation(player.getLocation());
+        if (island != null && island.isVisit()) {
+            for (Player islandPlayer : island.getPlayersOnIsland()) {
+                final String member = islandPlayer.getUniqueId().toString();
+                if (island.getMembers().contains(member)) {
+                    toggle(islandPlayer, options, "iridium-skyblock.toggle.commands");
                 }
             }
         }

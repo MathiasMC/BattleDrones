@@ -10,16 +10,13 @@ import java.util.Collections;
 
 public class Lands {
 
-    private LandsIntegration landsIntegration;
+    private final LandsIntegration landsIntegration;
 
     public Lands(final BattleDrones plugin) {
         this.landsIntegration = new LandsIntegration(plugin);
     }
 
     public boolean canTarget(final Player player, final LivingEntity target) {
-        if (landsIntegration == null) {
-            return true;
-        }
         final LandPlayer landPlayer = landsIntegration.getLandPlayer(player.getUniqueId());
         final LandPlayer targetLandPlayer = landsIntegration.getLandPlayer(target.getUniqueId());
         if (landPlayer != null && targetLandPlayer != null) {

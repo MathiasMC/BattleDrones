@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public class Residence {
 
-    private com.bekvon.bukkit.residence.Residence residence;
+    private final com.bekvon.bukkit.residence.Residence residence;
 
     public Residence() {
         this.residence = com.bekvon.bukkit.residence.Residence.getInstance();

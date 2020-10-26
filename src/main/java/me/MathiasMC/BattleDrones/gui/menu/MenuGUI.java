@@ -86,7 +86,7 @@ public class MenuGUI extends GUI {
                         new DroneGUI(plugin.getPlayerMenu(player), drone).open();
                     }
                 } else {
-                    plugin.getDroneManager().runCommands(player, file.getStringList("gui.PERMISSION"));
+                    plugin.getDroneManager().runCommands(player, file, "gui.PERMISSION");
                 }
             }
         }

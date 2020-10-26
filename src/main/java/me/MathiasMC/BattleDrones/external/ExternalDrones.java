@@ -7,10 +7,8 @@ import java.util.List;
 
 public class ExternalDrones {
 
-    private final BattleDrones plugin;
-
     public ExternalDrones() {
-        this.plugin = BattleDrones.getInstance();
+        BattleDrones plugin = BattleDrones.getInstance();
         final List<String> disable = plugin.getFileUtils().config.getStringList("disable");
         if (!disable.contains("laser")) {
             new Gun(plugin, "laser", "energy").register();

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class Factions {
 
-    private FPlayers fPlayers;
+    private final FPlayers fPlayers;
 
     public Factions() {
         this.fPlayers = FPlayers.getInstance();

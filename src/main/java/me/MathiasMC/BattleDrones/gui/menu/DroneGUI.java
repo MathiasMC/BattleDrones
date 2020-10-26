@@ -68,7 +68,7 @@ public class DroneGUI extends GUI {
                 }
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_MONSTERS")) {
                 if (!player.hasPermission("battledrones.gui.toggle.monsters")) {
-                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language.getStringList("toggle.monsters"));
+                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language, "toggle.monsters");
                     return;
                 }
                 if (droneHolder.getMonsters() == 1) {
@@ -80,7 +80,7 @@ public class DroneGUI extends GUI {
                 updateAI = true;
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_ANIMALS")) {
                 if (!player.hasPermission("battledrones.gui.toggle.animals")) {
-                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language.getStringList("toggle.animals"));
+                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language, "toggle.animals");
                     return;
                 }
                 if (droneHolder.getAnimals() == 1) {
@@ -92,7 +92,7 @@ public class DroneGUI extends GUI {
                 updateAI = true;
             } else if (file.getStringList(slot + ".OPTIONS").contains("DRONE_PLAYERS")) {
                 if (!player.hasPermission("battledrones.gui.toggle.players")) {
-                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language.getStringList("toggle.players"));
+                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language, "toggle.players");
                     return;
                 }
                 if (droneHolder.getPlayers() == 1) {

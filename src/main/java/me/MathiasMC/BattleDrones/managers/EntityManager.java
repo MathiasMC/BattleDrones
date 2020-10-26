@@ -179,12 +179,12 @@ public class EntityManager {
         }
         final FileConfiguration file = plugin.droneFiles.get(drone);
         if (droneHolder.getUnlocked() == 0) {
-            plugin.getDroneManager().runCommands(player, file.getStringList("gui.UNLOCKED"));
+            plugin.getDroneManager().runCommands(player, file, "gui.UNLOCKED");
             return;
         }
         if (droneSpawnEvent.hasWait()) {
             if (!player.hasPermission("battledrones.bypass.activate")) {
-                plugin.getDroneManager().runCommands(player, file.getStringList("gui.WAIT"));
+                plugin.getDroneManager().runCommands(player, file, "gui.WAIT");
                 return;
             }
         } else if (!droneSpawnEvent.isBypassWait()) {
@@ -192,7 +192,7 @@ public class EntityManager {
         }
         if (plugin.drone_amount.size() >= plugin.getFileUtils().config.getInt("drone-amount")) {
             if (!plugin.getDroneManager().canBypassDroneAmount(player) || !droneSpawnEvent.isBypassDroneAmount()) {
-                plugin.getDroneManager().runCommands(player, file.getStringList("gui.MAX-REACHED"));
+                plugin.getDroneManager().runCommands(player, file, "gui.MAX-REACHED");
                 return;
             }
         }

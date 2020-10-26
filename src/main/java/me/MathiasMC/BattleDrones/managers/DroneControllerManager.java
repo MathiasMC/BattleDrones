@@ -60,7 +60,7 @@ public class DroneControllerManager {
                 controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.automatic"));
                 return;
             }
-            if (action == Action.LEFT_CLICK_AIR) {
+            if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
                 if (!player.hasPermission("battledrones.player.controller.follow")) {
                     dispatchCommands("controller.follow-permission", player, "");
                     return;
@@ -75,7 +75,7 @@ public class DroneControllerManager {
                 if (plugin.getFileUtils().language.contains("translate." + translate)) {
                     targetName = String.valueOf(plugin.getFileUtils().language.getString("translate." + translate));
                 }
-
+                playerConnect.dronePoint = null;
                 if (!plugin.drone_follow.contains(uuid)) {
                     final FileConfiguration file = plugin.droneFiles.get(playerConnect.getActive());
                     if (file.getLong("follow-cost") != 0) {
@@ -139,6 +139,7 @@ public class DroneControllerManager {
                 }
             } else {
                 final List<String> entityList = plugin.getFileUtils().config.getStringList("controller.exclude");
+                entityList.add("armor_stand");
                 if (entityList.contains(target.getType().name().toLowerCase().replace(" ", "_"))) {
                     dispatchCommands("controller.cannot", player, targetName);
                     return;

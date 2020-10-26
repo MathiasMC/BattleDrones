@@ -93,7 +93,7 @@ public class ShieldGenerator extends DroneRegistry implements Listener {
                                         particleFile.getInt(particleName + ".amount")),
                                         particleFile.getInt(particleName + ".delay"));
                             }
-                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player.getName(), "ammo");
+                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player, "ammo");
                         plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
                         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                             cooldown.remove(uuid);

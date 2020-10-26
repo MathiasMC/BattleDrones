@@ -286,9 +286,9 @@ public class BattleDrones extends JavaPlugin {
     }
 
     public void addHeads() {
-        for (String head : fileUtils.config.getConfigurationSection("heads").getKeys(false)) {
-            drone_heads.put(head, itemStackManager.getHeadTexture(fileUtils.config.getString("heads." + head)));
+        for (String head : fileUtils.heads.getConfigurationSection("").getKeys(false)) {
+            drone_heads.put(head, itemStackManager.getHeadTexture(fileUtils.heads.getString(head)));
         }
-        textUtils.info("Loaded ( " + fileUtils.config.getConfigurationSection("heads").getKeys(false).size() + " ) heads");
+        textUtils.info("Loaded ( " + fileUtils.heads.getConfigurationSection("").getKeys(false).size() + " ) heads");
     }
 }

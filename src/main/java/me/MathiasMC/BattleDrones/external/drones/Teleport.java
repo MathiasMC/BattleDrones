@@ -24,6 +24,11 @@ public class Teleport extends DroneRegistry {
     }
 
     @Override
+    public void ability(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
+
+    }
+
+    @Override
     public void find(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
 
     }
@@ -65,7 +70,7 @@ public class Teleport extends DroneRegistry {
                 final Location targetLocation = target.getLocation();
                 if (!player.hasPermission("battledrones.bypass.ammo." + droneName)) {
                     if (droneHolder.getAmmo() < file.getInt(path + ".ammo")) {
-                        plugin.getDroneManager().runCommands(player, file.getStringList(path + ".ammo-commands"));
+                        plugin.getDroneManager().runCommands(player, file, path + ".ammo-commands");
                         plugin.drone_targets.put(uuid, null);
                         return;
                     }
@@ -73,7 +78,7 @@ public class Teleport extends DroneRegistry {
                 if (headLocation.distance(targetLocation) < file.getDouble(path + ".teleport")) {
                     plugin.drone_targets.put(uuid, null);
                     if (head.getLocation().getBlock().getType().isSolid()) {
-                        plugin.getDroneManager().runCommands(player, file.getStringList(path + ".teleport-cancelled"));
+                        plugin.getDroneManager().runCommands(player, file, path + ".teleport-cancelled");
                         return;
                     }
                     int set = droneHolder.getAmmo() - file.getInt(path + ".ammo");

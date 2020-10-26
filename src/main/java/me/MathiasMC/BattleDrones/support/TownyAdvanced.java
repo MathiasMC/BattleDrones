@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class TownyAdvanced {
 
-    private TownyAPI townyAPI;
+    private final TownyAPI townyAPI;
 
     public TownyAdvanced() {
         this.townyAPI = TownyAPI.getInstance();

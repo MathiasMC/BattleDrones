@@ -56,50 +56,52 @@ public class ShopGUI extends GUI {
     @Override
     public void click(InventoryClickEvent e) {
         final int slot = e.getSlot();
-        if (file.contains(String.valueOf(slot))) {
-            if (e.getCurrentItem().getItemMeta() == null) {
-                return;
-            }
-            final ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
-            final String drone = itemMeta.getPersistentDataContainer().get(new NamespacedKey(plugin, "drone"), PersistentDataType.STRING);
-            if (drone != null) {
-                final FileConfiguration file = plugin.droneFiles.get(drone);
-                if (player.hasPermission("battledrones.gui.shop." + drone.replace("_", "."))) {
-                    final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
-                    final DroneBuyEvent droneBuyEvent = new DroneBuyEvent(player, playerConnect, droneHolder);
-                    plugin.getServer().getPluginManager().callEvent(droneBuyEvent);
-                    if (droneBuyEvent.isCancelled()) {
-                        return;
-                    }
-                    if (droneHolder.getUnlocked() != 1) {
-                        if (plugin.getSupport().vault.withdraw(player, file.getLong("gui.SHOP.COST"))) {
-                            droneHolder.setUnlocked(1);
-                            droneHolder.setHealth(plugin.droneFiles.get(drone).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
-                            droneHolder.save();
-                            for (String command : file.getStringList("gui.SHOP.BOUGHT")) {
-                                plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
-                            }
-                        } else {
-                            for (String command : file.getStringList("gui.SHOP.COINS")) {
-                                plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
-                            }
-                        }
-                    } else {
-                        for (String command : file.getStringList("gui.SHOP.HAVE")) {
-                            plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
-                        }
-                    }
-                } else {
-                    for (String command : file.getStringList("gui.SHOP.PERMISSION")) {
-                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
-                    }
-                }
-            }
-            if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
-                new SelectGUI(plugin.getPlayerMenu(player), "shop").open();
-            }
-            plugin.getItemStackManager().dispatchCommand(file, slot, player);
+        if (!file.contains(String.valueOf(slot))) {
+            return;
         }
+
+        plugin.getItemStackManager().dispatchCommand(file, slot, player);
+
+        if (file.getStringList(slot + ".OPTIONS").contains("BACK")) {
+            new SelectGUI(plugin.getPlayerMenu(player), "shop").open();
+        }
+
+        if (e.getCurrentItem().getItemMeta() == null) {
+            return;
+        }
+
+        final String drone = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "drone"), PersistentDataType.STRING);
+        if (drone == null) {
+            return;
+        }
+        final FileConfiguration file = plugin.droneFiles.get(drone);
+        if (!player.hasPermission("battledrones.gui.shop." + drone)) {
+            plugin.getDroneManager().runCommands(player, file.getStringList("gui.SHOP.PERMISSION"));
+            return;
+        }
+
+        final DroneHolder droneHolder = plugin.getDroneHolder(uuid, drone);
+
+        if (droneHolder.getUnlocked() == 1) {
+            plugin.getDroneManager().runCommands(player, file.getStringList("gui.SHOP.HAVE"));
+            return;
+        }
+
+        if (!plugin.getSupport().vault.withdraw(player, file.getLong("gui.SHOP.COST"))) {
+            plugin.getDroneManager().runCommands(player, file.getStringList("gui.SHOP.COINS"));
+            return;
+        }
+
+        final DroneBuyEvent droneBuyEvent = new DroneBuyEvent(player, playerConnect, droneHolder);
+        plugin.getServer().getPluginManager().callEvent(droneBuyEvent);
+        if (droneBuyEvent.isCancelled()) {
+            return;
+        }
+
+        droneHolder.setUnlocked(1);
+        droneHolder.setHealth(plugin.droneFiles.get(drone).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"));
+        droneHolder.save();
+        plugin.getDroneManager().runCommands(player, file.getStringList("gui.SHOP.BOUGHT"));
     }
 
     @Override

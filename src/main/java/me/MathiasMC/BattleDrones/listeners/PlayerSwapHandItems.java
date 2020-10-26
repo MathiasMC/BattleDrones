@@ -52,7 +52,7 @@ public class PlayerSwapHandItems implements Listener {
                 final long cost = file.getLong("swap.cost");
 
                 if (!plugin.getSupport().vault.withdraw(player, cost)) {
-                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language.getStringList("swap.enough"));
+                    plugin.getDroneManager().runCommands(player, plugin.getFileUtils().language, "swap.enough");
                     return;
                 } else {
                     final List<String> list = new ArrayList<>();

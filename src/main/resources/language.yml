@@ -71,7 +71,7 @@ reload:
   drones:
     - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded drones folder'
   heads:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded heads from config.yml'
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eReloaded heads from heads.yml'
 message:
   permission:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
@@ -360,7 +360,7 @@ console:
     drones:
       - '&7[&dBattleDrones&7] &eReloaded drones folder'
     heads:
-      - '&7[&dBattleDrones&7] &eReloaded heads from config.yml'
+      - '&7[&dBattleDrones&7] &eReloaded heads from heads.yml'
   message:
     usage:
       - '&7[&dBattleDrones&7] &cUsage: /battledrones <player> <text>'

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class DroneRegistry {
+public abstract class DroneRegistry {
 
     private final BattleDrones plugin;
 
@@ -61,6 +61,8 @@ public class DroneRegistry {
             plugin.getTextUtils().info(registeredPlugin.getName() + " " + droneName + " registered in the category " + droneCategory);
         }
     }
+
+    public abstract void ability(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder);
 
     public void find(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
         final String uuid = player.getUniqueId().toString();
@@ -154,6 +156,7 @@ public class DroneRegistry {
             if (target != null && target.isDead() || target != null && world != target.getWorld()) {
                 plugin.drone_targets.put(uuid, null);
                 target = null;
+                plugin.drone_follow.remove(uuid);
             }
             Vector direction = null;
             Location tp = head.getLocation();
@@ -216,10 +219,6 @@ public class DroneRegistry {
             }
             name.teleport(tp.add(0, 0.3, 0));
         }, 5, 1).getTaskId();
-    }
-
-    public void ability(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
-
     }
 
     public void healing(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
