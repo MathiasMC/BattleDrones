@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
 
@@ -23,7 +24,9 @@ public class DroneControllerManager {
         updateFollowPath();
     }
 
-    public void selectTarget(final Player player, final EquipmentSlot equipmentSlot, final Action action) {
+    public void selectTarget(final Player player, final PlayerInteractEvent e) {
+        final EquipmentSlot equipmentSlot = e.getHand();
+        final Action action = e.getAction();
         if (!plugin.getFileUtils().config.getBoolean("controller.use")) {
             return;
         }
@@ -52,12 +55,16 @@ public class DroneControllerManager {
                 if (playerConnect.isAutomatic()) {
                     playerConnect.setAutomatic(false);
                     dispatchCommands("controller.manual", player, "");
-                    controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.manual"));
+                    if (controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.manual"))) {
+                        e.setCancelled(true);
+                    }
                     return;
                 }
                 playerConnect.setAutomatic(true);
                 dispatchCommands("controller.automatic", player, "");
-                controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.automatic"));
+                if (controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.automatic"))) {
+                    e.setCancelled(true);
+                }
                 return;
             }
             if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
@@ -92,7 +99,9 @@ public class DroneControllerManager {
                         dispatchCommands("controller.follow-select", player, targetName);
                     }
                     plugin.drone_follow.add(uuid);
-                    controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.follow"));
+                    if (controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.follow"))) {
+                        e.setCancelled(true);
+                    }
                 } else {
                     plugin.drone_follow.remove(uuid);
                     dispatchCommands("controller.follow-remove", player, targetName);
@@ -151,7 +160,9 @@ public class DroneControllerManager {
                 plugin.getParticleManager().displayLineParticle("REDSTONE", start, end, start.distance(end), plugin.getFileUtils().config.getDouble("controller.particle.space"), plugin.getFileUtils().config.getInt("controller.particle.r"), plugin.getFileUtils().config.getInt("controller.particle.g"), plugin.getFileUtils().config.getInt("controller.particle.b"), plugin.getFileUtils().config.getInt("controller.particle.amount"), plugin.getFileUtils().config.getInt("controller.particle.size"));
             }
             dispatchCommands("controller.select", player, targetName);
-            controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.select"));
+            if (controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.select"))) {
+                e.setCancelled(true);
+            }
             return;
         }
         if (action == Action.RIGHT_CLICK_AIR) {
@@ -164,7 +175,9 @@ public class DroneControllerManager {
                 }
                 plugin.drone_targets.put(uuid, null);
                 dispatchCommands("controller.remove", player, targetName);
-                controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.remove"));
+                if (controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.remove"))) {
+                    e.setCancelled(true);
+                }
                 return;
             }
             dispatchCommands("controller.no-target", player, "");

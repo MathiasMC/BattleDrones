@@ -48,12 +48,12 @@ public class ControllerUtils {
         return this.controller != null && this.range != 0;
     }
 
-    public void damage(final Player player, final int damage) {
+    public boolean damage(final Player player, final int damage) {
         if (damage == 0) {
-            return;
+            return false;
         }
         if (player.hasPermission("battledrones.bypass.controller.durability")) {
-            return;
+            return false;
         }
         final ItemMeta itemMeta = controller.getItemMeta();
         if (itemMeta instanceof Damageable) {
@@ -62,7 +62,9 @@ public class ControllerUtils {
             controller.setItemMeta((ItemMeta) damageable);
             if (damageable.getDamage() >= controller.getType().getMaxDurability()) {
                 playerInventory.remove(controller);
+                return true;
             }
         }
+        return false;
     }
 }

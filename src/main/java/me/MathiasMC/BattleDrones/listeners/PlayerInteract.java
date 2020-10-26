@@ -25,7 +25,7 @@ public class PlayerInteract implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInteract(PlayerInteractEvent e) {
         final Player player = e.getPlayer();
-        plugin.getDroneControllerManager().selectTarget(player, e.getHand(), e.getAction());
+        plugin.getDroneControllerManager().selectTarget(player, e);
         for (Entity entity : player.getNearbyEntities(2, 2, 2)) {
             if (entity instanceof ArmorStand) {
                 final ArmorStand armorStand = (ArmorStand) entity;
