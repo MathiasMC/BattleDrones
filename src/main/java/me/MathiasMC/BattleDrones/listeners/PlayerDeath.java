@@ -18,15 +18,15 @@ public class PlayerDeath implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onDeath(PlayerDeathEvent e) {
         final String uuid = e.getEntity().getUniqueId().toString();
+        final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
         if (plugin.getFileUtils().config.contains("player-death-commands")) {
-                final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
-                if (playerConnect.isActive()) {
-                    for (String command : plugin.getFileUtils().config.getStringList("player-death-commands")) {
-                        plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", e.getEntity().getName()));
-                    }
+            if (playerConnect.isActive()) {
+                for (String command : plugin.getFileUtils().config.getStringList("player-death-commands")) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", e.getEntity().getName()));
                 }
-                playerConnect.stopDrone();
+            }
         }
+        playerConnect.stopDrone();
         plugin.drone_targets.remove(uuid);
     }
 }

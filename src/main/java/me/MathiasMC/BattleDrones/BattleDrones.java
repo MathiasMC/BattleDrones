@@ -113,6 +113,7 @@ public class BattleDrones extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
             getServer().getPluginManager().registerEvents(new PlayerTeleport(this), this);
             getServer().getPluginManager().registerEvents(new ProjectileHit(this), this);
+            getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
 
             new ExternalDrones();
 

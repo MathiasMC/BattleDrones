@@ -249,6 +249,16 @@ public class EntityManager {
         plugin.getDroneManager().runCommands(player, droneSpawnEvent.getSpawnCommands());
     }
 
+    public void spawnDroneSilent(final Player player, final PlayerConnect playerConnect, final String drone, final Type type) {
+        final DroneSpawnEvent droneSpawnEvent = new DroneSpawnEvent(player, playerConnect, plugin.getDroneHolder(playerConnect.getUniqueId(), drone));
+        droneSpawnEvent.setBypassWait(true);
+        droneSpawnEvent.setBypassDroneAmount(true);
+        droneSpawnEvent.setBypassLocation(true);
+        droneSpawnEvent.setType(type);
+        droneSpawnEvent.setSpawnCommands(null);
+        droneSpawnEvent.spawn();
+    }
+
     public void removeDrone(final DroneRemoveEvent droneRemoveEvent) {
         plugin.getServer().getPluginManager().callEvent(droneRemoveEvent);
         final Player player = droneRemoveEvent.getPlayer();
