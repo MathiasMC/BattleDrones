@@ -26,7 +26,7 @@ public class PlayerDeath implements Listener {
                 }
             }
         }
-        playerConnect.stopDrone();
+        playerConnect.stopDrone(true, true);
         plugin.drone_targets.remove(uuid);
     }
 }

@@ -215,86 +215,37 @@ default:
       searching: '&aSearching...'
       target: '&cDetected Enemy...'
   2:
-
-    # 3D custom model data
-    #model-data: 123456
-
-    # 2D custom model data (used by bd menu)
-    #model-data-gui: 1234567
-
-    # Custom head from config.yml
     head: teleport-2
-
-    # Drone head position (x z is best to keep the same value or it will not be a perfect circle around player)
-    # But you can create some awesome shapes around player if you have the values a little bit off like x: 1.875 z: 1.575
     position:
-      # x position (1.575 is left -1.575 is right)
       x: 1.575
-      # Drone head height (y offset you can use - values also)
       y: 2
-      # z position (1.575 is left -1.575 is right)
       z: 1.575
-
-    # Follow mode (if removed it uses default values from config.yml)
     follow:
-      # Close to target
       close:
-        # Range it will apply new speed (drone distance to target is lower than range)
         range: 5
-        # Speed the drone will fly (0.value is recommend)
         speed: 0.25
-      # Between far and close
       middle:
         speed: 0.21
-      # Far from target
       far:
-        # Range it will apply new speed (drone distance to target is higher than range)
         range: 6
         speed: 0.2
-
-    # Distance from target to teleport to drone
     teleport: 5
-
-    # Ammo cost to teleport
     ammo: 5
-
-    # Ammo commands
     ammo-commands:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cYou will need 5 ammo to do that'
-
-    # Teleport commands
     teleport-commands:
       - 'battledrones message {player} &7[&dBattleDrones&7] &6You have been teleported to {target}'
-
-    # Teleport cancelled commands
     teleport-cancelled:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cTeleport cancelled not enough space'
-
-    # cost: amount (this is not needed for level 1)
-
-    # Ammo storage slots. Must be 1-45 (last 46-53th slot reserved by plugin for 'back' item)
+    cost: 1000
     max-ammo-slots: 2
-
-    # Health
     health: 60
-
-    # Heal drone
     healing:
-
-      # Amount of health to add
       health: 2
-
-      # Regen (health) every (x amount of seconds) (0 to disable)
       delay: 20
-
-    # Commands when damaged
     hit-commands:
       - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
-
-    # Amount it costs to park the drone (remove to disable for this level)
     park: 50
-
-    # Upgrade commands
     commands:
       levelup:
         - 'battledrones message {player} &7[&dBattleDrones&7] &aYour teleport drone is now a level higher!'
@@ -302,7 +253,6 @@ default:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your teleport drone!'
       max:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYour teleport drone is at the max level already!'
-
     name:
       searching: '&6TELEPORT DRONE &7(&3{name}&7) &7(&e2&7)'
       target: '&6TELEPORT DRONE &7(&3{name}&7) &7(&e2&7)'

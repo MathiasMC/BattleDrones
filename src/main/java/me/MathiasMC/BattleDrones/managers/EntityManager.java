@@ -200,7 +200,7 @@ public class EntityManager {
         if (droneSpawnEvent.isCancelled()) {
             return;
         }
-        playerConnect.stopDrone();
+        playerConnect.stopDrone(droneSpawnEvent.isRemoveTarget(), droneSpawnEvent.isRemovePark());
         final String path = playerConnect.getGroup() + "." + droneHolder.getLevel();
         ItemStack itemStack = plugin.drone_heads.get(file.getString(path + ".head"));
         if (file.contains(path + ".model-data")) {
@@ -211,14 +211,17 @@ public class EntityManager {
                 itemStack.setItemMeta(itemMeta);
             }
         }
-        final Location playerLocation = player.getLocation().add(0, plugin.getFileUtils().getDouble(file, path + ".position.y", 2), 0);
-        final float yaw = playerLocation.getYaw();
-        final double xD = Math.sin(-0.0175 * yaw + plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575)) + playerLocation.getX();
-        final double zD = Math.cos(-0.0175 * yaw + plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575)) + playerLocation.getZ();
-        final Location spawnLocation = new Location(player.getWorld(), xD, playerLocation.getY(), zD);
-        spawnLocation.setDirection(playerLocation.getDirection());
+        Location playerLocation = droneSpawnEvent.getLocation();
+        if (playerLocation == null) {
+            playerLocation = player.getLocation().add(0, plugin.getFileUtils().getDouble(file, path + ".position.y", 2), 0);
+            final float yaw = playerLocation.getYaw();
+            final double xD = Math.sin(-0.0175 * yaw + plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575)) + playerLocation.getX();
+            final double zD = Math.cos(-0.0175 * yaw + plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575)) + playerLocation.getZ();
+            playerLocation = new Location(player.getWorld(), xD, playerLocation.getY(), zD);
+        }
+        playerLocation.setDirection(playerLocation.getDirection());
         final NamespacedKey key = new NamespacedKey(plugin, "drone_uuid");
-        final ArmorStand head = getArmorStand(spawnLocation);
+        final ArmorStand head = getArmorStand(playerLocation);
         final EntityEquipment equipment = head.getEquipment();
         if (equipment != null) {
             equipment.setHelmet(itemStack);
@@ -228,7 +231,7 @@ public class EntityManager {
         head.getPersistentDataContainer().set(key, PersistentDataType.STRING, uuid);
         playerConnect.head = head;
         if (Objects.requireNonNull(file.getString(path + ".name.searching")).length() > 0 || Objects.requireNonNull(file.getString(path + ".name.target")).length() > 0) {
-            final ArmorStand name = getArmorStand(spawnLocation.add(0, 0.3, 0));
+            final ArmorStand name = getArmorStand(playerLocation.add(0, 0.3, 0));
             name.setCustomName(" ");
             name.setCustomNameVisible(true);
             name.getPersistentDataContainer().set(key, PersistentDataType.STRING, uuid);
@@ -274,7 +277,7 @@ public class EntityManager {
         }
         plugin.getDroneManager().runCommands(player, droneRemoveEvent.getRemoveCommands());
         final DroneHolder droneHolder = droneRemoveEvent.getDroneHolder();
-        playerConnect.stopDrone();
+        playerConnect.stopDrone(true, true);
         playerConnect.saveDrone(droneHolder);
         playerConnect.save();
     }

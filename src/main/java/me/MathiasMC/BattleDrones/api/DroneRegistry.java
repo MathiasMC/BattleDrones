@@ -54,11 +54,12 @@ public abstract class DroneRegistry {
         plugin.category.put(droneCategory, list);
         fileUtils.loadDroneFiles();
         fileUtils.loadGUIFiles();
-        plugin.drones.put(plugin.droneFiles.get(droneName).getString("name"), droneName);
+        final String name = plugin.droneFiles.get(droneName).getString("name");
+        plugin.drones.put(name, droneName);
         if (registeredPlugin == plugin) {
-            plugin.getTextUtils().info(droneName + " registered in the category " + droneCategory);
+            plugin.getTextUtils().info(name + " in category " + droneCategory + " registered");
         } else {
-            plugin.getTextUtils().info(registeredPlugin.getName() + " " + droneName + " registered in the category " + droneCategory);
+            plugin.getTextUtils().info(registeredPlugin.getName() + " " + name + " in category " + droneCategory + " registered");
         }
     }
 

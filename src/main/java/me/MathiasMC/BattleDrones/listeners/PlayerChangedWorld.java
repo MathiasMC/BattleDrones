@@ -31,7 +31,7 @@ public class PlayerChangedWorld implements Listener {
                         plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
-                playerConnect.stopDrone();
+                playerConnect.stopDrone(true, true);
         }
         plugin.drone_targets.remove(uuid);
     }

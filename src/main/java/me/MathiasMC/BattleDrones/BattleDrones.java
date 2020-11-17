@@ -86,9 +86,9 @@ public class BattleDrones extends JavaPlugin {
     public void onEnable() {
         call = this;
 
-        fileUtils = new FileUtils(this);
-
         textUtils = new TextUtils(this);
+
+        fileUtils = new FileUtils(this);
 
         database = new Database(this);
 
@@ -155,7 +155,7 @@ public class BattleDrones extends JavaPlugin {
     @Override
     public void onDisable() {
         for (String uuid : listPlayerConnect()) {
-            getPlayerConnect(uuid).stopDrone();
+            getPlayerConnect(uuid).stopDrone(true, true);
         }
         try {
             database.close();

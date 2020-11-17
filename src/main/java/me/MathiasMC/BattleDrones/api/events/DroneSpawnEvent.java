@@ -4,6 +4,7 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.api.Type;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -24,6 +25,12 @@ public class DroneSpawnEvent extends Event implements Cancellable {
     private final PlayerConnect playerConnect;
 
     private final DroneHolder droneHolder;
+
+    private Location location;
+
+    private boolean removeTarget = true;
+
+    private boolean removePark = true;
 
     private boolean bypassWait = false;
 
@@ -57,6 +64,18 @@ public class DroneSpawnEvent extends Event implements Cancellable {
         return this.droneHolder;
     }
 
+    public boolean isRemoveTarget() {
+        return this.removeTarget;
+    }
+
+    public boolean isRemovePark() {
+        return this.removePark;
+    }
+
+    public Location getLocation() {
+        return this.location;
+    }
+
     public boolean isBypassWait() {
         return this.bypassWait;
     }
@@ -79,6 +98,18 @@ public class DroneSpawnEvent extends Event implements Cancellable {
 
     public boolean isAutomatic() {
         return this.automatic;
+    }
+
+    public void setRemoveTarget(final boolean set) {
+        this.removeTarget = set;
+    }
+
+    public void setRemovePark(final boolean set) {
+        this.removePark = set;
+    }
+
+    public void setLocation(final Location set) {
+        this.location = set;
     }
 
     public void setBypassWait(final boolean set) {

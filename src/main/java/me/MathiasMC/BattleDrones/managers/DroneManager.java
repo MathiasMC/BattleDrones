@@ -1,6 +1,8 @@
 package me.MathiasMC.BattleDrones.managers;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
+import me.MathiasMC.BattleDrones.api.Type;
+import me.MathiasMC.BattleDrones.api.events.DroneDeathEvent;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import me.MathiasMC.BattleDrones.api.events.DroneDamageEvent;
@@ -77,7 +79,7 @@ public class DroneManager {
                 droneHolder.setWear(file.getInt(path + "wear-and-tear"));
                 droneHolder.setHealth(droneHolder.getHealth() - 1);
             } else {
-                droneDeath(playerConnect, droneHolder, file);
+                droneDeath(player, playerConnect, droneHolder, file, Type.WEAR);
                 runCommands(player, file, "dead.wear");
             }
         }
@@ -136,7 +138,7 @@ public class DroneManager {
             return;
         }
         runCommands(player, file, "dead.player");
-        droneDeath(playerConnect, droneHolder, file);
+        droneDeath(player, playerConnect, droneHolder, file, Type.PLAYER);
     }
 
     public void checkTarget(final Player player, final LivingEntity target, final FileConfiguration file, final Location end, final String path, final int ticks) {
@@ -147,8 +149,14 @@ public class DroneManager {
         }, ticks);
     }
 
-    private void droneDeath(final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file) {
-        playerConnect.stopDrone();
+    private void droneDeath(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final FileConfiguration file, final Type type) {
+        final DroneDeathEvent droneDeathEvent = new DroneDeathEvent(player, playerConnect, droneHolder);
+        droneDeathEvent.setType(type);
+        plugin.getServer().getPluginManager().callEvent(droneDeathEvent);
+        if (droneDeathEvent.isCancelled()) {
+            return;
+        }
+        playerConnect.stopDrone(true, true);
         playerConnect.setLastActive("");
         droneHolder.setUnlocked(file.getInt("dead.unlocked"));
         if (file.getLong("dead.set-level") != 0) {

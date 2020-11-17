@@ -641,7 +641,7 @@ public class BattleDrones_Command implements CommandExecutor {
                                         if (droneHolder.getUnlocked() != 0) {
                                             droneHolder.setUnlocked(0);
                                             droneHolder.setHealth(0);
-                                            plugin.getPlayerConnect(targetUUID).stopDrone();
+                                            plugin.getPlayerConnect(targetUUID).stopDrone(true, true);
                                         }
                                         droneHolder.save();
                                         if (type.equalsIgnoreCase("player")) {

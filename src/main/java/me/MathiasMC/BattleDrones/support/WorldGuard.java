@@ -30,6 +30,9 @@ public class WorldGuard {
         if (plugin.getSupport().worldGuard == null ) {
             return true;
         }
+        if (file == null) {
+            return true;
+        }
         if (!file.contains(path)) {
             return true;
         }

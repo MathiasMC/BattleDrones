@@ -19,7 +19,7 @@ public class PlayerQuit implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         final String uuid = e.getPlayer().getUniqueId().toString();
         final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
-        playerConnect.stopDrone();
+        playerConnect.stopDrone(true, true);
         plugin.unloadPlayerConnect(uuid);
         plugin.unloadDroneHolder(uuid);
     }

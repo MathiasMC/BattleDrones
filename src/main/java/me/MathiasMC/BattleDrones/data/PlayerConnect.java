@@ -121,14 +121,18 @@ public class PlayerConnect {
         plugin.getServer().getScheduler().cancelTask(this.healing);
     }
 
-    public void stopDrone() {
+    public void stopDrone(final boolean removeTarget, final boolean removePark) {
         remove();
         stopAI();
         stopHealing();
         setActive("");
         plugin.drone_amount.remove(uuid);
-        plugin.park.remove(uuid);
-        plugin.drone_targets.remove(uuid);
+        if (removePark) {
+            plugin.park.remove(uuid);
+        }
+        if (removeTarget) {
+            plugin.drone_targets.remove(uuid);
+        }
     }
 
     public void saveDrone(final DroneHolder droneHolder) {

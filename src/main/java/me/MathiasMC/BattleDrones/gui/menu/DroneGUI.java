@@ -123,6 +123,13 @@ public class DroneGUI extends GUI {
                             droneSpawnEvent.setBypassDroneAmount(true);
                             droneSpawnEvent.setBypassLocation(true);
                             droneSpawnEvent.setType(Type.UPGRADE);
+                            if (playerConnect.head != null) {
+                                droneSpawnEvent.setLocation(playerConnect.head.getLocation());
+                                droneSpawnEvent.setRemoveTarget(false);
+                                if (plugin.park.contains(uuid)) {
+                                    droneSpawnEvent.setRemovePark(false);
+                                }
+                            }
                             droneSpawnEvent.spawn();
                         }
                         for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.levelup")) {
