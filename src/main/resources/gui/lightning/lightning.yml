@@ -48,7 +48,7 @@ settings:
       AMOUNT: 1
       POSITION: 29
 10:
-  NAME: '&6Monsters &7- &a{mobs_current}'
+  NAME: '&6Monsters &7- {mobs_current}'
   LORES:
     - '&fLMB &7- to change'
   MATERIAL: CREEPER_HEAD
@@ -73,7 +73,7 @@ settings:
   OPTIONS:
     - DRONE_WHITELIST
 19:
-  NAME: '&6Animals &7- &a{animals_current}'
+  NAME: '&6Animals &7- {animals_current}'
   LORES:
     - '&fLMB &7- to change'
   HEAD: cow
@@ -81,7 +81,7 @@ settings:
   OPTIONS:
     - DRONE_ANIMALS
 28:
-  NAME: '&6Players &7- &a{players_current}'
+  NAME: '&6Players &7- {players_current}'
   LORES:
     - '&fLMB &7- to change'
   HEAD: player
@@ -134,8 +134,22 @@ settings:
   AMOUNT: 1
   OPTIONS:
     - BACK
+52:
+  NAME: '&6Move'
+  LORES:
+    - '&6Can be moved: {move}'
+  MATERIAL: COMPASS
+  AMOUNT: 1
+  OPTIONS:
+    - CLOSE
+  COMMANDS:
+    PERMISSION: battledrones
+    NO-PERMISSION:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use move!'
+    CONSOLE:
+      - 'bd move {player}'
 53:
-  NAME: '&6Park'
+  NAME: '&6Parked: {parked}'
   LORES: []
   MATERIAL: CLOCK
   AMOUNT: 1

@@ -28,6 +28,7 @@ permissions:
       battledrones.player.activate: true
       battledrones.player.deactivate: true
       battledrones.player.park: true
+      battledrones.player.move: true
       battledrones.player.controller: true
       battledrones.player.controller.follow: true
   battledrones.admin.*:
@@ -132,6 +133,9 @@ permissions:
   battledrones.player.park:
     default: "op"
     description: "Access to use park"
+  battledrones.player.move:
+    default: "op"
+    description: "Access to use move"
   battledrones.player.controller:
     default: "op"
     description: "Access to use the drone controller"

@@ -28,6 +28,7 @@ help:
     - 'battledrones message {player} &7&l> &f/battledrones menu'
     - 'battledrones message {player} &7&l> &f/battledrones drone'
     - 'battledrones message {player} &7&l> &f/battledrones park'
+    - 'battledrones message {player} &7&l> &f/battledrones move'
     - 'battledrones message {player} &7&l> &f/battledrones activate <droneType>'
     - 'battledrones message {player} &7&l> &f/battledrones deactivate'
     - 'battledrones message {player} &c&m---------------------------------------------'
@@ -38,6 +39,7 @@ help:
     - 'battledrones message {player} &7&l> &f/battledrones menu'
     - 'battledrones message {player} &7&l> &f/battledrones save'
     - 'battledrones message {player} &7&l> &f/battledrones park'
+    - 'battledrones message {player} &7&l> &f/battledrones move'
     - 'battledrones message {player} &7&l> &f/battledrones drone'
     - 'battledrones message {player} &7&l> &f/battledrones activate <droneType>'
     - 'battledrones message {player} &7&l> &f/battledrones deactivate <all, player, droneType> <waitSeconds>'
@@ -135,6 +137,17 @@ park:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot park your drone you dont have enough coins. cost: {cost}'
   drone:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cThis drone cannot be parked.'
+  stationary-mode:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cDrone {drone} is in stationary mode use /bd move to change location.'
+move:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  active:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have any active drone.'
+  drone:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cThis drone cannot be moved at this time.'
+  moved:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &eYour drone is now moved to your location.'
 drone:
   permission:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
@@ -246,8 +259,10 @@ give:
 update:
   permission:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
-enabled: Enabled
-disabled: Disabled
+enabled: '&aEnabled'
+disabled: '&cDisabled'
+enabled-yes: '&aYes'
+disabled-no: '&cNo'
 whitelist:
   seconds: 15
   time:
@@ -329,6 +344,7 @@ console:
       - '&7&l> &f/battledrones menu'
       - '&7&l> &f/battledrones save'
       - '&7&l> &f/battledrones park <player>'
+      - '&7&l> &f/battledrones move <player>'
       - '&7&l> &f/battledrones drone <player>'
       - '&7&l> &f/battledrones activate <droneType> <player>'
       - '&7&l> &f/battledrones deactivate <all, player, droneType> <waitSeconds>'
@@ -404,6 +420,11 @@ console:
   park:
     usage:
       - '&7[&dBattleDrones&7] &cUsage: /battledrones park <player>'
+    online:
+      - '&7[&dBattleDrones&7] &cThe player is not online!'
+  move:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones move <player>'
     online:
       - '&7[&dBattleDrones&7] &cThe player is not online!'
   drone:

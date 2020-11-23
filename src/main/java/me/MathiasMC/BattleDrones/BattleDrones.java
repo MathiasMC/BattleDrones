@@ -71,6 +71,7 @@ public class BattleDrones extends JavaPlugin {
     private DroneControllerManager droneControllerManager;
     private EntityManager entityManager;
     private PlaceholderManager placeholderManager;
+    private TaskManager taskManager;
 
 
     public final HashMap<String, String> drone_whitelist = new HashMap<>();//
@@ -99,6 +100,7 @@ public class BattleDrones extends JavaPlugin {
         droneControllerManager = new DroneControllerManager(this);
         entityManager = new EntityManager(this);
         placeholderManager = new PlaceholderManager(this);
+        taskManager = new TaskManager(this);
 
         support = new Support(this);
 
@@ -207,6 +209,10 @@ public class BattleDrones extends JavaPlugin {
 
     public DroneManager getDroneManager() {
         return this.droneManager;
+    }
+
+    public TaskManager getTaskManager() {
+        return this.taskManager;
     }
 
     public void unloadPlayerConnect(final String uuid) {

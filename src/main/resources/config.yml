@@ -12,6 +12,13 @@ update-check: true
 # List of disabled drone names (this will completely disable this drone and files for that drone can be removed)
 disable: []
 
+# Stationary mode
+# With this mode enabled drones will always be parked at spawn location
+# No follow at all.
+# List of drones that is stationary.
+stationary-mode:
+  - laser
+
 # Database settings
 mysql:
   use: false

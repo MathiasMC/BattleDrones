@@ -253,10 +253,9 @@ public class BattleDrones_Command implements CommandExecutor {
                                         droneRemoveEvent.setRemoveCommands(null);
                                         droneRemoveEvent.remove();
                                         plugin.getDroneManager().waitSchedule(uuid, file);
-                                    } else {
-                                        for (String message : plugin.getFileUtils().language.getStringList("deactivate.own")) {
-                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
-                                        }
+                                    }
+                                    for (String message : plugin.getFileUtils().language.getStringList("deactivate.own")) {
+                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
                                     }
                                 } else {
                                     for (String message : plugin.getFileUtils().language.getStringList("console.deactivate.other.usage")) {
@@ -330,9 +329,9 @@ public class BattleDrones_Command implements CommandExecutor {
                                                         droneRemoveEvent.remove();
                                                         plugin.drone_wait.add(uuid);
                                                         plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.drone_wait.remove(uuid), Integer.parseInt(args[2]) * 20);
-                                                        for (String message : plugin.getFileUtils().language.getStringList("deactivate.player")) {
-                                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", target.getName()).replace("{amount}", args[2])));
-                                                        }
+                                                    }
+                                                    for (String message : plugin.getFileUtils().language.getStringList("deactivate.player")) {
+                                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", target.getName()).replace("{amount}", args[2])));
                                                     }
                                                 } else {
                                                     if (type.equalsIgnoreCase("player")) {
@@ -424,6 +423,83 @@ public class BattleDrones_Command implements CommandExecutor {
                         } else {
                             if (type.equalsIgnoreCase("player")) {
                                 for (String message : plugin.getFileUtils().language.getStringList("park.permission")) {
+                                    plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                }
+                            }
+                        }
+                    } else if (args[0].equalsIgnoreCase("move")) {
+                        unknown = false;
+                        if (sender.hasPermission("battledrones.player.move")) {
+                            if (type.equalsIgnoreCase("player")) {
+                                final Player player = (Player) sender;
+                                final String uuid = player.getUniqueId().toString();
+                                final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+                                if (playerConnect.isActive()) {
+                                    final DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
+                                    if (droneHolder.isStationary()) {
+                                        plugin.getEntityManager().spawnDroneSilent(player, playerConnect, playerConnect.getActive(), Type.MOVE);
+                                        for (String message : plugin.getFileUtils().language.getStringList("move.moved")) {
+                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                        }
+                                    } else if (droneHolder.isParked()){
+                                        plugin.park.remove(uuid);
+                                        if (park(player, playerConnect)) {
+                                            plugin.getEntityManager().spawnDroneSilent(player, playerConnect, playerConnect.getActive(), Type.MOVE);
+                                            plugin.park.add(uuid);
+                                        }
+                                    } else {
+                                        for (String message : plugin.getFileUtils().language.getStringList("move.drone")) {
+                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                        }
+                                    }
+                                } else {
+                                    for (String message : plugin.getFileUtils().language.getStringList("move.active")) {
+                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                    }
+                                }
+                            } else {
+                                if (args.length == 2) {
+                                    final Player target = plugin.getServer().getPlayer(args[1]);
+                                    if (target != null) {
+                                        final String uuid = target.getUniqueId().toString();
+                                        final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+                                        if (playerConnect.isActive()) {
+                                            final DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
+                                            if (droneHolder.isStationary()) {
+                                                plugin.getEntityManager().spawnDroneSilent(target, playerConnect, playerConnect.getActive(), Type.MOVE);
+                                                for (String message : plugin.getFileUtils().language.getStringList("move.moved")) {
+                                                    plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", target.getName())));
+                                                }
+                                            } else if (droneHolder.isParked()){
+                                                plugin.park.remove(uuid);
+                                                if (park(target, playerConnect)) {
+                                                    plugin.getEntityManager().spawnDroneSilent(target, playerConnect, playerConnect.getActive(), Type.MOVE);
+                                                    plugin.park.add(uuid);
+                                                }
+                                            } else {
+                                                for (String message : plugin.getFileUtils().language.getStringList("move.drone")) {
+                                                    plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", target.getName())));
+                                                }
+                                            }
+                                        } else {
+                                            for (String message : plugin.getFileUtils().language.getStringList("move.active")) {
+                                                plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", target.getName())));
+                                            }
+                                        }
+                                    } else {
+                                        for (String message : plugin.getFileUtils().language.getStringList("console.move.online")) {
+                                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                                        }
+                                    }
+                                } else {
+                                    for (String message : plugin.getFileUtils().language.getStringList("console.move.usage")) {
+                                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (type.equalsIgnoreCase("player")) {
+                                for (String message : plugin.getFileUtils().language.getStringList("move.permission")) {
                                     plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
                                 }
                             }
@@ -1433,27 +1509,33 @@ public class BattleDrones_Command implements CommandExecutor {
         }
     }
 
-    private void park(final Player player, final PlayerConnect playerConnect) {
+    private boolean park(final Player player, final PlayerConnect playerConnect) {
         final String uuid = player.getUniqueId().toString();
         final DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
+        if (droneHolder.isStationary()) {
+            for (String message : plugin.getFileUtils().language.getStringList("park.stationary-mode")) {
+                plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', plugin.getPlaceholderManager().replacePlaceholders(player, message)));
+            }
+            return false;
+        }
         final DroneParkEvent droneParkEvent = new DroneParkEvent(player, playerConnect, droneHolder);
         if (plugin.park.contains(uuid)) {
             droneParkEvent.setType(Type.UNPARK);
             plugin.getServer().getPluginManager().callEvent(droneParkEvent);
             if (droneParkEvent.isCancelled()) {
-                return;
+                return false;
             }
             plugin.park.remove(uuid);
             for (String message : plugin.getFileUtils().language.getStringList("park.follow")) {
                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName())));
             }
-            return;
+            return true;
         }
 
         droneParkEvent.setType(Type.PARK);
         plugin.getServer().getPluginManager().callEvent(droneParkEvent);
         if (droneParkEvent.isCancelled()) {
-            return;
+            return false;
         }
         final FileConfiguration file = plugin.droneFiles.get(playerConnect.getActive());
         final String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".park";
@@ -1464,6 +1546,7 @@ public class BattleDrones_Command implements CommandExecutor {
                 for (String message : plugin.getFileUtils().language.getStringList("park.parked")) {
                     plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName()).replace("{cost}", String.valueOf(cost))));
                 }
+                return true;
             } else {
                 for (String message : plugin.getFileUtils().language.getStringList("park.enough")) {
                     plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName()).replace("{cost}", String.valueOf(cost))));
@@ -1474,5 +1557,6 @@ public class BattleDrones_Command implements CommandExecutor {
                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName())));
             }
         }
+        return false;
     }
 }

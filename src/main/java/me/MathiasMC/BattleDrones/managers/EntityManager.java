@@ -171,7 +171,7 @@ public class EntityManager {
         final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
         final DroneHolder droneHolder = droneSpawnEvent.getDroneHolder();
         final String drone = droneHolder.getDrone();
-        if (playerConnect.isActive() && playerConnect.getActive().equals(drone) && !droneSpawnEvent.getType().equals(Type.UPGRADE)) {
+        if (playerConnect.isActive() && playerConnect.getActive().equals(drone) && !droneSpawnEvent.getType().equals(Type.UPGRADE) && !droneSpawnEvent.getType().equals(Type.MOVE)) {
             return;
         }
         if (!droneSpawnEvent.isBypassLocation() && !droneSpawnEvent.isInLocation()) {
@@ -201,6 +201,9 @@ public class EntityManager {
             return;
         }
         playerConnect.stopDrone(droneSpawnEvent.isRemoveTarget(), droneSpawnEvent.isRemovePark());
+        if (droneHolder.isStationary()) {
+            plugin.park.add(uuid);
+        }
         final String path = playerConnect.getGroup() + "." + droneHolder.getLevel();
         ItemStack itemStack = plugin.drone_heads.get(file.getString(path + ".head"));
         if (file.contains(path + ".model-data")) {
@@ -272,13 +275,13 @@ public class EntityManager {
         if (droneRemoveEvent.isCancelled()) {
             return;
         }
-        if (droneRemoveEvent.getRemoveCommands() == null) {
-            return;
-        }
-        plugin.getDroneManager().runCommands(player, droneRemoveEvent.getRemoveCommands());
         final DroneHolder droneHolder = droneRemoveEvent.getDroneHolder();
         playerConnect.stopDrone(true, true);
         playerConnect.saveDrone(droneHolder);
         playerConnect.save();
+        if (droneRemoveEvent.getRemoveCommands() == null) {
+            return;
+        }
+        plugin.getDroneManager().runCommands(player, droneRemoveEvent.getRemoveCommands());
     }
 }

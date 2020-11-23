@@ -89,6 +89,10 @@ public class DroneAPI {
         return plugin.getDroneManager();
     }
 
+    public TaskManager getTaskManager() {
+        return plugin.getTaskManager();
+    }
+
     public HashMap<String, LivingEntity> getDroneTargets() {
         return plugin.drone_targets;
     }

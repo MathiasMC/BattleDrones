@@ -118,6 +118,14 @@ public class DroneHolder {
         return this.wear;
     }
 
+    public boolean isParked() {
+        return BattleDrones.getInstance().park.contains(uuid);
+    }
+
+    public boolean isStationary() {
+        return BattleDrones.getInstance().getFileUtils().config.getStringList("stationary-mode").contains(droneName);
+    }
+
     private String exclude() {
         final StringJoiner stringJoiner = new StringJoiner(":");
         for (String player : this.exclude) {

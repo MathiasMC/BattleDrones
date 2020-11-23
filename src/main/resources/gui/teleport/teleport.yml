@@ -50,8 +50,22 @@ settings:
   AMOUNT: 1
   OPTIONS:
     - BACK
+52:
+  NAME: '&6Move'
+  LORES:
+    - '&6Can be moved: {move}'
+  MATERIAL: COMPASS
+  AMOUNT: 1
+  OPTIONS:
+    - CLOSE
+  COMMANDS:
+    PERMISSION: battledrones
+    NO-PERMISSION:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use move!'
+    CONSOLE:
+      - 'bd move {player}'
 53:
-  NAME: '&6Park'
+  NAME: '&6Parked: {parked}'
   LORES: []
   MATERIAL: CLOCK
   AMOUNT: 1

@@ -76,6 +76,24 @@ public class PlaceholderAPI extends PlaceholderExpansion {
         if(identifier.equals("ammo_percent")){
             return String.valueOf(plugin.getCalculateManager().getPercent(plugin.getPlaceholderManager().getDroneAmmo(uuid), plugin.getPlaceholderManager().getDroneMaxAmmo(uuid)));
         }
+        if (identifier.equals("monsters")) {
+            return plugin.getPlaceholderManager().getAvailability(uuid, "monsters");
+        }
+        if (identifier.equals("animals")) {
+            return plugin.getPlaceholderManager().getAvailability(uuid, "animals");
+        }
+        if (identifier.equals("players")) {
+            return plugin.getPlaceholderManager().getAvailability(uuid, "players");
+        }
+        if (identifier.equals("parked")) {
+            return plugin.getPlaceholderManager().getQuestion(uuid, "parked");
+        }
+        if (identifier.equals("stationary")) {
+            return plugin.getPlaceholderManager().getQuestion(uuid, "stationary");
+        }
+        if (identifier.equals("move")) {
+            return plugin.getPlaceholderManager().getQuestion(uuid, "move");
+        }
         return null;
     }
 }

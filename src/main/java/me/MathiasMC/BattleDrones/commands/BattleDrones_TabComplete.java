@@ -74,6 +74,11 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     commands.add("park");
                 }
             }
+            if (player.hasPermission("battledrones.player.move")) {
+                if (args.length == 1) {
+                    commands.add("move");
+                }
+            }
             if (player.hasPermission("battledrones.admin.reload")) {
                 if (args.length == 1) {
                     commands.add("reload");
