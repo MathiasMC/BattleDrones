@@ -211,8 +211,8 @@ auto-disable:
     list:
       - PLAYERS
 
-# Look for armorstands that is a drone remove it
-# Does not remove player active drones only stuck drones
+# Look for armor stands that is a drone remove it
+# Does not remove player active drones only stuck drones/projectiles
 # Minutes.
 cleanup: 50
 

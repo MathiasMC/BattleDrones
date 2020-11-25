@@ -284,10 +284,10 @@ public class BattleDrones extends JavaPlugin {
     }
 
     private void cleanUP() {
-        final long interval = getFileUtils().config.getLong("cleanup");
+        final long interval = fileUtils.config.getLong("cleanup");
         textUtils.info("[CleanUP] Started will be run every ( " + interval + " ) minutes");
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            final long amount = getDroneManager().cleanUP(null, false);
+            final long amount = droneManager.cleanUP(null, false);
             textUtils.info("[CleanUP] Removed " + amount + " entities");
         }, interval * 1200, interval * 1200);
     }
