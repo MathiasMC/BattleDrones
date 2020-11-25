@@ -66,7 +66,7 @@ public class PlayerConnect {
     }
 
     public boolean isActive() {
-        return !this.active.isEmpty();
+        return !this.active.isEmpty() && head != null;
     }
 
     public long getCoins() {

@@ -1466,6 +1466,65 @@ public class BattleDrones_Command implements CommandExecutor {
                                 }
                             }
                         }
+                    } else if (args[0].equalsIgnoreCase("cleanup")) {
+                        unknown = false;
+                        if (sender.hasPermission("battledrones.admin.cleanup")) {
+                            if (args.length > 1) {
+                                boolean stopDrone = false;
+                                if (args.length > 2) {
+                                    if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) {
+                                        stopDrone = Boolean.parseBoolean(args[2]);
+                                    }
+                                }
+                                Boolean projectiles = null;
+                                boolean bypass = true;
+                                if (args[1].equalsIgnoreCase("drones")) {
+                                    projectiles = false;
+                                } else if (args[1].equalsIgnoreCase("projectiles")) {
+                                    projectiles = true;
+                                } else if (!args[1].equalsIgnoreCase("all")) {
+                                    bypass = false;
+                                }
+                                if (bypass) {
+                                    final long amount = plugin.getDroneManager().cleanUP(projectiles, stopDrone);
+                                    if (type.equalsIgnoreCase("player")) {
+                                        for (String message : plugin.getFileUtils().language.getStringList("cleanup.remove")) {
+                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName()).replace("{amount}", String.valueOf(amount))));
+                                        }
+                                    } else {
+                                        for (String message : plugin.getFileUtils().language.getStringList("console.cleanup.remove")) {
+                                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.replace("{amount}", String.valueOf(amount))));
+                                        }
+                                    }
+                                } else {
+                                    if (type.equalsIgnoreCase("player")) {
+                                        for (String message : plugin.getFileUtils().language.getStringList("cleanup.usage")) {
+                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                        }
+                                    } else {
+                                        for (String message : plugin.getFileUtils().language.getStringList("console.cleanup.usage")) {
+                                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (type.equalsIgnoreCase("player")) {
+                                    for (String message : plugin.getFileUtils().language.getStringList("cleanup.usage")) {
+                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                    }
+                                } else {
+                                    for (String message : plugin.getFileUtils().language.getStringList("console.cleanup.usage")) {
+                                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (type.equalsIgnoreCase("player")) {
+                                for (String message : plugin.getFileUtils().language.getStringList("cleanup.permission")) {
+                                    plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
+                                }
+                            }
+                        }
                     } else if (args[0].equalsIgnoreCase("update")) {
                         unknown = false;
                         if (sender.hasPermission("battledrones.admin.update")) {

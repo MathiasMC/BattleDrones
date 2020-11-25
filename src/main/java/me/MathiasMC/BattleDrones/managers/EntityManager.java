@@ -223,7 +223,6 @@ public class EntityManager {
             playerLocation = new Location(player.getWorld(), xD, playerLocation.getY(), zD);
         }
         playerLocation.setDirection(playerLocation.getDirection());
-        final NamespacedKey key = new NamespacedKey(plugin, "drone_uuid");
         final ArmorStand head = getArmorStand(playerLocation);
         final EntityEquipment equipment = head.getEquipment();
         if (equipment != null) {
@@ -231,13 +230,13 @@ public class EntityManager {
         }
         head.setCustomName(" ");
         head.setCustomNameVisible(true);
-        head.getPersistentDataContainer().set(key, PersistentDataType.STRING, uuid);
+        head.getPersistentDataContainer().set(plugin.droneKey, PersistentDataType.STRING, uuid);
         playerConnect.head = head;
         if (Objects.requireNonNull(file.getString(path + ".name.searching")).length() > 0 || Objects.requireNonNull(file.getString(path + ".name.target")).length() > 0) {
             final ArmorStand name = getArmorStand(playerLocation.add(0, 0.3, 0));
             name.setCustomName(" ");
             name.setCustomNameVisible(true);
-            name.getPersistentDataContainer().set(key, PersistentDataType.STRING, uuid);
+            name.getPersistentDataContainer().set(plugin.droneKey, PersistentDataType.STRING, uuid);
             playerConnect.name = name;
         }
         plugin.getEntityManager().setCustomName(playerConnect.head, playerConnect.name, droneHolder.getLevel(), playerConnect.getGroup(), file, "searching", player);

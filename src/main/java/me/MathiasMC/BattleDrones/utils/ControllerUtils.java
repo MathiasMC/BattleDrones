@@ -1,7 +1,6 @@
 package me.MathiasMC.BattleDrones.utils;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -23,18 +22,17 @@ public class ControllerUtils {
         this.playerInventory = playerInventory;
         final ItemStack mainHand = playerInventory.getItemInMainHand();
         final ItemStack offHand = playerInventory.getItemInOffHand();
-        final NamespacedKey key = new NamespacedKey(plugin, "drone_controller");
         if (offHand.hasItemMeta()) {
             final PersistentDataContainer persistentDataContainer = Objects.requireNonNull(offHand.getItemMeta()).getPersistentDataContainer();
-            if (persistentDataContainer.has(key, PersistentDataType.INTEGER)) {
-                this.range = persistentDataContainer.getOrDefault(key, PersistentDataType.INTEGER, 0);
+            if (persistentDataContainer.has(plugin.droneControllerKey, PersistentDataType.INTEGER)) {
+                this.range = persistentDataContainer.getOrDefault(plugin.droneControllerKey, PersistentDataType.INTEGER, 0);
                 this.controller = offHand;
             }
         }
         if (mainHand.hasItemMeta()) {
             final PersistentDataContainer persistentDataContainer = Objects.requireNonNull(mainHand.getItemMeta()).getPersistentDataContainer();
-            if (persistentDataContainer.has(key, PersistentDataType.INTEGER)) {
-                this.range = persistentDataContainer.getOrDefault(key, PersistentDataType.INTEGER, 0);
+            if (persistentDataContainer.has(plugin.droneControllerKey, PersistentDataType.INTEGER)) {
+                this.range = persistentDataContainer.getOrDefault(plugin.droneControllerKey, PersistentDataType.INTEGER, 0);
                 this.controller = mainHand;
             }
         }

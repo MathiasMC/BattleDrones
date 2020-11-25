@@ -8,7 +8,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
@@ -89,7 +89,8 @@ public class Rocket extends DroneRegistry {
                     final Location location = armorStand.getLocation();
                     final Location targetLocation = target.getLocation();
                     if (armorStand.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(armorStand, location, targetLocation, list)) {
-                            ArmorStand rock = plugin.getEntityManager().getArmorStand(armorStand.getLocation());
+                            final ArmorStand rock = plugin.getEntityManager().getArmorStand(armorStand.getLocation());
+                            rock.getPersistentDataContainer().set(plugin.projectileKey, PersistentDataType.STRING, uuid);
                             if (file.contains(path + "rocket-head")) {
                                 final EntityEquipment equipment = rock.getEquipment();
                                 if (equipment != null) {

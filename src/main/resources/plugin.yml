@@ -48,6 +48,7 @@ permissions:
       battledrones.admin.give: true
       battledrones.admin.sound: true
       battledrones.admin.update: true
+      battledrones.admin.cleanup: true
   battledrones.bypass.*:
     default: "op"
     description: "Access to bypass everything"
@@ -184,6 +185,9 @@ permissions:
   battledrones.admin.update:
     default: "op"
     description: "Access to use update"
+  battledrones.admin.cleanup:
+    default: "op"
+    description: "Access to use cleanup"
   battledrones.bypass.drone-amount:
     default: "op"
     description: "Access to bypass drone amount"

@@ -211,8 +211,10 @@ auto-disable:
     list:
       - PLAYERS
 
-# Look for armorstands that is a drone on startup and remove it
-cleanup: true
+# Look for armorstands that is a drone remove it
+# Does not remove player active drones only stuck drones
+# Minutes.
+cleanup: 50
 
 # Update drone on upgrade
 update-upgrade: true

@@ -247,6 +247,19 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     commands.add("update");
                 }
             }
+            if (player.hasPermission("battledrones.admin.cleanup")) {
+                if (args.length == 1) {
+                    commands.add("cleanup");
+                } else if (args.length > 1 && args[0].equalsIgnoreCase("cleanup")) {
+                    if (args.length == 2) {
+                        commands.add("drones");
+                        commands.add("projectiles");
+                        commands.add("all");
+                    } else if (args.length == 3) {
+                        commands.add("false");
+                    }
+                }
+            }
             StringUtil.copyPartialMatches(args[args.length - 1], commands, list);
             Collections.sort(list);
             return list;

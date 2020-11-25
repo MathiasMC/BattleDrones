@@ -17,11 +17,9 @@ import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -43,6 +41,11 @@ public class BattleDrones extends JavaPlugin {
     private final Map<String, PlayerConnect> playerConnect = new HashMap<>();
     private final Map<String, HashMap<String, DroneHolder>> droneHolder = new HashMap<>();
     private final HashMap<Player, Menu> playerMenu = new HashMap<>();
+
+    // Data containers
+    public final NamespacedKey droneKey = new NamespacedKey(this, "drone_uuid");
+    public final NamespacedKey projectileKey = new NamespacedKey(this, "projectile");
+    public final NamespacedKey droneControllerKey = new NamespacedKey(this, "drone_controller");
 
     // Drone registry
     public final HashMap<String, DroneRegistry> droneRegistry = new HashMap<>();
@@ -139,9 +142,9 @@ public class BattleDrones extends JavaPlugin {
                 });
             }
             particleManager.load();
-            if (fileUtils.config.getBoolean("cleanup")) {
-                cleanUP();
-            }
+
+            cleanUP();
+
             if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 new PlaceholderAPI(this).register();
                 textUtils.info("PlaceholderAPI (found)");
@@ -273,29 +276,19 @@ public class BattleDrones extends JavaPlugin {
         }
     }
 
-    private void cleanUP() {
-        final ArrayList<ArmorStand> armorStands = new ArrayList<>();
-        final NamespacedKey namespacedKey = new NamespacedKey(this, "drone_uuid");
-        for (World world : getServer().getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (entity instanceof ArmorStand) {
-                    final ArmorStand armorStand = (ArmorStand) entity;
-                    final String key = armorStand.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
-                    if (key != null) {
-                        armorStands.add(armorStand);
-                        armorStand.remove();
-                    }
-                }
-            }
-        }
-        textUtils.info("CleanUP found: ( " + armorStands.size() + " ) drones removed.");
-        armorStands.clear();
-    }
-
     public void addHeads() {
         for (String head : fileUtils.heads.getConfigurationSection("").getKeys(false)) {
             drone_heads.put(head, itemStackManager.getHeadTexture(fileUtils.heads.getString(head)));
         }
         textUtils.info("Loaded ( " + fileUtils.heads.getConfigurationSection("").getKeys(false).size() + " ) heads");
+    }
+
+    private void cleanUP() {
+        final long interval = getFileUtils().config.getLong("cleanup");
+        textUtils.info("[CleanUP] Started will be run every ( " + interval + " ) minutes");
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            final long amount = getDroneManager().cleanUP(null, false);
+            textUtils.info("[CleanUP] Removed " + amount + " entities");
+        }, interval * 1200, interval * 1200);
     }
 }

@@ -54,6 +54,8 @@ help:
     - 'battledrones message {player} &7&l> &f/battledrones give controller <player> <range>'
     - 'battledrones message {player} &7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
     - 'battledrones message {player} &7&l> &f/battledrones actionbar <player> <seconds> <text>'
+    - 'battledrones message {player} &7&l> &f/battledrones cleanup <drones, projectiles, all> <stopDrone - optional>'
+    - 'battledrones message {player} &7&l> &f/battledrones update'
     - 'battledrones message {player} &c&m---------------------------------------------'
 reload:
   permission:
@@ -256,6 +258,15 @@ give:
       - 'battledrones message {player} &7[&dBattleDrones&7] &aAdded &6controller &ato &6{target}'
     number:
       - 'battledrones message {player} &7[&dBattleDrones&7] &cNot a number or the amount must be over 0!'
+cleanup:
+  permission:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
+  usage:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cUsage: /battledrones cleanup <drones, projectiles, all> <stopDrone - optional>'
+  remove:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &aRemoved &6{amount} &aentities'
+  drone:
+    - 'battledrones message {target} &7[&dBattleDrones&7] &aYour &6{drone} &adrone has been caught in an CleanUP task, stopped by an admin.'
 update:
   permission:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have access to use this command!'
@@ -359,6 +370,8 @@ console:
       - '&7&l> &f/battledrones give controller <player> <range>'
       - '&7&l> &f/battledrones sound <soundName> <world> <x> <y> <z> <volume> <pitch> <player - optional>'
       - '&7&l> &f/battledrones actionbar <player> <seconds> <text>'
+      - '&7&l> &f/battledrones cleanup <drones, projectiles, all> <stopDrone - optional>'
+      - '&7&l> &f/battledrones update'
       - '&c&m---------------------------------------------'
   reload:
     usage:
@@ -521,6 +534,11 @@ console:
         - '&7[&dBattleDrones&7] &aAdded &6controller &ato &6{target}'
       number:
         - '&7[&dBattleDrones&7] &cNot a number or the amount must be over 0!'
+  cleanup:
+    usage:
+      - '&7[&dBattleDrones&7] &cUsage: /battledrones cleanup <drones, projectiles, all> <stopDrone - optional>'
+    remove:
+      - '&7[&dBattleDrones&7] &aRemoved &6{amount} &aentities'
 
 # This section is for placeholders for entity/drone names (Remove section "translate" to just use default names) (you can just remove the ones you don't want translated)
 translate:
