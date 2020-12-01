@@ -41,7 +41,7 @@ public class Lightning extends DroneRegistry {
                     final Location targetLocation = target.getEyeLocation();
                     if (armorStand.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(armorStand, location, targetLocation, list)) {
                         line(targetLocation, player, target, file, path);
-                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player, "ammo");
+                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getLong(path + "max-ammo-slots") * 64, player, "ammo");
                         plugin.getDroneManager().checkShot(player, target, file, location, path, "run");
                         plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
                     }

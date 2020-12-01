@@ -103,7 +103,7 @@ public class Rocket extends DroneRegistry {
                                     ,customParticle_2, delay_2, size_2, amount_2, r_2, g_2, b_2, yOffset_2, particleType_2, tick_2
                                     ,customParticle_3, delay_3, size_3, amount_3, r_3, g_3, b_3, yOffset_3, particleType_3, tick_3, particleFile
                             );
-                            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player, "ammo");
+                            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getLong(path + "max-ammo-slots") * 64, player, "ammo");
                             plugin.getDroneManager().checkShot(player, target, file, location, path, "run");
                             plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
                         }

@@ -116,6 +116,9 @@ public class DroneManager {
 
     public void damage(final Player damager, final String key, final ArmorStand entity) {
         final PlayerConnect playerConnect = plugin.getPlayerConnect(key);
+        if (!playerConnect.isActive()) {
+            return;
+        }
         final DroneHolder droneHolder = plugin.getDroneHolder(key, playerConnect.getActive());
         final String path = playerConnect.getGroup() + "." + droneHolder.getLevel();
         final DroneDamageEvent droneDamageEvent = new DroneDamageEvent(damager, playerConnect, droneHolder);

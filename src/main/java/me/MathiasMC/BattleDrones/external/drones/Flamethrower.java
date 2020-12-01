@@ -55,7 +55,7 @@ public class Flamethrower extends DroneRegistry {
                         if (particleFile.contains(droneName)) {
                             line(location.add(0, 0.4, 0), targetLocation, player, target, file, path, droneName, delay, size, amount, distance, space, r, g, b, yOffset, particleType);
                         }
-                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player, "ammo");
+                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getLong(path + "max-ammo-slots") * 64, player, "ammo");
                         plugin.getDroneManager().checkShot(player, target, file, location, path, "run");
                         plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
 

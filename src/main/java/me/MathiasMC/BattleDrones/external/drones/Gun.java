@@ -68,7 +68,7 @@ public class Gun extends DroneRegistry {
                             damage = plugin.getCalculateManager().randomDouble(damage, file.getDouble(path + "max"));
                         }
                         plugin.getCalculateManager().damage(target, damage);
-                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getInt(path + "max-ammo-slots") * 64, player, "ammo");
+                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getLong(path + "max-ammo-slots") * 64, player, "ammo");
                         plugin.getDroneManager().checkShot(player, target, file, location, path, "run");
                         plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
                         plugin.getDroneManager().checkTarget(player, target, file, targetLocation, path, 2);
