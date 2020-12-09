@@ -29,25 +29,31 @@ public class Support {
 
     public Vault vault;
 
+    public BetterTeams betterTeams;
+
     public Support(final BattleDrones plugin) {
         this.plugin = plugin;
         this.vault = new Vault();
         this.worldGuard = new WorldGuard(plugin);
-        if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
-            this.lands = new Lands(this.plugin);
-            plugin.getTextUtils().info("Found Lands");
+        if (plugin.getFileUtils().config.getBoolean("lands", false) && plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
+            this.lands = new Lands(plugin);
+            plugin.getTextUtils().info("Added support for Lands");
         }
-        if (plugin.getServer().getPluginManager().getPlugin("Factions") != null) {
+        if (plugin.getFileUtils().config.getBoolean("factions", false) && plugin.getServer().getPluginManager().getPlugin("Factions") != null) {
             this.factions = new Factions();
-            plugin.getTextUtils().info("Found Factions");
+            plugin.getTextUtils().info("Added support for Factions");
         }
-        if (plugin.getServer().getPluginManager().getPlugin("Towny") != null) {
+        if (plugin.getFileUtils().config.getBoolean("towny-advanced", false) && plugin.getServer().getPluginManager().getPlugin("Towny") != null) {
             this.towny = new TownyAdvanced();
-            plugin.getTextUtils().info("Found Towny");
+            plugin.getTextUtils().info("Added support for Towny");
         }
-        if (plugin.getServer().getPluginManager().getPlugin("Residence") != null) {
+        if (plugin.getFileUtils().config.getBoolean("residence", false) && plugin.getServer().getPluginManager().getPlugin("Residence") != null) {
             this.residence = new Residence();
-            plugin.getTextUtils().info("Found Residence");
+            plugin.getTextUtils().info("Added support for Residence");
+        }
+        if (plugin.getFileUtils().config.getBoolean("better-teams.use", false) && plugin.getServer().getPluginManager().getPlugin("BetterTeams") != null) {
+            this.betterTeams = new BetterTeams(plugin);
+            plugin.getTextUtils().info("Added support for BetterTeams");
         }
     }
 
@@ -152,23 +158,12 @@ public class Support {
 
     public boolean canTarget(final Player player, final LivingEntity target, final FileConfiguration file, final String path) {
         if (target instanceof Player) {
-            boolean Lands = true;
-            boolean Factions = true;
-            boolean Towny = true;
-            boolean Residence = true;
-            if (plugin.getFileUtils().config.getBoolean("lands") && lands != null) {
-                Lands = lands.canTarget(player, target);
-            }
-            if (plugin.getFileUtils().config.getBoolean("factions") && factions != null) {
-                Factions = factions.canTarget(player, target);
-            }
-            if (plugin.getFileUtils().config.getBoolean("towny-advanced") && towny != null) {
-                Towny = towny.canTarget(player, target);
-            }
-            if (plugin.getFileUtils().config.getBoolean("residence") && residence != null) {
-                Residence = residence.canTarget(player, target);
-            }
-            return Lands && Factions && Towny && Residence;
+            final Player targetPlayer = (Player) target;
+            if (lands != null && !lands.canTarget(player, targetPlayer)) return false;
+            if (factions != null && !factions.canTarget(player, targetPlayer)) return false;
+            if (towny != null && !towny.canTarget(player, targetPlayer)) return false;
+            if (residence != null && !residence.canTarget(player, targetPlayer)) return false;
+            if (betterTeams != null && !betterTeams.canTarget(player, targetPlayer)) return false;
         }
         return worldGuard.canTarget(target, file, path);
     }

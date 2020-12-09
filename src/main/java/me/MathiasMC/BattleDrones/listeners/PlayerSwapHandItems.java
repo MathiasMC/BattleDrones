@@ -57,7 +57,7 @@ public class PlayerSwapHandItems implements Listener {
                 } else {
                     final List<String> list = new ArrayList<>();
                     for (String command : plugin.getFileUtils().language.getStringList("swap.deactivate-cost")) {
-                        list.add(command.replace("{cost}", String.valueOf(cost)));
+                        list.add(command.replace("{drone}", plugin.getPlaceholderManager().getActiveDrone(playerConnect.getActive())).replace("{cost}", String.valueOf(cost)));
                     }
                     droneRemoveEvent.setRemoveCommands(list);
                 }

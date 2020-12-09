@@ -202,6 +202,12 @@ towny-advanced: false
 # Residence support (if in same residence disable attack)
 residence: false
 
+# BetterTeams support (if in same team disable attack)
+better-teams:
+  use: false
+  # Disable attack if ally
+  ally: true
+
 # Automatic disable toggles on world change
 auto-disable:
   world_nether:

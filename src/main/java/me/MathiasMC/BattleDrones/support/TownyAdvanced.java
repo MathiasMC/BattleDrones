@@ -4,7 +4,6 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
@@ -17,7 +16,7 @@ public class TownyAdvanced {
         this.townyAPI = TownyAPI.getInstance();
     }
 
-    public boolean canTarget(final Player player, final LivingEntity target) {
+    public boolean canTarget(final Player player, final Player target) {
         if (townyAPI == null) {
             return true;
         }

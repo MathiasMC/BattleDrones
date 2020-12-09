@@ -2,7 +2,6 @@ package me.MathiasMC.BattleDrones.support;
 
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Residence {
@@ -13,7 +12,7 @@ public class Residence {
         this.residence = com.bekvon.bukkit.residence.Residence.getInstance();
     }
 
-    public boolean canTarget(final Player player, final LivingEntity target) {
+    public boolean canTarget(final Player player, final Player target) {
         if (residence == null) {
             return true;
         }
