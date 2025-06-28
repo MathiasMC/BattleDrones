@@ -63,7 +63,7 @@ public class ParticleManager {
     }
 
     private void switchParticle(final String particleType, final World world, final Location location, final int amount, final Particle.DustOptions dustOptions) {
-        if ("REDSTONE".equals(particleType)) {
+        if ("DUST".equals(particleType)) {
             world.spawnParticle(Particle.DUST, location, amount, 0, 0, 0, 0F, dustOptions);
             return;
         }

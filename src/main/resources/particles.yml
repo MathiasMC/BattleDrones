@@ -7,7 +7,7 @@
 #                                         #
 shield_generator:
   type: sphere
-  particle: REDSTONE
+  particle: DUST
   radius: 3.8
   distance: 10
   amount: 1
@@ -20,7 +20,7 @@ shield_generator:
   delay: 20
 shield_generator_ability:
   type: sphere
-  particle: REDSTONE
+  particle: DUST
   radius: 3.8
   distance: 10
   amount: 1
@@ -33,7 +33,7 @@ shield_generator_ability:
   delay: 0
 laser:
   type: line
-  particle: REDSTONE
+  particle: DUST
   space: 0.4
   amount: 3
   size: 1
@@ -45,7 +45,7 @@ laser:
   delay: 0
 healing:
   type: line
-  particle: REDSTONE
+  particle: DUST
   space: 0.4
   amount: 3
   size: 1
@@ -57,7 +57,7 @@ healing:
   delay: 0
 machine_gun:
   type: line
-  particle: REDSTONE
+  particle: DUST
   space: 0.2
   distance: 0.8
   amount: 3
@@ -172,7 +172,7 @@ mortar:
   y-offset: -1
 mortar_ability_1:
   type: sphere
-  particle: REDSTONE
+  particle: DUST
   radius: 0
   distance: 1
   amount: 1
@@ -199,7 +199,7 @@ mortar_ability_2:
   delay: 7
 activate:
   type: circle
-  particle: REDSTONE
+  particle: DUST
   distance: 12
   radius: 0.8
   amount: 6
@@ -211,7 +211,7 @@ activate:
   y-offset: 0.4
 activate-1:
   type: circle
-  particle: REDSTONE
+  particle: DUST
   distance: 12
   radius: 1.1
   amount: 6
@@ -223,7 +223,7 @@ activate-1:
   y-offset: 0.8
 activate-2:
   type: circle
-  particle: REDSTONE
+  particle: DUST
   distance: 12
   radius: 1.3
   amount: 6
@@ -235,7 +235,7 @@ activate-2:
   y-offset: 1.2
 activate-3:
   type: circle
-  particle: REDSTONE
+  particle: DUST
   distance: 12
   radius: 1.3
   amount: 6
@@ -247,7 +247,7 @@ activate-3:
   y-offset: 1.6
 deactivate:
   type: circle
-  particle: REDSTONE
+  particle: DUST
   distance: 12
   radius: 0.8
   amount: 6
@@ -259,7 +259,7 @@ deactivate:
   y-offset: 0.4
 deactivate-1:
   type: circle
-  particle: REDSTONE
+  particle: DUST
   distance: 12
   radius: 1.1
   amount: 6
@@ -271,7 +271,7 @@ deactivate-1:
   y-offset: 0.8
 deactivate-2:
   type: circle
-  particle: REDSTONE
+  particle: DUST
   distance: 12
   radius: 1.3
   amount: 6
@@ -283,7 +283,7 @@ deactivate-2:
   y-offset: 1.2
 deactivate-3:
   type: circle
-  particle: REDSTONE
+  particle: DUST
   distance: 12
   radius: 1.3
   amount: 6
