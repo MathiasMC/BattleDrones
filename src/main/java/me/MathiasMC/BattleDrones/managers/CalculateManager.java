@@ -33,14 +33,14 @@ public class CalculateManager {
     public final ArrayList<Double> z = new ArrayList<>();
 
     public void damage(final LivingEntity livingEntity, final double damage) {
-        final PotionEffect effect = livingEntity.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+        final PotionEffect effect = livingEntity.getPotionEffect(PotionEffectType.INSTANT_DAMAGE);
         final int resistance = effect == null ? 0 : effect.getAmplifier();
         int e = 0;
         if (livingEntity instanceof Player) {
             e = getEnchant(((Player) livingEntity).getInventory());
         }
-        final AttributeInstance armor = livingEntity.getAttribute(Attribute.GENERIC_ARMOR);
-        final AttributeInstance toughness = livingEntity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+        final AttributeInstance armor = livingEntity.getAttribute(Attribute.ARMOR);
+        final AttributeInstance toughness = livingEntity.getAttribute(Attribute.ARMOR_TOUGHNESS);
         double armorValue = 0;
         if (armor != null) {
             armorValue = armor.getValue();
@@ -58,10 +58,10 @@ public class CalculateManager {
         final ItemStack chest = inv.getChestplate();
         final ItemStack legs = inv.getLeggings();
         final ItemStack boot = inv.getBoots();
-        return (helm != null ? helm.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0) +
-                (chest != null ? chest.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0) +
-                (legs != null ? legs.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0) +
-                (boot != null ? boot.getEnchantmentLevel(Enchantment.DAMAGE_ALL) : 0);
+        return (helm != null ? helm.getEnchantmentLevel(Enchantment.PROTECTION) : 0) +
+                (chest != null ? chest.getEnchantmentLevel(Enchantment.PROTECTION) : 0) +
+                (legs != null ? legs.getEnchantmentLevel(Enchantment.PROTECTION) : 0) +
+                (boot != null ? boot.getEnchantmentLevel(Enchantment.PROTECTION) : 0);
     }
 
     private double dialed(final double damage, final double armor, final double toughness, final int resistance, final int enchant) {

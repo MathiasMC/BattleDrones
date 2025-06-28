@@ -160,7 +160,7 @@ public class Rocket extends DroneRegistry {
                 final ArrayList<LivingEntity> rocket = plugin.getEntityManager().getLivingEntitiesAround(armorStand, 1,  1, 1, 1, exclude, exclude, false);
                 rocket.remove(player);
                 final Material targetMaterial = armorStand.getTargetBlock(null, 1).getType();
-                if (timer > (file.getLong(path + "rocket-time") * 20) || rocket.size() > 0 || targetMaterial != Material.AIR && targetMaterial != Material.WATER && targetMaterial != Material.LAVA && targetMaterial != Material.GRASS && targetMaterial != Material.TALL_GRASS ||  file.getBoolean(path + "rocket-self-destruction") && target.isDead()) {
+                if (timer > (file.getLong(path + "rocket-time") * 20) || rocket.size() > 0 || targetMaterial != Material.AIR && targetMaterial != Material.WATER && targetMaterial != Material.LAVA && targetMaterial != Material.GRASS_BLOCK && targetMaterial != Material.TALL_GRASS ||  file.getBoolean(path + "rocket-self-destruction") && target.isDead()) {
                     this.cancel();
                     final ArrayList<LivingEntity> livingEntities = plugin.getEntityManager().getLivingEntitiesAround(armorStand, file.getDouble(path + "rocket-radius"),  1, 1, 1, exclude, exclude, false);
                     for (LivingEntity livingEntity : livingEntities) {

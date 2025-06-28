@@ -172,41 +172,8 @@ follow:
       radius: 12
       y-offset: 4.8
 
-# IridiumSkyblock support (allow only spawn in island)
-iridium-skyblock:
-  use: false
-  # Remove toggle section to disable
-  toggle:
-    commands:
-      - 'battledrones message {player} &7[&dBattleDrones&7] &cDisabled your drone will not attack {types}, someone came to your island to visit.'
-    # PLAYERS, ANIMALS, MONSTERS
-    disabled:
-      - PLAYERS
-  no-island:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your drone, you are not on an island.'
-  island:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot spawn your drone, you are not an member of this island.'
-
 # Vault (Use vault economy instead of build in coins system)
 vault: false
-
-# Lands support (if trusted drone will not attack that player)
-lands: false
-
-# SaberFactions/FactionsUUID support (if in same faction disable attack)
-factions: false
-
-# Towny Advanced support (If in same town disable attack)
-towny-advanced: false
-
-# Residence support (if in same residence disable attack)
-residence: false
-
-# BetterTeams support (if in same team disable attack)
-better-teams:
-  use: false
-  # Disable attack if ally
-  ally: true
 
 # Automatic disable toggles on world change
 auto-disable:

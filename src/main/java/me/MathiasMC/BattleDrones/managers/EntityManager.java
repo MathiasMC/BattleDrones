@@ -63,7 +63,7 @@ public class EntityManager {
         double max = Double.MAX_VALUE;
         LivingEntity livingEntity = null;
         final LivingEntity living = (LivingEntity) entity;
-        if (lowHealth && living.getHealth() < Objects.requireNonNull(living.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue()) {
+        if (lowHealth && living.getHealth() < Objects.requireNonNull(living.getAttribute(Attribute.MAX_HEALTH)).getValue()) {
             return (LivingEntity) entity;
         }
         final Location entityLocation = entity.getLocation();
@@ -74,7 +74,7 @@ public class EntityManager {
                 if (!lowHealth) {
                     livingEntity = key;
                 } else {
-                    if (key.getHealth() < Objects.requireNonNull(key.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue()) {
+                    if (key.getHealth() < Objects.requireNonNull(key.getAttribute(Attribute.MAX_HEALTH)).getValue()) {
                         livingEntity = key;
                     }
                 }

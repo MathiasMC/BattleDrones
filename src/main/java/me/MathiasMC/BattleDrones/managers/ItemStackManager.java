@@ -1,8 +1,7 @@
 package me.MathiasMC.BattleDrones.managers;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import me.MathiasMC.BattleDrones.BattleDrones;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,8 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.profile.PlayerProfile;
 
-import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
@@ -111,25 +112,27 @@ public class ItemStackManager {
     }
 
     public ItemStack getHeadTexture(final String texture) {
-        final ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
-        final SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
-        final GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
-        gameProfile.getProperties().put("textures", new Property("textures", texture));
-        final Field profileField;
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) head.getItemMeta();
+
+        if (meta == null) return head;
+
+        PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
+
         try {
-            profileField = itemMeta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(itemMeta, gameProfile);
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
+            profile.getTextures().setSkin(new URL(texture));
+        } catch (MalformedURLException e) {
+
+            return head;
         }
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
+        meta.setOwnerProfile(profile);
+        head.setItemMeta(meta);
+        return head;
     }
 
     public void glow(final ItemStack itemStack, final FileConfiguration file, final String path) {
         if (file.contains(path) && file.getStringList(path).contains("GLOW")) {
-            itemStack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 0);
+            itemStack.addUnsafeEnchantment(Enchantment.INFINITY, 0);
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta == null) {
                 return;

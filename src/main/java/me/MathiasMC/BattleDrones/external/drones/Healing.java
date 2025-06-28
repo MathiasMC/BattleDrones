@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +47,7 @@ public class Healing extends DroneRegistry {
             if (target != null) {
                 if (droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + drone)) {
                     final double health = target.getHealth();
-                    final double maxHealth = Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
+                    final double maxHealth = Objects.requireNonNull(target.getAttribute(Attribute.MAX_HEALTH)).getValue();
                     final Location location = armorStand.getEyeLocation();
                     final Location targetLocation = target.getEyeLocation();
                     if (armorStand.hasLineOfSight(target) && health < maxHealth && plugin.getEntityManager().hasBlockSight(armorStand, location, targetLocation, list)) {

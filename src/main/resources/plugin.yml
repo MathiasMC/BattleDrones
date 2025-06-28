@@ -3,8 +3,8 @@ version: ${project.version}
 name: ${project.name}
 author: MathiasMC
 description: ${project.description}
-api-version: 1.14
-softdepend: [PlaceholderAPI, WorldGuard, Vault, IridiumSkyblock, Lands, Factions, Towny, Residence, BetterTeams]
+api-version: 1.21
+softdepend: [PlaceholderAPI, WorldGuard, Vault]
 commands:
   battledrones:
     description: "BattleDrones main command"

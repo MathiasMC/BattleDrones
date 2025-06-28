@@ -13,6 +13,7 @@ import me.MathiasMC.BattleDrones.managers.*;
 import me.MathiasMC.BattleDrones.support.PlaceholderAPI;
 import me.MathiasMC.BattleDrones.support.Support;
 import me.MathiasMC.BattleDrones.utils.*;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -131,7 +132,7 @@ public class BattleDrones extends JavaPlugin {
 
             addHeads();
 
-            new MetricsLite(this, 8224);
+            new Metrics(this, 8224);
             if (fileUtils.config.getBoolean("update-check")) {
                 new UpdateUtils(this, 81850).getVersion(version -> {
                     if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
