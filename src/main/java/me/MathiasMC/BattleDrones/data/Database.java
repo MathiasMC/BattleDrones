@@ -5,301 +5,289 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.sql.*;
+import java.util.regex.Pattern;
 
 public class Database {
 
     private final BattleDrones plugin;
-
     private Connection connection;
+
+    private final boolean mysql;
+    private final String host, port, database, username, password;
+
+    private static final Pattern VALID_TABLE_NAME = Pattern.compile("^[a-zA-Z0-9_]+$");
 
     public Database(final BattleDrones plugin) {
         this.plugin = plugin;
-        (new BukkitRunnable() {
+
+        this.mysql = plugin.getFileUtils().config.getBoolean("mysql.use");
+        this.host = plugin.getFileUtils().config.getString("mysql.host");
+        this.port = plugin.getFileUtils().config.getString("mysql.port");
+        this.database = plugin.getFileUtils().config.getString("mysql.database");
+        this.username = plugin.getFileUtils().config.getString("mysql.username");
+        this.password = plugin.getFileUtils().config.getString("mysql.password");
+
+
+        new BukkitRunnable() {
             @Override
             public void run() {
                 try {
                     if (connection != null && !connection.isClosed()) {
-                        connection.createStatement().execute("SELECT 1");
+                        try (Statement selectSql = connection.createStatement()) {
+                            selectSql.execute("SELECT 1");
+                        }
+                    } else {
+                        connection = connect();
+                        if (connection != null) {
+                            createPlayersTable();
+                        }
                     }
                 } catch (SQLException e) {
-                    connection = get();
+                    plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
                 }
             }
-        }).runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
+        }.runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
     }
 
-    private Connection get() {
+    private Connection connect() {
         try {
-            if (plugin.getFileUtils().config.getBoolean("mysql.use")) {
+            if (mysql) {
                 plugin.getTextUtils().info("Database ( Connected ) ( MySQL )");
-                Class.forName("com.mysql.jdbc.Driver");
-                return DriverManager.getConnection("jdbc:mysql://" + plugin.getFileUtils().config.getString("mysql.host") + ":" + plugin.getFileUtils().config.getString("mysql.port") + "/" + plugin.getFileUtils().config.getString("mysql.database"), plugin.getFileUtils().config.getString("mysql.username"), plugin.getFileUtils().config.getString("mysql.password"));
+                return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&autoReconnect=true&serverTimezone=UTC&characterEncoding=utf8", username, password);
             } else {
                 plugin.getTextUtils().info("Database ( Connected ) ( SQLite )");
-                Class.forName("org.sqlite.JDBC");
                 return DriverManager.getConnection("jdbc:sqlite:" + new File(plugin.getDataFolder(), "data.db"));
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
             return null;
         }
     }
 
-    public void close() throws SQLException {
+    public void close() {
         if (connection != null) {
-            connection.close();
-        }
-    }
-
-    private boolean check() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            connection = get();
-            if (connection == null || connection.isClosed()) {
-                return false;
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
             }
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `players` (`uuid` char(36) PRIMARY KEY, `active` text(255), `coins` BIGINT(255), `group` text(255));");
-        }
-        return true;
-    }
-
-    public void createDroneTable(final String drone) {
-        try {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + drone + "` (`uuid` char(36) PRIMARY KEY, `unlocked` TINYINT(1), `level` SMALLINT(255), `ammo` SMALLINT(255), `monsters` TINYINT(1), `animals` TINYINT(1), `players` TINYINT(1), `exclude` LONGTEXT, `health` SMALLINT(255), `left` SMALLINT(255));");
-        } catch (SQLException e) {
-            plugin.getTextUtils().error("Could not create " + drone + " database table");
-            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
         }
     }
 
-    public boolean set() {
+    public boolean checkConnection() {
         try {
-            return check();
+            if (connection == null || connection.isClosed()) {
+                connection = connect();
+                if (connection != null) {
+                    createPlayersTable();
+                }
+            }
+            return connection != null && !connection.isClosed();
         } catch (SQLException e) {
             plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
             return false;
         }
     }
 
-    public void insertPlayer(final String uuid) {
-        if (set()) {
-            BukkitRunnable r = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    PreparedStatement preparedStatement = null;
-                    ResultSet resultSet = null;
-                    try {
-                        resultSet = connection.createStatement().executeQuery("SELECT * FROM players WHERE uuid= '" + uuid + "';");
-                        if (!resultSet.next()) {
-                            preparedStatement = connection.prepareStatement("INSERT INTO players (uuid, active, coins, `group`) VALUES(?, ?, ?, ?);");
-                            preparedStatement.setString(1, uuid);
-                            preparedStatement.setString(2, "");
-                            preparedStatement.setLong(3, 0);
-                            preparedStatement.setString(4, "default");
-                            preparedStatement.executeUpdate();
-                        }
-                    } catch (SQLException exception) {
-                        plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                    } finally {
-                        if (resultSet != null)
-                            try {
-                                resultSet.close();
-                            } catch (SQLException exception) {
-                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                        if (preparedStatement != null)
-                            try {
-                                preparedStatement.close();
-                            } catch (SQLException exception) {
-                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                    }
-                }
-            };
-            r.runTaskAsynchronously(plugin);
+    public void createPlayersTable() {
+        if (!checkConnection()) return;
+        String tableSql = "CREATE TABLE IF NOT EXISTS `players` (" +
+                "`uuid` char(36) PRIMARY KEY, " +
+                "`active` VARCHAR(255), " +
+                "`coins` BIGINT, " +
+                "`group` VARCHAR(255)" +
+                ");";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(tableSql);
+        } catch (SQLException e) {
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
         }
     }
 
-    public void insertDrone(final String uuid, final String drone) {
-        if (set()) {
-            BukkitRunnable r = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    PreparedStatement preparedStatement = null;
-                    ResultSet resultSet = null;
-                    try {
-                        resultSet = connection.createStatement().executeQuery("SELECT * FROM " + drone + " WHERE uuid= '" + uuid + "';");
-                        if (!resultSet.next()) {
-                            preparedStatement = connection.prepareStatement("INSERT INTO " + drone + " (uuid, unlocked, level, ammo, monsters, animals, players, exclude, health, `left`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-                            preparedStatement.setString(1, uuid);
-                            preparedStatement.setInt(2, 0);
-                            preparedStatement.setInt(3, 1);
-                            preparedStatement.setInt(4, 0);
-                            preparedStatement.setInt(5, 1);
-                            preparedStatement.setInt(6, 1);
-                            preparedStatement.setInt(7, 1);
-                            preparedStatement.setString(8, "");
-                            preparedStatement.setInt(9, 0);
-                            preparedStatement.setInt(10, 0);
-                            preparedStatement.executeUpdate();
-                        }
-                    } catch (SQLException exception) {
-                        plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                    } finally {
-                        if (resultSet != null)
-                            try {
-                                resultSet.close();
-                            } catch (SQLException exception) {
-                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                        if (preparedStatement != null)
-                            try {
-                                preparedStatement.close();
-                            } catch (SQLException exception) {
-                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                    }
-                }
-            };
-            r.runTaskAsynchronously(plugin);
+    public void createDroneTable(String drone) {
+        if (!checkConnection() || !VALID_TABLE_NAME.matcher(drone).matches()) return;
+        String tableSql = "CREATE TABLE IF NOT EXISTS `" + drone + "` (" +
+                "`uuid` char(36) PRIMARY KEY, " +
+                "`unlocked` TINYINT(1), " +
+                "`level` SMALLINT, " +
+                "`ammo` SMALLINT, " +
+                "`monsters` TINYINT(1), " +
+                "`animals` TINYINT(1), " +
+                "`players` TINYINT(1), " +
+                "`exclude` LONGTEXT, " +
+                "`health` SMALLINT, " +
+                "`left` SMALLINT" +
+                ");";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(tableSql);
+        } catch (SQLException e) {
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
         }
     }
 
-    public void setPlayers(final String uuid, final String active, final long coins, final String group) {
-        if (set()) {
-            BukkitRunnable r = new BukkitRunnable() {
-                public void run() {
-                    PreparedStatement preparedStatement = null;
-                    ResultSet resultSet = null;
-                    try {
-                        resultSet = connection.createStatement().executeQuery("SELECT * FROM players WHERE uuid= '" + uuid + "';");
-                        if (resultSet.next()) {
-                            preparedStatement = connection.prepareStatement("UPDATE players SET active = ?, coins = ?, `group` = ? WHERE uuid = ?");
-                            preparedStatement.setString(1, active);
-                            preparedStatement.setLong(2, coins);
-                            preparedStatement.setString(3, group);
-                            preparedStatement.setString(4, uuid);
-                            preparedStatement.executeUpdate();
+    public void insertPlayer(String uuid) {
+        if (!checkConnection()) return;
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                String selectSql = "SELECT 1 FROM players WHERE uuid = ?";
+                String insertSql = "INSERT INTO players (uuid, active, coins, `group`) VALUES(?, '', 0, 'default')";
+                try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+                    selectStmt.setString(1, uuid);
+                    try (ResultSet rs = selectStmt.executeQuery()) {
+                        if (!rs.next()) {
+                            try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
+                                insertStmt.setString(1, uuid);
+                                insertStmt.executeUpdate();
+                            }
                         }
-                    } catch (SQLException exception) {
-                        plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                    } finally {
-                        if (resultSet != null)
-                            try {
-                                resultSet.close();
-                            } catch (SQLException exception) {
-                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                        if (preparedStatement != null)
-                            try {
-                                preparedStatement.close();
-                            } catch (SQLException exception) {
-                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                            }
                     }
+                } catch (SQLException e) {
+                    plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
                 }
-            };
-            r.runTaskAsynchronously(plugin);
-        }
-    }
-
-    public void setDrone(final String uuid, final String drone, final int unlocked, final int level, final int ammo, final int monsters, final int animals, final int players, final String exclude, final int health, final int left) {
-        if (set()) {
-            BukkitRunnable r = new BukkitRunnable() {
-                public void run() {
-                    PreparedStatement preparedStatement = null;
-                    ResultSet resultSet = null;
-                    try {
-                        resultSet = connection.createStatement().executeQuery("SELECT * FROM " + drone + " WHERE uuid= '" + uuid + "';");
-                        if (resultSet.next()) {
-                            preparedStatement = connection.prepareStatement("UPDATE " + drone + " SET unlocked = ?, level = ?, ammo = ?, monsters = ?, animals = ?, players = ?, exclude = ?, health = ?, `left` = ? WHERE uuid = ?");
-                            preparedStatement.setInt(1, unlocked);
-                            preparedStatement.setInt(2, level);
-                            preparedStatement.setInt(3, ammo);
-                            preparedStatement.setInt(4, monsters);
-                            preparedStatement.setInt(5, animals);
-                            preparedStatement.setInt(6, players);
-                            preparedStatement.setString(7, exclude);
-                            preparedStatement.setInt(8, health);
-                            preparedStatement.setInt(9, left);
-                            preparedStatement.setString(10, uuid);
-                            preparedStatement.executeUpdate();
-                        }
-                    } catch (SQLException exception) {
-                        plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                    } finally {
-                        if (resultSet != null)
-                            try {
-                                resultSet.close();
-                            } catch (SQLException exception) {
-                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                        if (preparedStatement != null)
-                            try {
-                                preparedStatement.close();
-                            } catch (SQLException exception) {
-                                plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                            }
-                    }
-                }
-            };
-            r.runTaskAsynchronously(plugin);
-        }
-    }
-
-    public String[] getPlayers(final String uuid) {
-        Statement statement = null;
-        ResultSet resultSet = null;
-        try {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM players WHERE uuid= '" + uuid + "';");
-            if (resultSet.next()) {
-                return new String[]{resultSet.getString("active"), String.valueOf(resultSet.getLong("coins")), resultSet.getString("group")};
             }
-        } catch (SQLException exception) {
-            plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-        } finally {
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                } catch (SQLException exception) {
-                    plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                }
-            if (statement != null)
-                try {
-                    statement.close();
-                } catch (SQLException exception) {
-                    plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-                }
-        }
-        return new String[]{"", String.valueOf(0), "default"};
+        };
+        task.runTaskAsynchronously(plugin);
     }
 
-    public String[] getDrone(final String uuid, final String drone) {
-        Statement statement = null;
-        ResultSet resultSet = null;
-        try {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM " + drone + " WHERE uuid= '" + uuid + "';");
-            if (resultSet.next()) {
-                return new String[]{String.valueOf(resultSet.getInt("unlocked")), String.valueOf(resultSet.getInt("level")), String.valueOf(resultSet.getInt("ammo")), String.valueOf(resultSet.getInt("monsters")), String.valueOf(resultSet.getInt("animals")), String.valueOf(resultSet.getInt("players")), resultSet.getString("exclude"), String.valueOf(resultSet.getInt("health")), String.valueOf(resultSet.getInt("left"))
-                };
+    public void insertDrone(String uuid, String drone) {
+        if (!checkConnection()) return;
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                String selectSql = "SELECT 1 FROM `" + drone + "` WHERE uuid = ?";
+                String insertSql = "INSERT INTO `" + drone + "` (uuid, unlocked, level, ammo, monsters, animals, players, exclude, health, `left`) VALUES(?, 0, 1, 0, 1, 1, 1, '', 0, 0);";
+                try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+                    selectStmt.setString(1, uuid);
+                    try (ResultSet rs = selectStmt.executeQuery()) {
+                        if (!rs.next()) {
+                            try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
+                                insertStmt.setString(1, uuid);
+                                insertStmt.executeUpdate();
+                            }
+                        }
+                    }
+                } catch (SQLException e) {
+                    plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
+                }
             }
-        } catch (SQLException exception) {
-            plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
-        } finally {
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                } catch (SQLException exception) {
-                    plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
+        };
+        task.runTaskAsynchronously(plugin);
+    }
+
+    public void setPlayers(String uuid, String active, long coins, String group) {
+        if (!checkConnection()) return;
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                String selectSql = "SELECT 1 FROM players WHERE uuid = ?";
+                String updateSql = "UPDATE players SET active = ?, coins = ?, `group` = ? WHERE uuid = ?";
+                try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+                    selectStmt.setString(1, uuid);
+                    try (ResultSet rs = selectStmt.executeQuery()) {
+                        if (rs.next()) {
+                            try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
+                                updateStmt.setString(1, active);
+                                updateStmt.setLong(2, coins);
+                                updateStmt.setString(3, group);
+                                updateStmt.setString(4, uuid);
+                                updateStmt.executeUpdate();
+                            }
+                        }
+                    }
+                } catch (SQLException e) {
+                    plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
                 }
-            if (statement != null)
-                try {
-                    statement.close();
-                } catch (SQLException exception) {
-                    plugin.getTextUtils().exception(exception.getStackTrace(), exception.getMessage());
+            }
+        };
+        task.runTaskAsynchronously(plugin);
+    }
+
+    public void setDrone(String uuid, String drone, int unlocked, int level, int ammo, int monsters, int animals, int players, String exclude, int health, int left) {
+        if (!checkConnection()) return;
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                String selectSql = "SELECT 1 FROM `" + drone + "` WHERE uuid = ?";
+                String updateSql = "UPDATE `" + drone + "` SET unlocked = ?, level = ?, ammo = ?, monsters = ?, animals = ?, players = ?, exclude = ?, health = ?, `left` = ? WHERE uuid = ?";
+                try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+                    selectStmt.setString(1, uuid);
+                    try (ResultSet rs = selectStmt.executeQuery()) {
+                        if (rs.next()) {
+                            try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
+                                updateStmt.setInt(1, unlocked);
+                                updateStmt.setInt(2, level);
+                                updateStmt.setInt(3, ammo);
+                                updateStmt.setInt(4, monsters);
+                                updateStmt.setInt(5, animals);
+                                updateStmt.setInt(6, players);
+                                updateStmt.setString(7, exclude);
+                                updateStmt.setInt(8, health);
+                                updateStmt.setInt(9, left);
+                                updateStmt.setString(10, uuid);
+                                updateStmt.executeUpdate();
+                            }
+                        }
+                    }
+                } catch (SQLException e) {
+                    plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
                 }
+            }
+        };
+        task.runTaskAsynchronously(plugin);
+    }
+
+    public String[] getPlayers(String uuid) {
+        try {
+            if (connection == null || connection.isClosed()) return new String[]{"", "0", "default"};
+        } catch (SQLException e) {
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
         }
-        return new String[]{String.valueOf(0), String.valueOf(1), String.valueOf(0), String.valueOf(1), String.valueOf(1), String.valueOf(1), "", String.valueOf(0), String.valueOf(0)};
+        String selectSql = "SELECT active, coins, `group` FROM players WHERE uuid = ?";
+        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+            selectStmt.setString(1, uuid);
+            try (ResultSet rs = selectStmt.executeQuery()) {
+                if (rs.next()) {
+                    return new String[]{
+                            rs.getString("active"),
+                            String.valueOf(rs.getLong("coins")),
+                            rs.getString("group")
+                    };
+                }
+            }
+        } catch (SQLException e) {
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
+        }
+        return new String[]{"", "0", "default"};
+    }
+
+    public String[] getDrone(String uuid, String drone) {
+        try {
+            if (connection == null || connection.isClosed()) return new String[]{"0", "1", "0", "1", "1", "1", "", "0", "0"};
+        } catch (SQLException e) {
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
+        }
+        String selectSql = "SELECT unlocked, level, ammo, monsters, animals, players, exclude, health, `left` FROM `" + drone + "` WHERE uuid = ?";
+        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+            selectStmt.setString(1, uuid);
+            try (ResultSet rs = selectStmt.executeQuery()) {
+                if (rs.next()) {
+                    return new String[] {
+                            String.valueOf(rs.getInt("unlocked")),
+                            String.valueOf(rs.getInt("level")),
+                            String.valueOf(rs.getInt("ammo")),
+                            String.valueOf(rs.getInt("monsters")),
+                            String.valueOf(rs.getInt("animals")),
+                            String.valueOf(rs.getInt("players")),
+                            rs.getString("exclude"),
+                            String.valueOf(rs.getInt("health")),
+                            String.valueOf(rs.getInt("left"))
+                    };
+                }
+            }
+        } catch (SQLException e) {
+            plugin.getTextUtils().exception(e.getStackTrace(), e.getMessage());
+        }
+        return new String[]{"0", "1", "0", "1", "1", "1", "", "0", "0"};
     }
 }

@@ -13,7 +13,6 @@ import me.MathiasMC.BattleDrones.managers.*;
 import me.MathiasMC.BattleDrones.support.PlaceholderAPI;
 import me.MathiasMC.BattleDrones.support.Support;
 import me.MathiasMC.BattleDrones.utils.*;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,7 +22,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.SQLException;
 import java.util.*;
 
 public class BattleDrones extends JavaPlugin {
@@ -108,7 +106,7 @@ public class BattleDrones extends JavaPlugin {
 
         support = new Support(this);
 
-        if (database.set()) {
+        if (database.checkConnection()) {
             getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
             getServer().getPluginManager().registerEvents(new PlayerQuit(this), this);
             getServer().getPluginManager().registerEvents(new InventoryClick(), this);
@@ -132,7 +130,7 @@ public class BattleDrones extends JavaPlugin {
 
             addHeads();
 
-            new Metrics(this, 8224);
+            //new Metrics(this, 8224);
             if (fileUtils.config.getBoolean("update-check")) {
                 new UpdateUtils(this, 81850).getVersion(version -> {
                     if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
@@ -163,11 +161,7 @@ public class BattleDrones extends JavaPlugin {
         for (String uuid : listPlayerConnect()) {
             getPlayerConnect(uuid).stopDrone(true, true);
         }
-        try {
-            database.close();
-        } catch (SQLException exception) {
-            textUtils.exception(exception.getStackTrace(), exception.getMessage());
-        }
+        database.close();
         call = null;
     }
 

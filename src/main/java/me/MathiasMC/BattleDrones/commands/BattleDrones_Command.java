@@ -621,7 +621,13 @@ public class BattleDrones_Command implements CommandExecutor {
                                 plugin.getPlayerConnect(uuid).save();
                                 if (plugin.listDroneHolder().contains(uuid)) {
                                     for (String drone : plugin.listDroneHolder()) {
-                                        plugin.getDroneHolder(uuid, drone).save();
+                                        PlayerConnect playerConnect = plugin.getPlayerConnect(drone);
+                                        String current = playerConnect.getActive();
+                                        if (current != null) {
+                                            if (!current.trim().isEmpty()) {
+                                                plugin.getDroneHolder(uuid, current).save();
+                                            }
+                                        }
                                     }
                                 }
                             }

@@ -157,7 +157,7 @@ public class DroneControllerManager {
             plugin.drone_targets.put(uuid, target);
             final Location end = target.getEyeLocation();
             if (plugin.getFileUtils().config.getBoolean("controller.particle.use")) {
-                plugin.getParticleManager().displayLineParticle("REDSTONE", start, end, start.distance(end), plugin.getFileUtils().config.getDouble("controller.particle.space"), plugin.getFileUtils().config.getInt("controller.particle.r"), plugin.getFileUtils().config.getInt("controller.particle.g"), plugin.getFileUtils().config.getInt("controller.particle.b"), plugin.getFileUtils().config.getInt("controller.particle.amount"), plugin.getFileUtils().config.getInt("controller.particle.size"));
+                plugin.getParticleManager().displayLineParticle("DUST", start, end, start.distance(end), plugin.getFileUtils().config.getDouble("controller.particle.space"), plugin.getFileUtils().config.getInt("controller.particle.r"), plugin.getFileUtils().config.getInt("controller.particle.g"), plugin.getFileUtils().config.getInt("controller.particle.b"), plugin.getFileUtils().config.getInt("controller.particle.amount"), plugin.getFileUtils().config.getInt("controller.particle.size"));
             }
             dispatchCommands("controller.select", player, targetName);
             if (controllerUtils.damage(player, plugin.getFileUtils().config.getInt("controller.damage.select"))) {

@@ -6,20 +6,22 @@
 #           contact me on spigot          #
 #                                         #
 
-# Check for updates on startup?
+# Check for plugin updates on server startup?
 update-check: true
 
-# List of disabled drone names (this will completely disable this drone and files for that drone can be removed)
+# Disabled Drones List
+# Drones listed here will be completely disabled.
+# Corresponding files for these drones can be safely removed.
 disable: []
 
-# Stationary mode
-# With this mode enabled drones will always be parked at spawn location
-# No follow at all.
-# List of drones that is stationary.
+# Stationary Mode Configuration
+# When enabled, drones remain fixed at their spawn locations.
+# Drones will not follow any targets or move from their initial position.
+# Specify the list of drones that should operate in stationary mode below.
 stationary-mode:
   - laser
 
-# Database settings
+# MySQL Database Configuration
 mysql:
   use: false
   host: localhost
@@ -28,60 +30,63 @@ mysql:
   username: username
   password: password
 
-# Drone health in gui
+# Drone health display configuration (GUI)
 health:
 
   health:
-    symbol: \u007c
-    color: '&2'
+    symbol: \u007c          # Symbol used to represent health units
+    color: '&2'             # Color code for health
 
   none:
-    symbol: \u007c
-    color: '&c'
-  amount: 20
+    symbol: \u007c          # Symbol used to represent health units
+    color: '&c'             # Color code for health
 
-# Drone health placeholder
+  amount: 20                # Total health units displayed
+
+# Drone health placeholder (external plugin placeholder)
 health-placeholder:
 
   health:
-    symbol: \u007c
-    color: '&2'
+    symbol: \u007c          # Symbol used to represent health units
+    color: '&2'             # Color code for health
 
   none:
-    symbol: \u007c
-    color: '&c'
-  amount: 20
+    symbol: \u007c          # Symbol used to represent health units
+    color: '&c'             # Color code for health
 
-# Drone ammo in gui
+  amount: 20                # Total health units displayed
+
+# Drone ammo display configuration (GUI)
 ammo:
 
   ammo:
-    symbol: \u007c
-    color: '&2'
+    symbol: \u007c          # Symbol used to represent health units
+    color: '&2'             # Color code for health
 
   none:
-    symbol: \u007c
-    color: '&c'
-  amount: 20
+    symbol: \u007c          # Symbol used to represent health units
+    color: '&c'             # Color code for health
 
-# Drone ammo placeholder
+  amount: 20                # Total health units displayed
+
+# Drone ammo placeholder (external plugin placeholder)
 ammo-placeholder:
 
   ammo:
-    symbol: \u007c
-    color: '&2'
+    symbol: \u007c          # Symbol used to represent health units
+    color: '&2'             # Color code for health
 
   none:
-    symbol: \u007c
-    color: '&c'
-  amount: 20
+    symbol: \u007c          # Symbol used to represent health units
+    color: '&c'             # Color code for health
 
-# Quick spawn/despawn drone with the key you swap items from main hand, off hand
+  amount: 20                # Total health units displayed
+
+# Quick spawn/despawn drone by swapping items between main hand and off hand
 swap:
-  # Will require a server restart to take effect
+  # Enable quick swap functionality (requires server restart to apply)
   use: true
-
-  # Shift + swap key?
+  # Require Shift key during swap?
   shift: true
 
 # Drone controller (you can get the controller by using /bd give controller <player> <range>)
@@ -184,9 +189,9 @@ auto-disable:
     list:
       - PLAYERS
 
-# Look for armor stands that is a drone remove it
-# Does not remove player active drones only stuck drones/projectiles
-# Minutes.
+# Cleanup Interval (in minutes)
+# Removed armor stands identified as drones.
+# Note: Only removes stuck drones or projectiles, not active player-controlled drones.
 cleanup: 50
 
 # Update drone on upgrade
@@ -214,12 +219,12 @@ drone-worlds:
         - 'battledrones message {player} &7[&dBattleDrones&7] &cYou cannot use the rocket drone in this world.'
 
 # Player death (if section is removed the drone will not be removed) [] (to disable commands)
-#player-death-commands:
-#  - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you died.'
+player-death-commands:
+  - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you died.'
 
 # Player change world (if section is removed the drone will not be removed) [] (to disable commands)
-#player-world-change-commands:
-#  - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you changed world.'
+player-world-change-commands:
+  - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you changed world.'
 
 low-ammo:
 
