@@ -18,103 +18,135 @@ public class Teleport extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Teleport(BattleDrones plugin, String droneName, String droneCategory) {
+    public Teleport(BattleDrones plugin,
+                    String droneName,
+                    String droneCategory
+    ) {
         super(plugin, droneName, droneCategory);
         this.plugin = plugin;
     }
 
     @Override
-    public void ability(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
+    public void ability(Player player,
+                        PlayerConnect playerConnect,
+                        DroneHolder droneHolder
+    ) {
 
     }
 
     @Override
-    public void find(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
+    public void find(Player player,
+                     PlayerConnect playerConnect,
+                     DroneHolder droneHolder
+    ) {
 
     }
 
     @Override
-    public void follow(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
-        final String uuid = player.getUniqueId().toString();
-        final FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
-        final long drone_level = droneHolder.getLevel();
-        final String group = playerConnect.getGroup();
-        final ArmorStand head = playerConnect.head;
-        final ArmorStand name = playerConnect.name;
-        final EulerAngle eulerAngle = new EulerAngle(0, 0, 0);
-        final String path = group + "." + drone_level;
-        final double xDCustom = plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575);
-        final double yDCustom = plugin.getFileUtils().getDouble(file, path + ".position.y", 2);
-        final double zDCustom = plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575);
-        final double closeRange = plugin.getFileUtils().getFollow(file, path, "follow.close.range");
-        final double closeSpeed = plugin.getFileUtils().getFollow(file, path, "follow.close.speed");
-        final double middleSpeed = plugin.getFileUtils().getFollow(file, path, "follow.middle.speed");
-        final double farRange = plugin.getFileUtils().getFollow(file, path, "follow.far.range");
-        final double farSpeed = plugin.getFileUtils().getFollow(file, path, "follow.far.speed");
+    public void follow(Player player,
+                       PlayerConnect playerConnect,
+                       DroneHolder droneHolder
+    ) {
+        String uuid = player.getUniqueId().toString();
+        String group = playerConnect.getGroup();
+        String drone = droneHolder.getDrone();
+        long level = droneHolder.getLevel();
+        String path = group + "." + level;
+
+        FileConfiguration file = plugin.droneFiles.get(drone);
+        ArmorStand head = playerConnect.head;
+        ArmorStand name = playerConnect.name;
+        EulerAngle defaultPose = new EulerAngle(0, 0, 0);
+
+        double xOffset = plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575);
+        double yOffset = plugin.getFileUtils().getDouble(file, path + ".position.y", 2);
+        double zOffset = plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575);
+
+        double closeRange = plugin.getFileUtils().getFollow(file, path, "follow.close.range");
+        double closeSpeed = plugin.getFileUtils().getFollow(file, path, "follow.close.speed");
+        double middleSpeed = plugin.getFileUtils().getFollow(file, path, "follow.middle.speed");
+        double farRange = plugin.getFileUtils().getFollow(file, path, "follow.far.range");
+        double farSpeed = plugin.getFileUtils().getFollow(file, path, "follow.far.speed");
+
         playerConnect.follow = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             LivingEntity target = plugin.drone_targets.get(uuid);
-            Location tp = head.getLocation();
-            final World world = player.getWorld();
-            final Location location = player.getLocation().add(0, yDCustom, 0);
+            World world = player.getWorld();
+            Location baseLocation = player.getLocation().add(0, yOffset, 0);
             Vector direction = null;
+            Location headLocation = head.getLocation();
+            Location teleportTarget = headLocation;
+
             if (!plugin.park.contains(uuid)) {
-                float yaw = location.getYaw();
-                direction = location.getDirection();
-                final double xD = Math.sin(-0.0175 * yaw + xDCustom) + location.getX();
-                final double zD = Math.cos(-0.0175 * yaw + zDCustom) + location.getZ();
-                tp = new Location(world, xD, location.getY(), zD);
+                float yaw = baseLocation.getYaw();
+                direction = baseLocation.getDirection();
+
+                double x = Math.sin(-0.0175 * yaw + xOffset) + baseLocation.getX();
+                double z = Math.cos(-0.0175 * yaw + zOffset) + baseLocation.getZ();
+                teleportTarget = new Location(world, x, baseLocation.getY(), z);
             }
+
             if (target != null) {
-                final Location headLocation = head.getLocation();
-                final Vector tpVector = headLocation.toVector();
-                final Location targetLocation = target.getLocation();
+                Location targetLocation = target.getLocation();
+
                 if (!player.hasPermission("battledrones.bypass.ammo." + droneName)) {
-                    if (droneHolder.getAmmo() < file.getInt(path + ".ammo")) {
+                    int cost = file.getInt(path + ".ammo");
+                    if (droneHolder.getAmmo() < cost) {
                         plugin.getDroneManager().runCommands(player, file, path + ".ammo-commands");
                         plugin.drone_targets.put(uuid, null);
                         return;
                     }
                 }
+
                 if (headLocation.distance(targetLocation) < file.getDouble(path + ".teleport")) {
                     plugin.drone_targets.put(uuid, null);
+
                     if (head.getLocation().getBlock().getType().isSolid()) {
                         plugin.getDroneManager().runCommands(player, file, path + ".teleport-cancelled");
                         return;
                     }
-                    int set = droneHolder.getAmmo() - file.getInt(path + ".ammo");
-                    if (set >= 0) {
-                        droneHolder.setAmmo(set);
+
+                    int ammoCost = file.getInt(path + ".ammo");
+                    if (droneHolder.getAmmo() >= ammoCost) {
+                        droneHolder.setAmmo(droneHolder.getAmmo() - ammoCost);
                     }
+
                     player.teleport(headLocation.add(0, 1, 0));
                     for (String command : file.getStringList(path + ".teleport-commands")) {
-                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', plugin.getPlaceholderManager().replacePlaceholders(player, command.replace("{target}", target.getName()))));
+                        plugin.getServer().dispatchCommand(
+                                plugin.consoleSender,
+                                ChatColor.translateAlternateColorCodes('&',
+                                        plugin.getPlaceholderManager()
+                                                .replacePlaceholders(player, command.replace("{target}", target.getName()))
+                                )
+                        );
                     }
+                    return;
                 }
-                final double distance = targetLocation.distance(headLocation);
-                if (distance < closeRange) {
-                    tpVector.add(targetLocation.toVector().subtract(tpVector).normalize().multiply(closeSpeed));
-                } else if (distance > farRange) {
-                    tpVector.add(targetLocation.toVector().subtract(tpVector).normalize().multiply(farSpeed));
-                } else {
-                    tpVector.add(targetLocation.toVector().subtract(tpVector).normalize().multiply(middleSpeed));
-                }
-                tp = tpVector.toLocation(world);
+
+                Vector moveDirection = targetLocation.toVector().subtract(headLocation.toVector()).normalize();
+                double distance = headLocation.distance(targetLocation);
+                double speed = (distance < closeRange) ? closeSpeed : (distance > farRange ? farSpeed : middleSpeed);
+
+                Vector newPosition = headLocation.toVector().add(moveDirection.multiply(speed));
+                Location moveTo = newPosition.toLocation(world);
+
                 plugin.getEntityManager().lookAT(head, targetLocation.clone());
-                head.teleport(tp.setDirection(targetLocation.toVector().subtract(tpVector).normalize()));
-                plugin.getEntityManager().setCustomName(head, name, drone_level, group, file, "target", player);
+                head.teleport(moveTo.setDirection(moveDirection));
+                plugin.getEntityManager().setCustomName(head, name, level, group, file, "target", player);
+
             } else {
-                head.setHeadPose(eulerAngle);
+                head.setHeadPose(defaultPose);
                 if (direction != null) {
-                    head.teleport(tp.setDirection(direction));
+                    head.teleport(teleportTarget.setDirection(direction));
                 } else {
-                    head.teleport(tp);
+                    head.teleport(teleportTarget);
                 }
-                plugin.getEntityManager().setCustomName(head, name, drone_level, group, file, "searching", player);
+                plugin.getEntityManager().setCustomName(head, name, level, group, file, "searching", player);
             }
-            if (name == null) {
-                return;
+
+            if (name != null) {
+                name.teleport(head.getLocation().clone().add(0, 0.3, 0));
             }
-            name.teleport(tp.add(0, 0.3, 0));
         }, 5, 1).getTaskId();
     }
 }

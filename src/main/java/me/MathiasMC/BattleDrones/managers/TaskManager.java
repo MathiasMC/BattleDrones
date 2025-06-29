@@ -25,57 +25,67 @@ public class TaskManager {
     }
 
     public void find(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
-        final String uuid = player.getUniqueId().toString();
-        final FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
-        final long drone_level = droneHolder.getLevel();
-        int TEMPmonsters = droneHolder.getMonsters();
-        int TEMPanimals = droneHolder.getAnimals();
-        int TEMPplayers = droneHolder.getPlayers();
-        boolean TEMPreverseExclude;
-        boolean TEMPhpCheck;
-        final List<String> exclude = new ArrayList<>(droneHolder.getExclude());
+        String uuid = player.getUniqueId().toString();
+        FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
+        long droneLevel = droneHolder.getLevel();
+        String path = playerConnect.getGroup() + "." + droneLevel;
+
+        int monstersTemp = droneHolder.getMonsters();
+        int animalsTemp = droneHolder.getAnimals();
+        int playersTemp = droneHolder.getPlayers();
+
+        List<String> exclude = new ArrayList<>(droneHolder.getExclude());
         exclude.add(player.getName().toLowerCase());
-        TEMPreverseExclude = false;
-        TEMPhpCheck = false;
-        if (droneHolder.getDrone().equalsIgnoreCase("shield_generator")) {
-            TEMPanimals = 0;
-        } else if (droneHolder.getDrone().equalsIgnoreCase("healing")) {
-            TEMPplayers = 1;
-            TEMPreverseExclude = true;
-            TEMPhpCheck = true;
+
+        boolean reverseExcludeTemp = false;
+        boolean hpCheckTemp = false;
+
+        String droneName = droneHolder.getDrone();
+        if (droneName.equalsIgnoreCase("shield_generator")) {
+            animalsTemp = 0;
+        } else if (droneName.equalsIgnoreCase("healing")) {
+            playersTemp = 1;
+            reverseExcludeTemp = true;
+            hpCheckTemp = true;
         }
-        final boolean reverseExclude = TEMPreverseExclude;
-        final boolean hpCheck = TEMPhpCheck;
-        final ArmorStand head = playerConnect.head;
-        final String path = playerConnect.getGroup() + "." + drone_level;
-        final double radius = file.getDouble(path + ".range");
-        final int animals = TEMPanimals;
-        final int players = TEMPplayers;
-        final int monsters = TEMPmonsters;
-        final List<String> entityList = file.getStringList(path + ".exclude");
+
+        double radius = file.getDouble(path + ".range");
+        List<String> entityList = file.getStringList(path + ".exclude");
+        ArmorStand head = playerConnect.head;
+
+
+        final int monsters = monstersTemp;
+        final int animals = animalsTemp;
+        final int players = playersTemp;
+        final boolean reverseExclude = reverseExcludeTemp;
+        final boolean hpCheck = hpCheckTemp;
         playerConnect.find = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-            LivingEntity target;
-            if (plugin.drone_targets.get(uuid) != null) {
-                target = plugin.drone_targets.get(uuid);
-            } else {
-                target = plugin.getEntityManager().getClosestLivingEntity(head, radius, monsters, animals, players, entityList, exclude, reverseExclude, hpCheck);
+            LivingEntity target = plugin.drone_targets.get(uuid);
+
+            if (target == null) {
+                target = plugin.getEntityManager().getClosestLivingEntity(
+                        head, radius, monsters, animals, players, entityList, exclude, reverseExclude, hpCheck);
             }
-            String type = "players";
-            if (plugin.getEntityManager().isMonster(target)) {
-                type = "monsters";
-            } else if (plugin.getEntityManager().isAnimal(target)) {
-                type = "animals";
-            }
-            if (!plugin.getSupport().canTarget(target, file, playerConnect.getGroup() + "." + drone_level + ".worldguard." + type)) {
+
+            if (target == null) {
                 plugin.drone_targets.put(uuid, null);
                 return;
             }
-            if (target == null) {
+
+            String type = plugin.getEntityManager().isMonster(target) ? "monsters"
+                    : plugin.getEntityManager().isAnimal(target) ? "animals"
+                    : "players";
+
+            if (!plugin.getSupport().canTarget(target, file, playerConnect.getGroup() + "." + droneLevel + ".worldguard." + type)) {
+                plugin.drone_targets.put(uuid, null);
                 return;
             }
+
             if (!playerConnect.isAutomatic()) {
                 return;
-            } else if (head.getLocation().distance(target.getLocation()) > radius) {
+            }
+
+            if (head.getLocation().distance(target.getLocation()) > radius) {
                 plugin.drone_targets.put(uuid, null);
                 return;
             }
@@ -85,115 +95,148 @@ public class TaskManager {
             if (plugin.drone_targets.get(uuid) != target) {
                 plugin.drone_targets.put(uuid, target);
             }
+
         }, 5, file.getInt(path + ".find-target")).getTaskId();
     }
 
-    public void follow(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
-        final String uuid = player.getUniqueId().toString();
-        final FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
-        final long drone_level = droneHolder.getLevel();
-        final String group = playerConnect.getGroup();
-        final ArmorStand head = playerConnect.head;
-        final ArmorStand name = playerConnect.name;
-        final EulerAngle eulerAngle = new EulerAngle(0, 0, 0);
-        final String path = group + "." + drone_level;
-        final double xDCustom = plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575);
-        final double yDCustom = plugin.getFileUtils().getDouble(file, path + ".position.y", 2);
-        final double zDCustom = plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575);
-        EulerAngle angle = null;
-        if (file.contains(group + "." + drone_level + ".angle")) {
-            angle = new EulerAngle(file.getDouble(group + "." + drone_level + ".angle"), 0, 0);
-        }
-        final EulerAngle finalAngle = angle;
-        final double closeRange = plugin.getFileUtils().getFollow(file, path, "follow.close.range");
-        final double closeSpeed = plugin.getFileUtils().getFollow(file, path, "follow.close.speed");
-        final double middleSpeed = plugin.getFileUtils().getFollow(file, path, "follow.middle.speed");
-        final double farRange = plugin.getFileUtils().getFollow(file, path, "follow.far.range");
-        final double farSpeed = plugin.getFileUtils().getFollow(file, path, "follow.far.speed");
+    public void follow(Player player,
+                       PlayerConnect playerConnect,
+                       DroneHolder droneHolder
+    ) {
+        String uuid = player.getUniqueId().toString();
+        String group = playerConnect.getGroup();
+        long level = droneHolder.getLevel();
+        String path = group + "." + level;
+
+        FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
+        ArmorStand head = playerConnect.head;
+        ArmorStand name = playerConnect.name;
+        EulerAngle defaultPose = new EulerAngle(0, 0, 0);
+
+        double xOffset = plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575);
+        double yOffset = plugin.getFileUtils().getDouble(file, path + ".position.y", 2);
+        double zOffset = plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575);
+
+        EulerAngle customAngle = file.contains(path + ".angle")
+                ? new EulerAngle(file.getDouble(path + ".angle"), 0, 0)
+                : null;
+
+        double closeRange = plugin.getFileUtils().getFollow(file, path, "follow.close.range");
+        double closeSpeed = plugin.getFileUtils().getFollow(file, path, "follow.close.speed");
+        double middleSpeed = plugin.getFileUtils().getFollow(file, path, "follow.middle.speed");
+        double farRange = plugin.getFileUtils().getFollow(file, path, "follow.far.range");
+        double farSpeed = plugin.getFileUtils().getFollow(file, path, "follow.far.speed");
+
         playerConnect.follow = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+
             LivingEntity target = plugin.drone_targets.get(uuid);
-            final World world = player.getWorld();
-            if (target != null && target.isDead() || target != null && world != target.getWorld()) {
+            World world = player.getWorld();
+            if (target != null && target.isDead() || target != null && !target.getWorld().equals(world)) {
                 plugin.drone_targets.put(uuid, null);
-                target = null;
                 plugin.drone_follow.remove(uuid);
+                target = null;
             }
-            Vector direction = null;
-            Location tp = head.getLocation();
+
+            Location baseLocation = player.getLocation().add(0, yOffset, 0);
+            Location headLocation = head.getLocation();
+            Location moveTarget = headLocation;
+            Vector facingDirection = null;
+
             if (!plugin.park.contains(uuid)) {
-                final Location location = player.getLocation().add(0, yDCustom, 0);
-                direction = location.getDirection();
-                float yaw = location.getYaw();
-                final double xD = Math.sin(-0.0175 * yaw + xDCustom) + location.getX();
-                final double zD = Math.cos(-0.0175 * yaw + zDCustom) + location.getZ();
-                tp = new Location(world, xD, location.getY(), zD);
+                float baseYaw = baseLocation.getYaw();
+                facingDirection = baseLocation.getDirection();
+
+                double x = Math.sin(-0.0175 * baseYaw + xOffset) + baseLocation.getX();
+                double z = Math.cos(-0.0175 * baseYaw + zOffset) + baseLocation.getZ();
+                moveTarget = new Location(world, x, baseLocation.getY(), z);
             }
+
             if (target != null) {
-                final Location headLocation = head.getLocation();
-                final Vector tpVector = headLocation.toVector();
+                Location targetLocation = target.getLocation();
+                Vector moveVector = headLocation.toVector();
+                Vector destination;
+
                 if (plugin.drone_follow.contains(uuid)) {
-                    final Location targetLocation = target.getLocation();
-                    World pointWorld = null;
-                    if (playerConnect.dronePoint != null) {
-                        pointWorld = playerConnect.dronePoint.getWorld();
+                    boolean needNewPoint = playerConnect.dronePoint == null
+                            || playerConnect.dronePoint.getWorld() == null
+                            || !playerConnect.dronePoint.getWorld().equals(world)
+                            || headLocation.distance(playerConnect.dronePoint) < 1;
+
+                    if (needNewPoint) {
+                        int size = plugin.getCalculateManager().x.size();
+                        if (size == 0) return;
+                        int i = ThreadLocalRandom.current().nextInt(size);
+                        Vector offset = new Vector(
+                                plugin.getCalculateManager().x.get(i),
+                                plugin.getCalculateManager().y.get(i),
+                                plugin.getCalculateManager().z.get(i)
+                        );
+                        Location newPoint = targetLocation.clone().add(offset);
+
+                        if (world.rayTraceBlocks(headLocation, offset.normalize(), headLocation.distance(newPoint)) == null) {
+                            playerConnect.dronePoint = newPoint;
+                        } else return;
                     }
-                    if (playerConnect.dronePoint == null || pointWorld != null && pointWorld != world || headLocation.distance(playerConnect.dronePoint) < 1) {
-                        int random = ThreadLocalRandom.current().nextInt(0, plugin.getCalculateManager().x.size() - 1);
-                        final Location followPoint = targetLocation.add(plugin.getCalculateManager().x.get(random), plugin.getCalculateManager().y.get(random), plugin.getCalculateManager().z.get(random));
-                        if (world.rayTraceBlocks(headLocation, followPoint.toVector().subtract(headLocation.toVector()).normalize(), headLocation.distance(followPoint)) == null) {
-                            playerConnect.dronePoint = followPoint;
-                        } else {
-                            return;
-                        }
-                    }
-                    final double distance = targetLocation.distance(headLocation);
-                    if (distance < closeRange) {
-                        tpVector.add(playerConnect.dronePoint.toVector().subtract(tpVector).normalize().multiply(closeSpeed));
-                    } else if (distance > farRange) {
-                        tpVector.add(playerConnect.dronePoint.toVector().subtract(tpVector).normalize().multiply(farSpeed));
-                    } else {
-                        tpVector.add(playerConnect.dronePoint.toVector().subtract(tpVector).normalize().multiply(middleSpeed));
-                    }
-                    tp = tpVector.toLocation(world);
+
+                    double distance = headLocation.distance(targetLocation);
+                    double speed = (distance < closeRange) ? closeSpeed
+                            : (distance > farRange) ? farSpeed
+                            : middleSpeed;
+                    destination = playerConnect.dronePoint.toVector().subtract(moveVector).normalize().multiply(speed).add(moveVector);
+                    moveTarget = destination.toLocation(world);
                 }
-                if (finalAngle != null) {
-                    head.setHeadPose(finalAngle);
-                }
-                final Location targetLocation = target.getLocation();
-                if (finalAngle == null) {
+
+                if (customAngle != null) {
+                    head.setHeadPose(customAngle);
+                } else {
                     plugin.getEntityManager().lookAT(head, targetLocation.clone());
                 }
-                head.teleport(tp.setDirection(targetLocation.toVector().subtract(tpVector).normalize()));
-                plugin.getEntityManager().setCustomName(head, name, drone_level, group, file, "target", player);
+
+                Vector faceDir = targetLocation.toVector().subtract(headLocation.toVector()).normalize();
+                head.teleport(moveTarget.setDirection(faceDir));
+                plugin.getEntityManager().setCustomName(head, name, level, group, file, "target", player);
+
             } else {
-                head.setHeadPose(eulerAngle);
-                if (direction != null) {
-                    head.teleport(tp.setDirection(direction));
+                head.setHeadPose(defaultPose);
+                if (facingDirection != null) {
+                    head.teleport(moveTarget.setDirection(facingDirection));
                 } else {
-                    head.teleport(tp);
+                    head.teleport(moveTarget);
                 }
-                plugin.getEntityManager().setCustomName(head, name, drone_level, group, file, "searching", player);
+                plugin.getEntityManager().setCustomName(head, name, level, group, file, "searching", player);
             }
-            if (name == null) {
-                return;
+            if (name != null) {
+                name.teleport(head.getLocation().add(0, 0.3, 0));
             }
-            name.teleport(tp.add(0, 0.3, 0));
+
         }, 5, 1).getTaskId();
     }
 
-    public void healing(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
-        final String path = playerConnect.getGroup() + "." + droneHolder.getLevel();
-        final FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
-        final int health = file.getInt(path + ".healing.health");
-        if (file.getLong(path + ".healing.delay") != 0) {
+    public void healing(Player player,
+                        PlayerConnect playerConnect,
+                        DroneHolder droneHolder
+    ) {
+        String path = playerConnect.getGroup() + "." + droneHolder.getLevel();
+        FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
+
+        int healingAmount = file.getInt(path + ".healing.health");
+        long delaySeconds = file.getLong(path + ".healing.delay");
+
+        if (delaySeconds > 0 && healingAmount > 0) {
+            long delayTicks = delaySeconds * 20;
+
             playerConnect.healing = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
                 if (playerConnect.isHealing()) {
-                    final int add_health = droneHolder.getHealth() + health;
-                    if (file.getInt(path + ".health") >= add_health) {
-                        droneHolder.setHealth(add_health);
+                    int currentHealth = droneHolder.getHealth();
+                    int maxHealth = file.getInt(path + ".health");
+
+                    int newHealth = currentHealth + healingAmount;
+
+                    if (newHealth <= maxHealth) {
+                        droneHolder.setHealth(newHealth);
                     }
                 }
-            }, file.getLong(path + ".healing.delay") * 20, file.getLong(path + ".healing.delay") * 20).getTaskId();
+            }, delayTicks, delayTicks).getTaskId();
         }
     }
 }

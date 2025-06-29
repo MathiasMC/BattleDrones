@@ -4,8 +4,10 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.api.DroneRegistry;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,27 +21,34 @@ public class ShieldGenerator extends DroneRegistry implements Listener {
 
     public final HashSet<String> cooldown = new HashSet<>();
 
-    public ShieldGenerator(BattleDrones plugin, String droneName, String droneCategory) {
+    public ShieldGenerator(BattleDrones plugin,
+                           String droneName,
+                           String droneCategory
+    ) {
         super(plugin, droneName, droneCategory);
         this.plugin = plugin;
     }
 
     @Override
-    public void ability(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
-        final String uuid = player.getUniqueId().toString();
-        final FileConfiguration particleFile = plugin.getFileUtils().particles;
-        if (!particleFile.contains(droneName)) {
-            return;
-        }
-        final ArmorStand head = playerConnect.head;
-        final String particleType = particleFile.getString(droneName + ".particle");
-        final int delay = particleFile.getInt(droneName + ".delay");
-        final int size = particleFile.getInt(droneName + ".size");
-        final int amount = particleFile.getInt(droneName + ".amount");
-        final int r = particleFile.getInt(droneName + ".rgb.r");
-        final int g = particleFile.getInt(droneName + ".rgb.g");
-        final int b = particleFile.getInt(droneName + ".rgb.b");
-        final int yOffset = particleFile.getInt(droneName + ".y-offset");
+    public void ability(Player player,
+                        PlayerConnect playerConnect,
+                        DroneHolder droneHolder
+    ) {
+        String uuid = player.getUniqueId().toString();
+
+        FileConfiguration particleFile = plugin.getFileUtils().particles;
+        ArmorStand head = playerConnect.head;
+
+        if (!particleFile.contains(droneName)) return;
+
+        String particleType = particleFile.getString(droneName + ".particle");
+        int size = particleFile.getInt(droneName + ".size");
+        int amount = particleFile.getInt(droneName + ".amount");
+        int r = particleFile.getInt(droneName + ".rgb.r");
+        int g = particleFile.getInt(droneName + ".rgb.g");
+        int b = particleFile.getInt(droneName + ".rgb.b");
+        int delay = particleFile.getInt(droneName + ".delay");
+        int yOffset = particleFile.getInt(droneName + ".y-offset");
         playerConnect.ability = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             if (cooldown.contains(uuid)) {
                 return;
@@ -55,61 +64,82 @@ public class ShieldGenerator extends DroneRegistry implements Listener {
 
     @EventHandler
     public void onEntity(EntityDamageByEntityEvent e) {
-        if (e.getEntity() instanceof Player) {
-            final Player player = (Player) e.getEntity();
-            final String uuid = player.getUniqueId().toString();
-            final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
-            if (!playerConnect.isActive()) {
-                return;
-            }
-            if (playerConnect.getActive().equalsIgnoreCase(droneName)) {
-                if (!cooldown.contains(uuid)) {
-                    final DroneHolder droneHolder = plugin.getDroneHolder(uuid, droneName);
-                    if (droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + droneName)) {
-                        FileConfiguration file = plugin.droneFiles.get(droneName);
-                        cooldown.add(uuid);
-                        playerConnect.setHealing(false);
-                        final String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".";
-                        final double finalDamage = e.getFinalDamage();
-                        final double randomReduce = plugin.getCalculateManager().randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max"));
-                        final double reducedDamage = finalDamage - finalDamage * randomReduce;
-                        e.setDamage(reducedDamage);
-                        if (e.getDamager() instanceof Player) {
-                            shieldGeneratorRun(file, path + "run.player", player, player.getName(), String.valueOf(plugin.getCalculateManager().getProcentFromDouble(randomReduce)));
-                        } else if (plugin.getEntityManager().isMonster(e.getDamager())) {
-                            shieldGeneratorRun(file, path + "run.monster", player, player.getName(), String.valueOf(plugin.getCalculateManager().getProcentFromDouble(randomReduce)));
-                        }
-                            final String particleName = droneName + "_ability";
-                            final FileConfiguration particleFile = plugin.getFileUtils().particles;
-                            if (particleFile.contains(particleName)) {
-                                plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.getParticleManager().displayParticle(
-                                        particleName,
-                                        particleFile.getString(particleName + ".particle"),
-                                        playerConnect.head.getLocation().add(0, particleFile.getInt(particleName + ".y-offset"), 0),
-                                        particleFile.getInt(particleName + ".rgb.r"),
-                                        particleFile.getInt(particleName + ".rgb.g"),
-                                        particleFile.getInt(particleName + ".rgb.b"),
-                                        particleFile.getInt(particleName + ".size"),
-                                        particleFile.getInt(particleName + ".amount")),
-                                        particleFile.getInt(particleName + ".delay"));
-                            }
-                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getLong(path + "max-ammo-slots") * 64, player, "ammo");
-                        plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
-                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                            cooldown.remove(uuid);
-                            playerConnect.setHealing(true);
-                        }, file.getLong(path + "cooldown") * 20);
-                    }
-                }
-            }
+        if (!(e.getEntity() instanceof Player player)) return;
+        String uuid = player.getUniqueId().toString();
+        PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+
+        if (!playerConnect.isActive()) return;
+        if (!playerConnect.getActive().equalsIgnoreCase(droneName)) return;
+        if (cooldown.contains(uuid)) return;
+
+        DroneHolder droneHolder = plugin.getDroneHolder(uuid, droneName);
+
+        boolean hasAmmo = droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + droneName);
+        if (!hasAmmo) return;
+
+        FileConfiguration file = plugin.droneFiles.get(droneName);
+
+        cooldown.add(uuid);
+        playerConnect.setHealing(false);
+
+        String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".";
+        double finalDamage = e.getFinalDamage();
+        double min = file.getDouble(path + "min");
+        double max = file.getDouble(path + "max");
+        double randomReduce = plugin.getCalculateManager().randomDouble(min, max);
+        double reducedDamage = finalDamage - finalDamage * randomReduce;
+        long maxAmmoSlots = file.getLong(path + "max-ammo-slots") * 64;
+        e.setDamage(reducedDamage);
+
+        String percent = String.valueOf(plugin.getCalculateManager().getProcentFromDouble(randomReduce));
+        Entity damager = e.getDamager();
+
+        if (damager instanceof Player) {
+            particleEffect(file, path + "run.player", player, player.getName(), percent);
+        } else if (plugin.getEntityManager().isMonster(damager)) {
+            particleEffect(file, path + "run.monster", player, player.getName(), percent);
         }
+
+        String particleName = droneName + "_ability";
+        FileConfiguration particleFile = plugin.getFileUtils().particles;
+        if (particleFile.contains(particleName)) {
+
+            String particleType = particleFile.getString(particleName + ".particle");
+            int size = particleFile.getInt(particleName + ".size");
+            int amount = particleFile.getInt(particleName + ".amount");
+            int r = particleFile.getInt(particleName + ".rgb.r");
+            int g = particleFile.getInt(particleName + ".rgb.g");
+            int b = particleFile.getInt(particleName + ".rgb.b");
+            int delay = particleFile.getInt(particleName + ".delay");
+            double yOffset = particleFile.getInt(particleName + ".y-offset");
+
+            Location location = playerConnect.head.getLocation().add(0, yOffset, 0);
+
+            plugin.getServer().getScheduler().runTaskLater(plugin, () ->
+                            plugin.getParticleManager().displayParticle(
+                                    particleName,
+                                    particleType,
+                                    location,
+                                    r,
+                                    g,
+                                    b,
+                                    size,
+                                    amount
+                            ), delay);
+        }
+
+        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
+        plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
+
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            cooldown.remove(uuid);
+            playerConnect.setHealing(true);
+        }, file.getLong(path + "cooldown") * 20);
     }
 
-    private void shieldGeneratorRun(final FileConfiguration file, final String path, final Player player, final String targetName, final String reduce) {
+    private void particleEffect(FileConfiguration file, String path, Player player, String targetName, String reduce) {
         for (String command : file.getStringList(path)) {
-            plugin.getServer().dispatchCommand(plugin.consoleSender, plugin.getPlaceholderManager().replacePlaceholders(player, command)
-                    .replace("{damage}", reduce)
-                    .replace("{target}", targetName));
+            plugin.getServer().dispatchCommand(plugin.consoleSender, plugin.getPlaceholderManager().replacePlaceholders(player, command).replace("{damage}", reduce).replace("{target}", targetName));
         }
     }
 }
