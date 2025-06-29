@@ -31,7 +31,7 @@ public class ShieldGenerator extends DroneRegistry implements Listener {
         if (!particleFile.contains(droneName)) {
             return;
         }
-        final ArmorStand armorStand = playerConnect.head;
+        final ArmorStand head = playerConnect.head;
         final String particleType = particleFile.getString(droneName + ".particle");
         final int delay = particleFile.getInt(droneName + ".delay");
         final int size = particleFile.getInt(droneName + ".size");
@@ -49,7 +49,7 @@ public class ShieldGenerator extends DroneRegistry implements Listener {
                     return;
                 }
             }
-            plugin.getParticleManager().displayParticle(droneName, particleType, armorStand.getLocation().add(0, yOffset, 0), r, g, b, size, amount);
+            plugin.getParticleManager().displayParticle(droneName, particleType, head.getLocation().add(0, yOffset, 0), r, g, b, size, amount);
         }, 0, delay).getTaskId();
     }
 

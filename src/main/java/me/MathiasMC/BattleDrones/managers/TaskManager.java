@@ -66,7 +66,7 @@ public class TaskManager {
             } else if (plugin.getEntityManager().isAnimal(target)) {
                 type = "animals";
             }
-            if (!plugin.getSupport().canTarget(player, target, file, playerConnect.getGroup() + "." + drone_level + ".worldguard." + type)) {
+            if (!plugin.getSupport().canTarget(target, file, playerConnect.getGroup() + "." + drone_level + ".worldguard." + type)) {
                 plugin.drone_targets.put(uuid, null);
                 return;
             }

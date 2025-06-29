@@ -32,12 +32,11 @@ public class Flamethrower extends DroneRegistry {
                         PlayerConnect playerConnect,
                         DroneHolder droneHolder
     ) {
-        String drone = "flamethrower";
-        String uuid = player.getUniqueId().toString();
+        String uuid = playerConnect.getUniqueId();
         String group = playerConnect.getGroup();
-        FileConfiguration file = plugin.droneFiles.get(drone);
+        FileConfiguration file = plugin.droneFiles.get(droneName);
         String path = group + "." + droneHolder.getLevel() + ".";
-        ArmorStand armorStand = playerConnect.head;
+        ArmorStand head = playerConnect.head;
 
         FileConfiguration particleFile = plugin.getFileUtils().particles;
         String particleType = particleFile.getString(droneName + ".particle");
@@ -57,6 +56,14 @@ public class Flamethrower extends DroneRegistry {
 
         long maxAmmoSlots = file.getLong(path + "max-ammo-slots") * 64;
 
+        double projectileSpace = file.getDouble(path + "projectile-space");
+        double damage = plugin.getCalculateManager().randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max"));
+        double radius = file.getDouble(path + "projectile-radius");
+        double chance = file.getDouble(path + "setfire-chance");
+        int burnTime = file.getInt(path + "burning-time");
+        int projectileSpeed = file.getInt(path + "projectile-speed");
+        int maxTicks = 8 * 20;
+
         playerConnect.ability = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             LivingEntity target = plugin.drone_targets.get(uuid);
             if (target == null) {
@@ -66,30 +73,22 @@ public class Flamethrower extends DroneRegistry {
 
             playerConnect.setHealing(false);
 
-            boolean hasAmmo = droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + drone);
+            boolean hasAmmo = droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + droneName);
             if (!hasAmmo) return;
 
-            Location location = armorStand.getLocation();
+            Location headLocation = head.getLocation();
             Location targetLocation = target.getEyeLocation();
 
-            boolean canSeeTarget = armorStand.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(armorStand, location, targetLocation, blockCheckList);
+            boolean canSeeTarget = head.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(head, headLocation, targetLocation, blockCheckList);
 
             if (!canSeeTarget) return;
 
             if (particleFile.contains(droneName)) {
 
-                Location start = location.add(0, 0.4, 0);
+                Location start = headLocation.add(0, 0.4, 0);
 
                 World world = start.getWorld();
                 if (world == null) return;
-
-                double projectileSpace = file.getDouble(path + "projectile-space");
-                double damage = plugin.getCalculateManager().randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max"));
-                double radius = file.getDouble(path + "projectile-radius");
-                double chance = file.getDouble(path + "setfire-chance");
-                int burnTime = file.getInt(path + "burning-time");
-                int projectileSpeed = file.getInt(path + "projectile-speed");
-                int maxTicks = 8 * 20;
 
                 new BukkitRunnable() {
                     final Vector p1 = start.toVector();
@@ -108,8 +107,8 @@ public class Flamethrower extends DroneRegistry {
                                 target.setFireTicks(burnTime);
                             }
                             target.damage(damage);
-                            this.cancel();
                             plugin.getDroneManager().checkTarget(player, target, file, location, path, 2);
+                            cancel();
                         }
 
                         if (timer > maxTicks) {
@@ -128,7 +127,7 @@ public class Flamethrower extends DroneRegistry {
             }
 
             plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
-            plugin.getDroneManager().checkShot(player, target, file, location, path, "run");
+            plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
             plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
 
         }, 0, cooldown).getTaskId();

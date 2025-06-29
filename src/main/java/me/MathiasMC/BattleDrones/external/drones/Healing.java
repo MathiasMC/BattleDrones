@@ -24,48 +24,70 @@ public class Healing extends DroneRegistry {
     }
 
     @Override
-    public void ability(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
-        final String drone = "healing";
-        final String uuid = player.getUniqueId().toString();
-        final String group = playerConnect.getGroup();
-        final FileConfiguration healing = plugin.droneFiles.get(drone);
-        final String path = group + "." + droneHolder.getLevel() + ".";
-        final ArmorStand armorStand = playerConnect.head;
-        final FileConfiguration particleFile = plugin.getFileUtils().particles;
-        final String particleType = particleFile.getString(droneName + ".particle");
-        final int size = particleFile.getInt(droneName + ".size");
-        final int amount = particleFile.getInt(droneName + ".amount");
-        final int r = particleFile.getInt(droneName + ".rgb.r");
-        final int g = particleFile.getInt(droneName + ".rgb.g");
-        final int b = particleFile.getInt(droneName + ".rgb.b");
-        final int delay = particleFile.getInt(droneName + ".delay");
-        final double yOffset = particleFile.getDouble(droneName + ".y-offset");
-        final double space = particleFile.getDouble(droneName + ".space");
-        final List<String> list = plugin.getFileUtils().getBlockCheck(healing, path);
+    public void ability(Player player,
+                        PlayerConnect playerConnect,
+                        DroneHolder droneHolder
+    ) {
+        String uuid = player.getUniqueId().toString();
+        String group = playerConnect.getGroup();
+        FileConfiguration file = plugin.droneFiles.get(droneName);
+        String path = group + "." + droneHolder.getLevel() + ".";
+        ArmorStand head = playerConnect.head;
+
+        FileConfiguration particleFile = plugin.getFileUtils().particles;
+        String particleType = particleFile.getString(droneName + ".particle");
+        int size = particleFile.getInt(droneName + ".size");
+        int amount = particleFile.getInt(droneName + ".amount");
+        int r = particleFile.getInt(droneName + ".rgb.r");
+        int g = particleFile.getInt(droneName + ".rgb.g");
+        int b = particleFile.getInt(droneName + ".rgb.b");
+        int delay = particleFile.getInt(droneName + ".delay");
+        double yOffset = particleFile.getDouble(droneName + ".y-offset");
+        double space = particleFile.getDouble(droneName + ".space");
+
+        List<String> blockCheckList = plugin.getFileUtils().getBlockCheck(file, path);
+
+        long cooldown = file.getLong(path + "cooldown") * 20;
+
+        long maxAmmoSlots = file.getLong(path + "max-ammo-slots") * 64;
+
+        double min = file.getDouble(path + "min");
+        double max = file.getDouble(path + "max");
+
         playerConnect.ability = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-            final LivingEntity target = plugin.drone_targets.get(uuid);
-            if (target != null) {
-                if (droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + drone)) {
-                    final double health = target.getHealth();
-                    final double maxHealth = Objects.requireNonNull(target.getAttribute(Attribute.MAX_HEALTH)).getValue();
-                    final Location location = armorStand.getEyeLocation();
-                    final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && health < maxHealth && plugin.getEntityManager().hasBlockSight(armorStand, location, targetLocation, list)) {
-                        final double add = plugin.getCalculateManager().randomDouble(healing.getDouble(path + "min"), healing.getDouble(path + "max"));
-                        target.setHealth(Math.min(health + add, maxHealth));
-                        if (particleFile.contains(droneName)) {
-                            final Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
-                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.getParticleManager().displayLineParticle(particleType, armorstand, targetLocation, armorstand.distance(targetLocation), space, r, g, b, amount, size), delay);
-                        }
-                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), healing.getLong(path + "max-ammo-slots") * 64, player, "ammo");
-                        plugin.getDroneManager().checkShot(player, target, healing, location, path, "run");
-                        plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, healing, path);
-                    }
-                }
-                playerConnect.setHealing(false);
-            } else {
+            LivingEntity target = plugin.drone_targets.get(uuid);
+            if (target == null) {
                 playerConnect.setHealing(true);
+                return;
             }
-        }, 0, healing.getLong(path + "cooldown") * 20).getTaskId();
+
+            playerConnect.setHealing(false);
+
+            boolean hasAmmo = droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + droneName);
+            if (!hasAmmo) return;
+
+            Location headLocation = head.getEyeLocation();
+            Location targetLocation = target.getEyeLocation();
+
+            double health = target.getHealth();
+            double maxHealth = Objects.requireNonNull(target.getAttribute(Attribute.MAX_HEALTH)).getValue();
+
+            boolean canSeeTarget = head.hasLineOfSight(target) && health < maxHealth && plugin.getEntityManager().hasBlockSight(head, headLocation, targetLocation, blockCheckList);
+
+            if (!canSeeTarget) return;
+
+            if (particleFile.contains(droneName)) {
+                Location start = head.getEyeLocation().add(0, yOffset, 0);
+                plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.getParticleManager().displayLineParticle(particleType, start, targetLocation, start.distance(targetLocation), space, r, g, b, amount, size), delay);
+            }
+
+            double add = plugin.getCalculateManager().randomDouble(min, max);
+            target.setHealth(Math.min(health + add, maxHealth));
+
+            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
+            plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
+            plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
+
+        }, 0, cooldown).getTaskId();
     }
 }

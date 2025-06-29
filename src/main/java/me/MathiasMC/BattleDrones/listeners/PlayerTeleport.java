@@ -13,19 +13,17 @@ public class PlayerTeleport implements Listener {
 
     private final BattleDrones plugin;
 
-    public PlayerTeleport(final BattleDrones plugin) {
+    public PlayerTeleport(BattleDrones plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onTeleport(PlayerTeleportEvent e) {
-        final Player player = e.getPlayer();
-        final String uuid = player.getUniqueId().toString();
-        plugin.getSupport().tp(player);
+        Player player = e.getPlayer();
+        String uuid = player.getUniqueId().toString();
         plugin.drone_targets.remove(uuid);
-        final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
-        if (playerConnect.isActive()) {
-            plugin.getEntityManager().spawnDroneSilent(player, playerConnect, playerConnect.getActive(), Type.TELEPORT);
-        }
+        PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+        if (!playerConnect.isActive()) return;
+        plugin.getEntityManager().spawnDroneSilent(player, playerConnect, playerConnect.getActive(), Type.TELEPORT);
     }
 }

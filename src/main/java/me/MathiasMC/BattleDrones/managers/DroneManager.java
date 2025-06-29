@@ -127,7 +127,7 @@ public class DroneManager {
             return;
         }
         final FileConfiguration file = plugin.droneFiles.get(playerConnect.getActive());
-        if (!plugin.getSupport().canTarget(damager, entity, file, path + ".worldguard.damage")) {
+        if (!plugin.getSupport().canTarget(entity, file, path + ".worldguard.damage")) {
             return;
         }
         final OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(UUID.fromString(key));

@@ -13,30 +13,25 @@ public class ProjectileHit implements Listener {
 
     private final BattleDrones plugin;
 
-    public ProjectileHit(final BattleDrones plugin) {
+    public ProjectileHit(BattleDrones plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onHit(ProjectileHitEvent e) {
-        if (e.getEntity() instanceof Arrow && e.getHitEntity() instanceof ArmorStand) {
-            final Arrow arrow = (Arrow) e.getEntity();
-            final ArmorStand armorStand = (ArmorStand) e.getHitEntity();
-            final String key = armorStand.getPersistentDataContainer().get(new NamespacedKey(plugin, "drone_uuid"), PersistentDataType.STRING);
-            if (key != null) {
-                if (arrow.getShooter() instanceof Player) {
-                    final Player player = (Player) arrow.getShooter();
-                    if (player.getUniqueId().toString().equalsIgnoreCase(key)) {
-                        return;
-                    }
-                }
-                arrow.remove();
-                if (arrow.getShooter() instanceof Player) {
-                    plugin.getDroneManager().damage((Player) arrow.getShooter(), key, armorStand);
-                } else {
-                    plugin.getDroneManager().damage(null, key, armorStand);
-                }
-            }
-        }
+        if (!(e.getEntity() instanceof Arrow arrow)) return;
+        if (!(e.getHitEntity() instanceof ArmorStand armorStand)) return;
+
+        String key = armorStand.getPersistentDataContainer().get(
+                new NamespacedKey(plugin, "drone_uuid"),
+                PersistentDataType.STRING
+        );
+        if (key == null) return;
+
+        Player shooter = (arrow.getShooter() instanceof Player player) ? player : null;
+        if (shooter != null && shooter.getUniqueId().toString().equalsIgnoreCase(key)) return;
+
+        arrow.remove();
+        plugin.getDroneManager().damage(shooter, key, armorStand);
     }
 }

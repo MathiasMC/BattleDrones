@@ -39,9 +39,9 @@ public class FileUtils {
     public final HashMap<String, File> droneFiles = new HashMap<>();
     public final HashMap<String, File> guiFiles = new HashMap<>();
 
-    public FileUtils(final BattleDrones plugin) {
+    public FileUtils(BattleDrones plugin) {
         this.plugin = plugin;
-        final File pluginFolder = getFolder(plugin.getDataFolder().getPath());
+        File pluginFolder = getFolder(plugin.getDataFolder().getPath());
         this.configFile = copyFile(plugin, pluginFolder, "config.yml", "config.yml");
         this.particlesFile = copyFile(plugin, pluginFolder, "particles.yml", "particles.yml");
         this.languageFile = copyFile(plugin, pluginFolder, "language.yml", "language.yml");
@@ -58,9 +58,9 @@ public class FileUtils {
         guiFiles.put("shop", copyFile(plugin, guiShopFolder, "shop.yml", "gui/shop/shop.yml"));
     }
 
-    public void initialize(final Plugin registeredPlugin, final String droneName, final String droneCategory) {
+    public void initialize(Plugin registeredPlugin, String droneName, String droneCategory) {
         droneFiles.put(droneName, copyFile(registeredPlugin, getFolder(dronesFolder + File.separator + droneCategory), droneName + ".yml", "drones/" + droneCategory + "/" + droneName + ".yml"));
-        final File guiCategoryFolder = getFolder(guiFolder + File.separator + droneName);
+        File guiCategoryFolder = getFolder(guiFolder + File.separator + droneName);
         guiFiles.put(droneName, copyFile(registeredPlugin, guiCategoryFolder, droneName + ".yml", "gui/" + droneName + "/" + droneName + ".yml"));
         guiFiles.put(droneName + "_ammo", copyFile(registeredPlugin, guiCategoryFolder, "ammo.yml", "gui/" + droneName + "/" + "ammo.yml"));
         guiFiles.put(droneName + "_whitelist", copyFile(registeredPlugin, guiCategoryFolder, "whitelist.yml", "gui/" + droneName + "/" + "whitelist.yml"));
@@ -84,16 +84,8 @@ public class FileUtils {
         heads = YamlConfiguration.loadConfiguration(headsFile);
     }
 
-    public void saveParticles() {
-        try {
-            particles.save(particlesFile);
-        } catch (IOException e) {
-            plugin.getTextUtils().error("Could not save particles.yml ");
-        }
-    }
-
-    public File copyFile(final Plugin registeredPlugin, final File folder, final String filePath, final String path) {
-        final File file = new File(folder, filePath);
+    public File copyFile(Plugin registeredPlugin, File folder, String filePath, String path) {
+        File file = new File(folder, filePath);
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -109,8 +101,8 @@ public class FileUtils {
         return file;
     }
 
-    public File getFolder(final String path) {
-        final File file = new File(path);
+    public File getFolder(String path) {
+        File file = new File(path);
         if (!file.exists()) {
             file.mkdir();
         }
@@ -137,21 +129,21 @@ public class FileUtils {
         }
     }
 
-    public List<String> getBlockCheck(final FileConfiguration file, final String path) {
+    public List<String> getBlockCheck(FileConfiguration file, String path) {
         if (file.contains(path + "block-check")) {
             return file.getStringList(path + "block-check");
         }
         return null;
     }
 
-    public double getDouble(final FileConfiguration file, final String path, final double standard) {
+    public double getDouble(FileConfiguration file, String path, double standard) {
         if (file.contains(path)) {
             return file.getDouble(path);
         }
         return standard;
     }
 
-    public double getFollow(final FileConfiguration file, final String path, final String type) {
+    public double getFollow(FileConfiguration file, String path, String type) {
         if (file.contains(path + "." + type)) {
             return file.getDouble(path + "." + type);
         }

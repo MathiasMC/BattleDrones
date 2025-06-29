@@ -17,23 +17,17 @@ public class ControllerUtils {
     private ItemStack controller;
     private int range;
 
-    public ControllerUtils(final PlayerInventory playerInventory) {
+    public ControllerUtils(PlayerInventory playerInventory) {
         BattleDrones plugin = BattleDrones.getInstance();
         this.playerInventory = playerInventory;
-        final ItemStack mainHand = playerInventory.getItemInMainHand();
-        final ItemStack offHand = playerInventory.getItemInOffHand();
-        if (offHand.hasItemMeta()) {
-            final PersistentDataContainer persistentDataContainer = Objects.requireNonNull(offHand.getItemMeta()).getPersistentDataContainer();
-            if (persistentDataContainer.has(plugin.droneControllerKey, PersistentDataType.INTEGER)) {
-                this.range = persistentDataContainer.getOrDefault(plugin.droneControllerKey, PersistentDataType.INTEGER, 0);
-                this.controller = offHand;
-            }
-        }
-        if (mainHand.hasItemMeta()) {
-            final PersistentDataContainer persistentDataContainer = Objects.requireNonNull(mainHand.getItemMeta()).getPersistentDataContainer();
-            if (persistentDataContainer.has(plugin.droneControllerKey, PersistentDataType.INTEGER)) {
-                this.range = persistentDataContainer.getOrDefault(plugin.droneControllerKey, PersistentDataType.INTEGER, 0);
-                this.controller = mainHand;
+        for (ItemStack itemStack : new ItemStack[]{playerInventory.getItemInOffHand(), playerInventory.getItemInMainHand()}) {
+            if (itemStack.hasItemMeta()) {
+                PersistentDataContainer container = Objects.requireNonNull(itemStack.getItemMeta()).getPersistentDataContainer();
+                if (container.has(plugin.droneControllerKey, PersistentDataType.INTEGER)) {
+                    this.range = container.getOrDefault(plugin.droneControllerKey, PersistentDataType.INTEGER, 0);
+                    this.controller = itemStack;
+                    break;
+                }
             }
         }
     }
@@ -46,7 +40,7 @@ public class ControllerUtils {
         return this.controller != null && this.range != 0;
     }
 
-    public boolean damage(final Player player, final int damage) {
+    public boolean damage(Player player, int damage) {
         if (damage == 0) {
             return false;
         }

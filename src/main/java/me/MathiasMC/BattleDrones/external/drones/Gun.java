@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
@@ -17,67 +16,96 @@ public class Gun extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Gun(BattleDrones plugin, String droneName, String droneCategory) {
+    public Gun(BattleDrones plugin,
+               String droneName,
+               String droneCategory
+    ) {
         super(plugin, droneName, droneCategory);
         this.plugin = plugin;
     }
 
     @Override
-    public void ability(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
-        final String uuid = player.getUniqueId().toString();
-        final String drone = playerConnect.getActive();
-        final String group = playerConnect.getGroup();
-        final FileConfiguration file = plugin.droneFiles.get(drone);
-        final String path = group + "." + droneHolder.getLevel() + ".";
-        final ArmorStand armorStand = playerConnect.head;
-        final double minDamage = file.getDouble(path + "min");
-        final FileConfiguration particleFile = plugin.getFileUtils().particles;
-        final String particleType = particleFile.getString(droneName + ".particle");
-        final int size = particleFile.getInt(droneName + ".size");
-        final int amount = particleFile.getInt(droneName + ".amount");
-        final int r = particleFile.getInt(droneName + ".rgb.r");
-        final int g = particleFile.getInt(droneName + ".rgb.g");
-        final int b = particleFile.getInt(droneName + ".rgb.b");
-        final int delay = particleFile.getInt(droneName + ".delay");
-        final double yOffset = particleFile.getDouble(droneName + ".y-offset");
-        final double space = particleFile.getDouble(droneName + ".space");
-        final List<String> list = plugin.getFileUtils().getBlockCheck(file, path);
-        final double knockback = plugin.getFileUtils().getDouble(file, path + "knockback", 0);
+    public void ability(Player player,
+                        PlayerConnect playerConnect,
+                        DroneHolder droneHolder
+    ) {
+        String uuid = player.getUniqueId().toString();
+        String group = playerConnect.getGroup();
+        FileConfiguration file = plugin.droneFiles.get(droneName);
+        String path = group + "." + droneHolder.getLevel() + ".";
+        ArmorStand head = playerConnect.head;
+
+        FileConfiguration particleFile = plugin.getFileUtils().particles;
+        String particleType = particleFile.getString(droneName + ".particle");
+        int size = particleFile.getInt(droneName + ".size");
+        int amount = particleFile.getInt(droneName + ".amount");
+        int r = particleFile.getInt(droneName + ".rgb.r");
+        int g = particleFile.getInt(droneName + ".rgb.g");
+        int b = particleFile.getInt(droneName + ".rgb.b");
+        int delay = particleFile.getInt(droneName + ".delay");
+        double yOffset = particleFile.getDouble(droneName + ".y-offset");
+        double space = particleFile.getDouble(droneName + ".space");
+        double distance = particleFile.getDouble(droneName + ".distance");
+
+        List<String> blockCheckList = plugin.getFileUtils().getBlockCheck(file, path);
+
+        long cooldown = file.getLong(path + "cooldown");
+
+        long maxAmmoSlots = file.getLong(path + "max-ammo-slots") * 64;
+
+        double knockback = plugin.getFileUtils().getDouble(file, path + "knockback", 0);
+
+        double min = file.getDouble(path + "min");
+        double max = file.getDouble(path + "max");
+
         playerConnect.ability = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-            double damage = minDamage;
             final LivingEntity target = plugin.drone_targets.get(uuid);
-            if (target != null) {
-                if (droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + drone)) {
-                    final Location location = armorStand.getLocation();
-                    final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(armorStand, location, targetLocation, list)) {
-                        if (particleFile.contains(droneName)) {
-                            final Location armorstand = armorStand.getEyeLocation().add(0, yOffset, 0);
-                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                                double distance = particleFile.getDouble(droneName + ".distance");
-                                if (drone.equalsIgnoreCase("laser")) {
-                                    distance = armorstand.distance(targetLocation);
-                                }
-                                plugin.getParticleManager().displayLineParticle(particleType, armorstand, targetLocation, distance, space, r, g, b, amount, size);
-                            }, delay);
-                        }
-                        if (plugin.getCalculateManager().randomChance() <= file.getDouble(path + "chance")) {
-                            if (knockback != 0D) {
-                                target.setVelocity(target.getLocation().setDirection(location.getDirection()).getDirection().setY(0).normalize().multiply(knockback));
-                            }
-                            damage = plugin.getCalculateManager().randomDouble(damage, file.getDouble(path + "max"));
-                        }
-                        plugin.getCalculateManager().damage(target, damage);
-                        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getLong(path + "max-ammo-slots") * 64, player, "ammo");
-                        plugin.getDroneManager().checkShot(player, target, file, location, path, "run");
-                        plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
-                        plugin.getDroneManager().checkTarget(player, target, file, targetLocation, path, 2);
-                    }
-                }
-                playerConnect.setHealing(false);
-            } else {
+            if (target == null) {
                 playerConnect.setHealing(true);
+                return;
             }
-        }, 0, file.getLong(path + "cooldown")).getTaskId();
+
+            playerConnect.setHealing(false);
+
+            boolean hasAmmo = droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + droneName);
+            if (!hasAmmo) return;
+
+            Location headLocation = head.getLocation();
+            Location targetLocation = target.getEyeLocation();
+
+            boolean canSeeTarget = head.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(head, headLocation, targetLocation, blockCheckList);
+
+            if (!canSeeTarget) return;
+
+            if (particleFile.contains(droneName)) {
+
+                Location start = head.getEyeLocation().add(0, yOffset, 0);
+
+                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                    double distancenew = distance;
+                    if (droneName.equalsIgnoreCase("laser")) {
+                        distancenew = start.distance(targetLocation);
+                    }
+                    plugin.getParticleManager().displayLineParticle(particleType, start, targetLocation, distancenew, space, r, g, b, amount, size);
+                }, delay);
+            }
+
+            double damage = min;
+
+            if (plugin.getCalculateManager().randomChance() <= file.getDouble(path + "chance")) {
+                if (knockback != 0D) {
+                    target.setVelocity(target.getLocation().setDirection(headLocation.getDirection()).getDirection().setY(0).normalize().multiply(knockback));
+                }
+                damage = plugin.getCalculateManager().randomDouble(damage, max);
+            }
+
+            plugin.getCalculateManager().damage(target, damage);
+
+            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
+            plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
+            plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
+            plugin.getDroneManager().checkTarget(player, target, file, targetLocation, path, 2);
+
+        }, 0, cooldown).getTaskId();
     }
 }

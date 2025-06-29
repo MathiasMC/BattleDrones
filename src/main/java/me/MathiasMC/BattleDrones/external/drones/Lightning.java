@@ -31,18 +31,18 @@ public class Lightning extends DroneRegistry {
         final String group = playerConnect.getGroup();
         final FileConfiguration file = plugin.droneFiles.get(droneName);
         final String path = group + "." + droneHolder.getLevel() + ".";
-        final ArmorStand armorStand = playerConnect.head;
+        final ArmorStand head = playerConnect.head;
         final List<String> list = plugin.getFileUtils().getBlockCheck(file, path);
         playerConnect.ability = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             final LivingEntity target = plugin.drone_targets.get(uuid);
             if (target != null) {
                 if (droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + droneName)) {
-                    final Location location = armorStand.getLocation();
+                    final Location headLocation = head.getLocation();
                     final Location targetLocation = target.getEyeLocation();
-                    if (armorStand.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(armorStand, location, targetLocation, list)) {
+                    if (head.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(head, headLocation, targetLocation, list)) {
                         line(targetLocation, player, target, file, path);
                         plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), file.getLong(path + "max-ammo-slots") * 64, player, "ammo");
-                        plugin.getDroneManager().checkShot(player, target, file, location, path, "run");
+                        plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
                         plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
                     }
                 }

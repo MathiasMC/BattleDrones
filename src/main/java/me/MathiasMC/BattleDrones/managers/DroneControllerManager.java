@@ -87,7 +87,7 @@ public class DroneControllerManager {
                     final FileConfiguration file = plugin.droneFiles.get(playerConnect.getActive());
                     if (file.getLong("follow-cost") != 0) {
                         final long cost = file.getLong("follow-cost");
-                        if (plugin.getSupport().vault.withdraw(player, cost)) {
+                        if (plugin.getSupport().withdraw(player, cost)) {
                             for (String message : plugin.getFileUtils().language.getStringList("controller.follow-select-cost")) {
                                 plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName()).replace("{target}", targetName).replace("{drone}", plugin.getPlaceholderManager().getActiveDrone(active)).replace("{cost}", String.valueOf(cost))));
                             }
@@ -132,7 +132,7 @@ public class DroneControllerManager {
             } else if (plugin.getEntityManager().isAnimal(target)) {
                 type = "animals";
             }
-            if (!plugin.getSupport().canTarget(player, target, plugin.droneFiles.get(active), playerConnect.getGroup() + "." + plugin.getDroneHolder(uuid, active).getLevel() + ".worldguard." + type)) {
+            if (!plugin.getSupport().canTarget(target, plugin.droneFiles.get(active), playerConnect.getGroup() + "." + plugin.getDroneHolder(uuid, active).getLevel() + ".worldguard." + type)) {
                 dispatchCommands("controller.location", player, targetName);
                 return;
             }

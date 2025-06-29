@@ -14,15 +14,19 @@ import java.util.List;
 public class Support {
 
     private final BattleDrones plugin;
-
     public WorldGuard worldGuard;
-
     public Vault vault;
 
     public Support(final BattleDrones plugin) {
         this.plugin = plugin;
-        this.vault = new Vault();
-        this.worldGuard = new WorldGuard(plugin);
+        if (plugin.getServer().getPluginManager().getPlugin("Vault") != null && plugin.getFileUtils().config.getBoolean("vault")) {
+            this.vault = new Vault();
+            plugin.getTextUtils().info("Found Vault");
+        }
+        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+            this.worldGuard = new WorldGuard(plugin);
+            plugin.getTextUtils().info("Found WorldGuard");
+        }
     }
 
     public boolean inLocation(Player player, String drone) {
@@ -51,15 +55,6 @@ public class Support {
             return false;
         }
         return true;
-    }
-
-    public void tp(final Player player) {
-        if (plugin.getServer().getPluginManager().getPlugin("IridiumSkyblock") == null) {
-            return;
-        }
-        if (!plugin.getFileUtils().config.contains("iridium-skyblock.toggle")) {
-            return;
-        }
     }
 
     public void toggle(final Player player, final List<String> options, final String path) {
@@ -96,7 +91,20 @@ public class Support {
             }
     }
 
-    public boolean canTarget(final Player player, final LivingEntity target, final FileConfiguration file, final String path) {
-        return worldGuard.canTarget(target, file, path);
+    public boolean canTarget(LivingEntity target, FileConfiguration file, String path) {
+        return worldGuard == null || worldGuard.canTarget(target, file, path);
+    }
+
+    public boolean withdraw(Player player, long cost) {
+        PlayerConnect playerConnect = plugin.getPlayerConnect(player.getUniqueId().toString());
+        if (vault == null) {
+            long coins = playerConnect.getCoins();
+            if (coins >= cost) {
+                playerConnect.setCoins(coins - cost);
+                return true;
+            }
+            return false;
+        }
+        return vault.withdraw(player, cost);
     }
 }

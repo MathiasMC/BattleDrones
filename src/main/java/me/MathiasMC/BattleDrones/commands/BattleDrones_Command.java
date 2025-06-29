@@ -1606,7 +1606,7 @@ public class BattleDrones_Command implements CommandExecutor {
         final String path = playerConnect.getGroup() + "." + droneHolder.getLevel() + ".park";
         if (file.contains(path)) {
             final int cost = file.getInt(path);
-            if (plugin.getSupport().vault.withdraw(player, cost)) {
+            if (plugin.getSupport().withdraw(player, cost)) {
                 plugin.park.add(uuid);
                 for (String message : plugin.getFileUtils().language.getStringList("park.parked")) {
                     plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", player.getName()).replace("{cost}", String.valueOf(cost))));

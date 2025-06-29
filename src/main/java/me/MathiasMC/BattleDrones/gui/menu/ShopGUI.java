@@ -87,7 +87,7 @@ public class ShopGUI extends GUI {
             return;
         }
 
-        if (!plugin.getSupport().vault.withdraw(player, file.getLong("gui.SHOP.COST"))) {
+        if (!plugin.getSupport().withdraw(player, file.getLong("gui.SHOP.COST"))) {
             plugin.getDroneManager().runCommands(player, file.getStringList("gui.SHOP.COINS"));
             return;
         }

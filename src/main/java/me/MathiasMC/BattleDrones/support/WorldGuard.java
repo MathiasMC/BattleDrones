@@ -16,39 +16,34 @@ public class WorldGuard {
 
     private final BattleDrones plugin;
 
-    private com.sk89q.worldguard.WorldGuard worldGuard;
+    private final com.sk89q.worldguard.WorldGuard worldGuard;
 
-    public WorldGuard(final BattleDrones plugin) {
+    public WorldGuard(BattleDrones plugin) {
         this.plugin = plugin;
-        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            this.worldGuard = com.sk89q.worldguard.WorldGuard.getInstance();
-            plugin.getTextUtils().info("Found WorldGuard");
-        }
+        this.worldGuard = com.sk89q.worldguard.WorldGuard.getInstance();
     }
 
-    public boolean canTarget(final Entity entity, final FileConfiguration file, final String path) {
-        if (plugin.getSupport().worldGuard == null ) {
+    public boolean canTarget(Entity entity, FileConfiguration file, String path) {
+        if (plugin.getSupport().worldGuard == null || file == null || !file.contains(path)) {
             return true;
         }
-        if (file == null) {
+
+        List<String> excludedRegions = file.getStringList(path);
+        if (excludedRegions.isEmpty()) {
             return true;
         }
-        if (!file.contains(path)) {
-            return true;
-        }
-        final List<String> list = file.getStringList(path);
-        if (list.isEmpty()) {
-            return true;
-        }
-        final Location location = BukkitAdapter.adapt(entity.getLocation());
-        final RegionContainer container = worldGuard.getPlatform().getRegionContainer();
-        final RegionQuery query = container.createQuery();
-        final ApplicableRegionSet set = query.getApplicableRegions(location);
-        for (ProtectedRegion region : set) {
-            if (list.contains(region.getId())) {
+
+        Location location = BukkitAdapter.adapt(entity.getLocation());
+        RegionContainer regionContainer = worldGuard.getPlatform().getRegionContainer();
+        RegionQuery regionQuery = regionContainer.createQuery();
+        ApplicableRegionSet regionSet = regionQuery.getApplicableRegions(location);
+
+        for (ProtectedRegion region : regionSet) {
+            if (excludedRegions.contains(region.getId())) {
                 return false;
             }
         }
-        return !list.contains("__global__");
+
+        return !excludedRegions.contains("__global__");
     }
 }
