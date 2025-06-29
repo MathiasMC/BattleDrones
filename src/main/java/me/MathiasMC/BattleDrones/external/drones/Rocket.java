@@ -118,7 +118,7 @@ public class Rocket extends DroneRegistry {
             Location headLocation = head.getLocation();
             Location targetLocation = target.getLocation();
 
-            boolean canSeeTarget = head.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(head, headLocation, targetLocation, blockCheckList);
+            boolean canSeeTarget = head.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(headLocation, targetLocation, blockCheckList);
 
             if (!canSeeTarget) return;
 
@@ -131,6 +131,8 @@ public class Rocket extends DroneRegistry {
                 }
             }
             plugin.projectiles.add(missile);
+
+            missile.setHeadPose(head.getHeadPose());
 
             new BukkitRunnable() {
                 final Vector p1 = missile.getLocation().toVector();
@@ -154,8 +156,7 @@ public class Rocket extends DroneRegistry {
 
                     if (!followMissile) {
                         if (!mortarMissile) {
-                            missile.setHeadPose(head.getHeadPose());
-                            missile.teleport(p1.toLocation(world));
+                            missile.teleport(p1.toLocation(world).setDirection(vector));
                         } else {
                             Vector vector = startVector.clone().normalize().multiply(length * timer / finalPoint);
                             float x = ((float) timer / finalPoint) * length - length / 2;
@@ -168,7 +169,7 @@ public class Rocket extends DroneRegistry {
                     } else {
                         vector = targetLocation.toVector().clone().subtract(p1).normalize().multiply(rocketSpeed);
                         plugin.getEntityManager().lookAT(missile, targetLocation);
-                        Vector direction = targetLocation.toVector().subtract(missileLocation.toVector()).normalize();
+                        Vector direction = target.getLocation().toVector().subtract(missileLocation.toVector()).normalize();
                         missile.teleport(p1.toLocation(world).setDirection(direction));
                     }
 

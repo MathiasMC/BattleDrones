@@ -72,7 +72,7 @@ public class Healing extends DroneRegistry {
             double health = target.getHealth();
             double maxHealth = Objects.requireNonNull(target.getAttribute(Attribute.MAX_HEALTH)).getValue();
 
-            boolean canSeeTarget = head.hasLineOfSight(target) && health < maxHealth && plugin.getEntityManager().hasBlockSight(head, headLocation, targetLocation, blockCheckList);
+            boolean canSeeTarget = head.hasLineOfSight(target) && health < maxHealth && plugin.getEntityManager().hasBlockSight(headLocation, targetLocation, blockCheckList);
 
             if (!canSeeTarget) return;
 

@@ -79,7 +79,7 @@ public class Flamethrower extends DroneRegistry {
             Location headLocation = head.getLocation();
             Location targetLocation = target.getEyeLocation();
 
-            boolean canSeeTarget = head.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(head, headLocation, targetLocation, blockCheckList);
+            boolean canSeeTarget = head.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(headLocation, targetLocation, blockCheckList);
 
             if (!canSeeTarget) return;
 

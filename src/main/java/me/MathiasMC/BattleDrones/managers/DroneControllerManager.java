@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -190,22 +191,16 @@ public class DroneControllerManager {
         }
     }
 
-    private boolean isLookAT(final Player player, final LivingEntity target) {
-        final Location location = player.getEyeLocation();
-        final Vector vector = target.getEyeLocation().toVector().subtract(location.toVector());
-        return vector.normalize().dot(location.getDirection()) > 0.99D;
-    }
+    private LivingEntity getEntityInSight(Player player, int range) {
+        RayTraceResult result = player.getWorld().rayTraceEntities(
+                player.getEyeLocation(),
+                player.getLocation().getDirection(),
+                range,
+                0.5,
+                entity -> entity instanceof LivingEntity && !entity.equals(player)
+        );
 
-    private LivingEntity getEntityInSight(final Player player, final int range) {
-        for (Entity entity : player.getNearbyEntities(range, range, range)) {
-            if (player.hasLineOfSight(entity) && entity instanceof LivingEntity) {
-                final LivingEntity target = (LivingEntity) entity;
-                if (isLookAT(player, target)) {
-                    return target;
-                }
-            }
-        }
-        return null;
+        return result != null ? (LivingEntity) result.getHitEntity() : null;
     }
 
     public void updateFollowPath() {

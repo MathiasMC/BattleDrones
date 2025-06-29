@@ -16,8 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,53 +32,81 @@ public class EntityManager {
         this.plugin = plugin;
     }
 
-    public ArrayList<LivingEntity> getLivingEntitiesAround(final Entity entity, final double radius, final int monsters, final int animal, final int player, final List<String> entityList, final List<String> excludePlayers, final boolean reverse) {
-        final ArrayList<LivingEntity> list = new ArrayList<>();
-        for (Entity currentEntity : entity.getNearbyEntities(radius, radius, radius)) {
-            if (!entityList.contains(currentEntity.getType().name().toLowerCase())) {
-                if (monsters == 1 && isMonster(currentEntity)) {
-                    list.add((LivingEntity) currentEntity);
-                }
-                if (animal == 1 && isAnimal(currentEntity)) {
-                    list.add((LivingEntity) currentEntity);
-                }
-                if (player == 1 && currentEntity instanceof Player) {
-                    final Player playerEntity = (Player) currentEntity;
-                    if (playerEntity.isOnline() && playerEntity.getGameMode().equals(GameMode.SURVIVAL)) {
-                        final String name = playerEntity.getName().toLowerCase();
-                        if (reverse) {
-                            if (excludePlayers.contains(name)) {
-                                list.add(playerEntity);
-                            }
-                        } else {
-                            if (!excludePlayers.contains(name)) {
-                                list.add(playerEntity);
-                            }
-                        }
-                    }
+    public ArrayList<LivingEntity> getLivingEntitiesAround(
+            Entity entity,
+            double radius,
+            int monsters,
+            int animal,
+            int player,
+            List<String> entityList,
+            List<String> excludePlayers,
+            boolean reverse
+    ) {
+        ArrayList<LivingEntity> list = new ArrayList<>();
+        Collection<Entity> nearbyEntities = entity.getNearbyEntities(radius, radius, radius);
+
+        for (Entity current : nearbyEntities) {
+            String entityTypeName = current.getType().name().toLowerCase();
+            if (entityList.contains(entityTypeName)) continue;
+
+            if (monsters == 1 && isMonster(current)) {
+                list.add((LivingEntity) current);
+                continue;
+            }
+
+            if (animal == 1 && isAnimal(current)) {
+                list.add((LivingEntity) current);
+                continue;
+            }
+
+            if (player == 1 && current instanceof Player playerEntity) {
+                if (!playerEntity.isOnline() || playerEntity.getGameMode() != GameMode.SURVIVAL) continue;
+
+                String playerName = playerEntity.getName().toLowerCase();
+                boolean isExcluded = excludePlayers.contains(playerName);
+
+                if ((reverse && isExcluded) || (!reverse && !isExcluded)) {
+                    list.add(playerEntity);
                 }
             }
         }
         return list;
     }
 
-    public LivingEntity getClosestLivingEntity(final Entity entity, final double radius, final int monsters, final int animal, final int player, final List<String> entityList, final List<String> exclude, final boolean reverse, final boolean lowHealth) {
-        double max = Double.MAX_VALUE;
+    public LivingEntity getClosestLivingEntity(
+            Entity entity,
+            double radius,
+            int monsters,
+            int animal,
+            int player,
+            List<String> entityList,
+            List<String> exclude,
+            boolean reverse,
+            boolean lowHealth
+    ) {
         LivingEntity livingEntity = null;
-        final LivingEntity living = (LivingEntity) entity;
-        if (lowHealth && living.getHealth() < Objects.requireNonNull(living.getAttribute(Attribute.MAX_HEALTH)).getValue()) {
-            return (LivingEntity) entity;
+        LivingEntity living = (LivingEntity) entity;
+        double maxDistance = Double.MAX_VALUE;
+        double livingMaxHealth = Objects.requireNonNull(living.getAttribute(Attribute.MAX_HEALTH)).getValue();
+
+        if (lowHealth && living.getHealth() < livingMaxHealth) {
+            return living;
         }
-        final Location entityLocation = entity.getLocation();
-        for(LivingEntity key : getLivingEntitiesAround(entity, radius, monsters, animal, player, entityList, exclude, reverse)) {
-            double distance = key.getLocation().distance(entityLocation);
-            if (max == Double.MAX_VALUE || distance < max) {
-                max = distance;
+
+        Location entityLocation = entity.getLocation();
+
+        for (LivingEntity candidate : getLivingEntitiesAround(entity, radius, monsters, animal, player, entityList, exclude, reverse)) {
+            double distance = candidate.getLocation().distance(entityLocation);
+
+            if (distance < maxDistance) {
                 if (!lowHealth) {
-                    livingEntity = key;
+                    maxDistance = distance;
+                    livingEntity = candidate;
                 } else {
-                    if (key.getHealth() < Objects.requireNonNull(key.getAttribute(Attribute.MAX_HEALTH)).getValue()) {
-                        livingEntity = key;
+                    double candidateMaxHealth = Objects.requireNonNull(candidate.getAttribute(Attribute.MAX_HEALTH)).getValue();
+                    if (candidate.getHealth() < candidateMaxHealth) {
+                        maxDistance = distance;
+                        livingEntity = candidate;
                     }
                 }
             }
@@ -83,19 +114,24 @@ public class EntityManager {
         return livingEntity;
     }
 
-    public boolean hasBlockSight(final ArmorStand armorStand, final Location start, final Location end, final List<String> list) {
-        if (list != null) {
-            final World world = start.getWorld();
-            if (world == null) {
-                return false;
-            }
-            final Material material = armorStand.getTargetBlock(null, (int) Math.floor(start.distanceSquared(end))).getType();
-            return !list.contains(material.name());
+    public boolean hasBlockSight(Location start, Location end, List<String> list) {
+        if (list == null || list.isEmpty()) return true;
+        World world = start.getWorld();
+        if (world == null) return false;
+
+        Vector direction = end.toVector().subtract(start.toVector()).normalize();
+        double distance = start.distance(end);
+
+        RayTraceResult result = world.rayTraceBlocks(start, direction, distance, FluidCollisionMode.NEVER, true);
+
+        if (result != null && result.getHitBlock() != null) {
+            Material hitMaterial = result.getHitBlock().getType();
+            return list.contains(hitMaterial.name());
         }
         return true;
     }
 
-    public boolean isMonster(final Entity entity) {
+    public boolean isMonster(Entity entity) {
         return entity instanceof Monster
                 || entity instanceof Slime
                 || entity instanceof Phantom
@@ -104,7 +140,7 @@ public class EntityManager {
                 || entity instanceof Shulker;
     }
 
-    public boolean isAnimal(final Entity entity) {
+    public boolean isAnimal(Entity entity) {
         return entity instanceof Animals
                 || entity instanceof Villager
                 || entity instanceof WanderingTrader
@@ -122,39 +158,51 @@ public class EntityManager {
         armorStand.setHeadPose(new EulerAngle(Math.atan2(Math.sqrt(direction.getX()*direction.getX() + direction.getZ()*direction.getZ()), direction.getY()) - Math.PI / 2, 0, 0));
     }
 
-    public void setCustomName(final ArmorStand head, final ArmorStand name, final long droneLevel, final String group, final FileConfiguration file, final String message, final Player player) {
-        final String text = plugin.getPlaceholderManager().replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".text." + message)).replace("{name}", player.getName())));
-        if (text.length() > 0) {
-            if (!Objects.requireNonNull(head.getCustomName()).equalsIgnoreCase(text)) {
-                head.setCustomName(text);
+    public void setCustomName(ArmorStand head,
+                              ArmorStand name,
+                              long droneLevel,
+                              String group,
+                              FileConfiguration file,
+                              String message,
+                              Player player
+    ) {
+        String basePath = group + "." + droneLevel + ".";
+
+        String headRaw = file.getString(basePath + "text." + message);
+        if (headRaw != null && !headRaw.isEmpty()) {
+            String headText = ChatColor.translateAlternateColorCodes('&', headRaw.replace("{name}", player.getName()));
+            headText = plugin.getPlaceholderManager().replacePlaceholders(player, headText);
+
+            if (!headText.equalsIgnoreCase(Objects.toString(head.getCustomName(), ""))) {
+                head.setCustomName(headText);
             }
             if (!head.isCustomNameVisible()) {
                 head.setCustomNameVisible(true);
             }
-        } else {
-            if (head.isCustomNameVisible()) {
-                head.setCustomNameVisible(false);
-            }
+        } else if (head.isCustomNameVisible()) {
+            head.setCustomNameVisible(false);
         }
+
         if (name != null) {
-            final String nameText = plugin.getPlaceholderManager().replacePlaceholders(player, ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(file.getString(group + "." + droneLevel + ".name." + message)).replace("{name}", player.getName())));
-            if (nameText.length() > 0) {
-                if (!Objects.requireNonNull(name.getCustomName()).equalsIgnoreCase(nameText)) {
+            String nameRaw = file.getString(basePath + "name." + message);
+            if (nameRaw != null && !nameRaw.isEmpty()) {
+                String nameText = ChatColor.translateAlternateColorCodes('&', nameRaw.replace("{name}", player.getName()));
+                nameText = plugin.getPlaceholderManager().replacePlaceholders(player, nameText);
+
+                if (!nameText.equalsIgnoreCase(Objects.toString(name.getCustomName(), ""))) {
                     name.setCustomName(nameText);
                 }
                 if (!name.isCustomNameVisible()) {
                     name.setCustomNameVisible(true);
                 }
-            } else {
-                if (name.isCustomNameVisible()) {
-                    name.setCustomNameVisible(false);
-                }
+            } else if (name.isCustomNameVisible()) {
+                name.setCustomNameVisible(false);
             }
         }
     }
 
-    public ArmorStand getArmorStand(final Location location) {
-        final ArmorStand as = Objects.requireNonNull(location.getWorld()).spawn(location, ArmorStand.class);
+    public ArmorStand getArmorStand(Location location) {
+        ArmorStand as = Objects.requireNonNull(location.getWorld()).spawn(location, ArmorStand.class);
         as.setVisible(false);
         as.setSmall(true);
         as.setBasePlate(false);
