@@ -13,6 +13,7 @@ import me.MathiasMC.BattleDrones.managers.*;
 import me.MathiasMC.BattleDrones.support.PlaceholderAPI;
 import me.MathiasMC.BattleDrones.support.Support;
 import me.MathiasMC.BattleDrones.utils.*;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -90,7 +91,6 @@ public class BattleDrones extends JavaPlugin {
         call = this;
 
         textUtils = new TextUtils(this);
-
         fileUtils = new FileUtils(this);
 
         database = new Database(this);
@@ -106,54 +106,53 @@ public class BattleDrones extends JavaPlugin {
 
         support = new Support(this);
 
-        if (database.checkConnection()) {
-            getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerQuit(this), this);
-            getServer().getPluginManager().registerEvents(new InventoryClick(), this);
-            getServer().getPluginManager().registerEvents(new AsyncPlayerChat(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerInteractAtEntity(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerTeleport(this), this);
-            getServer().getPluginManager().registerEvents(new ProjectileHit(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
-
-            new ExternalDrones();
-
-            if (fileUtils.config.getBoolean("swap.use")) {
-                getServer().getPluginManager().registerEvents(new PlayerSwapHandItems(this), this);
-            }
-
-            getCommand("battledrones").setExecutor(new BattleDrones_Command(this));
-            getCommand("battledrones").setTabCompleter(new BattleDrones_TabComplete(this));
-
-            addHeads();
-
-            //new Metrics(this, 8224);
-            if (fileUtils.config.getBoolean("update-check")) {
-                new UpdateUtils(this, 81850).getVersion(version -> {
-                    if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                        textUtils.info("You are using the latest version of BattleDrones (" + getDescription().getVersion() + ")");
-                    } else {
-                        textUtils.warning("Version: " + version + " has been released! you are currently using version: " + getDescription().getVersion());
-                    }
-                });
-            }
-            particleManager.load();
-
-            cleanUP();
-
-            if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                new PlaceholderAPI(this).register();
-                textUtils.info("PlaceholderAPI (found)");
-            }
-
-
-        } else {
+        if (!database.checkConnection()) {
             textUtils.error("Disabling plugin cannot connect to database");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
+
+        getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuit(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryClick(), this);
+        getServer().getPluginManager().registerEvents(new AsyncPlayerChat(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractAtEntity(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerChangedWorld(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerTeleport(this), this);
+        getServer().getPluginManager().registerEvents(new ProjectileHit(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
+
+        new ExternalDrones();
+
+        if (fileUtils.config.getBoolean("swap.use")) {
+            getServer().getPluginManager().registerEvents(new PlayerSwapHandItems(this), this);
+        }
+
+        getCommand("battledrones").setExecutor(new BattleDrones_Command(this));
+        getCommand("battledrones").setTabCompleter(new BattleDrones_TabComplete(this));
+
+        addHeads();
+
+        if (fileUtils.config.getBoolean("update-check")) {
+            new UpdateUtils(this, 81850).getVersion(version -> {
+                if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                    textUtils.info("You are using the latest version of BattleDrones (" + getDescription().getVersion() + ")");
+                } else {
+                    textUtils.warning("Version: " + version + " has been released! you are currently using version: " + getDescription().getVersion());
+                }
+            });
+        }
+        particleManager.load();
+
+        cleanUP();
+
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderAPI(this).register();
+            textUtils.info("PlaceholderAPI (found)");
+        }
+        new Metrics(this, 8224);
     }
 
     @Override
@@ -213,14 +212,14 @@ public class BattleDrones extends JavaPlugin {
         return this.taskManager;
     }
 
-    public void unloadPlayerConnect(final String uuid) {
-        final PlayerConnect playerConnect = this.playerConnect.remove(uuid);
+    public void unloadPlayerConnect(String uuid) {
+        PlayerConnect playerConnect = this.playerConnect.remove(uuid);
         if (playerConnect != null) {
             playerConnect.save();
         }
     }
 
-    public void unloadDroneHolder(final String uuid) {
+    public void unloadDroneHolder(String uuid) {
         if (droneHolder.containsKey(uuid)) {
             for (String drone : this.droneHolder.get(uuid).keySet()) {
                 droneHolder.get(uuid).get(drone).save();
@@ -229,24 +228,24 @@ public class BattleDrones extends JavaPlugin {
         droneHolder.remove(uuid);
     }
 
-    public PlayerConnect getPlayerConnect(final String uuid) {
+    public PlayerConnect getPlayerConnect(String uuid) {
         if (playerConnect.containsKey(uuid)) {
             return playerConnect.get(uuid);
         }
-        final PlayerConnect playerConnect = new PlayerConnect(uuid);
+        PlayerConnect playerConnect = new PlayerConnect(uuid);
         this.playerConnect.put(uuid, playerConnect);
         return playerConnect;
     }
 
-    public DroneHolder getDroneHolder(final String uuid, final String drone) {
+    public DroneHolder getDroneHolder(String uuid, String drone) {
         if (!droneHolder.containsKey(uuid)) {
             droneHolder.put(uuid, new HashMap<>());
         }
-        final HashMap<String, DroneHolder> map = droneHolder.get(uuid);
+        HashMap<String, DroneHolder> map = droneHolder.get(uuid);
         if (map.containsKey(drone)) {
             return droneHolder.get(uuid).get(drone);
         }
-        final DroneHolder droneHolder = new DroneHolder(uuid, drone);
+        DroneHolder droneHolder = new DroneHolder(uuid, drone);
         map.put(drone, droneHolder);
         this.droneHolder.put(uuid, map);
         return droneHolder;
@@ -260,7 +259,7 @@ public class BattleDrones extends JavaPlugin {
         return droneHolder.keySet();
     }
 
-    public Menu getPlayerMenu(final Player player) {
+    public Menu getPlayerMenu(Player player) {
         Menu playerMenu;
         if (!this.playerMenu.containsKey(player)) {
             playerMenu = new Menu(player);
@@ -275,15 +274,17 @@ public class BattleDrones extends JavaPlugin {
         for (String head : fileUtils.heads.getConfigurationSection("").getKeys(false)) {
             drone_heads.put(head, itemStackManager.getHeadTexture(fileUtils.heads.getString(head)));
         }
-        textUtils.info("Loaded ( " + fileUtils.heads.getConfigurationSection("").getKeys(false).size() + " ) heads");
+        textUtils.info("Loaded ( " + fileUtils.heads.getConfigurationSection("").getKeys(false).size() + " ) heads.");
     }
 
     private void cleanUP() {
-        final long interval = fileUtils.config.getLong("cleanup");
-        textUtils.info("[CleanUP] Started will be run every ( " + interval + " ) minutes");
+        long interval = fileUtils.config.getLong("cleanup");
+        textUtils.info("[CleanUP] Started will be run every ( " + interval + " ) minutes.");
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            final long amount = droneManager.cleanUP(null, false);
-            textUtils.info("[CleanUP] Removed " + amount + " entities");
+            long amount = droneManager.cleanUP(null, false);
+            if (amount > 0) {
+                textUtils.info("[CleanUP] Removed " + amount + " entities");
+            }
         }, interval * 1200, interval * 1200);
     }
 }

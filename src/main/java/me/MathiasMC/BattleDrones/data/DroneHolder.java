@@ -29,11 +29,9 @@ public class DroneHolder {
         this.monsters = Integer.parseInt(data[3]);
         this.animals = Integer.parseInt(data[4]);
         this.players = Integer.parseInt(data[5]);
-        if (data[6].isEmpty()) {
-            this.exclude = new ArrayList<>();
-        } else {
-            this.exclude = new LinkedList<>(Arrays.asList(data[6].split("\\s*:\\s*")));
-        }
+        this.exclude = data[6].isEmpty()
+                ? new LinkedList<>()
+                : new LinkedList<>(Arrays.asList(data[6].split("\\s*:\\s*")));
         this.health = Integer.parseInt(data[7]);
         this.wear = Integer.parseInt(data[8]);
     }
@@ -127,11 +125,7 @@ public class DroneHolder {
     }
 
     private String exclude() {
-        final StringJoiner stringJoiner = new StringJoiner(":");
-        for (String player : this.exclude) {
-            stringJoiner.add(player);
-        }
-        return stringJoiner.toString();
+        return String.join(":", this.exclude);
     }
 
     public void save() {

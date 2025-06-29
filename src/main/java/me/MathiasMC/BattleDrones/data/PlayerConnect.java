@@ -26,7 +26,7 @@ public class PlayerConnect {
     private boolean isHealing;
     private String lastActive;
 
-    public PlayerConnect(final String uuid) {
+    public PlayerConnect(String uuid) {
         this.plugin = BattleDrones.getInstance();
         this.uuid = uuid;
         final String[] data = plugin.database.getPlayers(uuid);
@@ -98,15 +98,9 @@ public class PlayerConnect {
     }
 
     private void remove() {
-        if (head != null) {
-            head.remove();
-        }
-        if (name != null) {
-            name.remove();
-        }
-        for (ArmorStand armorStand : plugin.projectiles) {
-            armorStand.remove();
-        }
+        if (head != null) head.remove();
+        if (name != null) name.remove();
+        plugin.projectiles.forEach(ArmorStand::remove);
         head = null;
         name = null;
     }
@@ -121,21 +115,17 @@ public class PlayerConnect {
         plugin.getServer().getScheduler().cancelTask(this.healing);
     }
 
-    public void stopDrone(final boolean removeTarget, final boolean removePark) {
+    public void stopDrone(boolean removeTarget, boolean removePark) {
         remove();
         stopAI();
         stopHealing();
         setActive("");
         plugin.drone_amount.remove(uuid);
-        if (removePark) {
-            plugin.park.remove(uuid);
-        }
-        if (removeTarget) {
-            plugin.drone_targets.remove(uuid);
-        }
+        if (removePark) plugin.park.remove(uuid);
+        if (removeTarget) plugin.drone_targets.remove(uuid);
     }
 
-    public void saveDrone(final DroneHolder droneHolder) {
+    public void saveDrone(DroneHolder droneHolder) {
         droneHolder.save();
     }
 

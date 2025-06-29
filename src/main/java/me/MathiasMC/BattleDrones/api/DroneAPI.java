@@ -133,35 +133,59 @@ public class DroneAPI {
         return plugin.category;
     }
 
-    public void setupMenu(final String displayName, final List<String> lores, final String material, final String head, final int amount, final int position, final String droneCategory) {
+    public void setupMenu(String displayName,
+                          List<String> lores,
+                          String material,
+                          String head,
+                          int amount,
+                          int position,
+                          String droneCategory
+    ) {
         setItem("player", displayName, lores, material, head, amount, position, droneCategory);
     }
 
-    public void setupShop(final String displayName, final List<String> lores, final String material, final String head, final int amount, final int position, final String droneCategory) {
+    public void setupShop(String displayName,
+                          List<String> lores,
+                          String material,
+                          String head,
+                          int amount,
+                          int position,
+                          String droneCategory
+    ) {
         setItem("shop", displayName, lores, material, head, amount, position, droneCategory);
     }
 
-    private void setItem(final String type, final String displayName, final List<String> lores, final String material, final String head, final int amount, final int position, final String droneCategory) {
+    private void setItem(
+            String type,
+            String displayName,
+            List<String> lores,
+            String material,
+            String head,
+            int amount,
+            int position,
+            String droneCategory
+    ) {
         final File fileF = plugin.getFileUtils().guiFiles.get(type);
         final FileConfiguration file = YamlConfiguration.loadConfiguration(fileF);
+
         final String path = position + ".";
+
         file.set(path + "NAME", displayName);
         file.set(path + "LORES", lores);
-        if (head == null) {
-            if (material != null) {
-                file.set(path + "MATERIAL", material);
-            } else {
-                file.set(path + "MATERIAL", "DIRT");
-            }
-        } else {
+
+        if (head != null) {
             file.set(path + "HEAD", head);
+        } else {
+            file.set(path + "MATERIAL", material != null ? material : "DIRT");
         }
+
         file.set(path + "AMOUNT", amount);
         file.set(path + "CATEGORY", droneCategory);
+
         try {
             file.save(fileF);
             plugin.guiFiles.put(type, file);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
 
         }
     }

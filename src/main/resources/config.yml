@@ -192,7 +192,7 @@ auto-disable:
 # Cleanup Interval (in minutes)
 # Removed armor stands identified as drones.
 # Note: Only removes stuck drones or projectiles, not active player-controlled drones.
-cleanup: 50
+cleanup: 20
 
 # Update drone on upgrade
 update-upgrade: true
@@ -204,7 +204,7 @@ update-toggle: true
 drone-click: true
 
 # Drone count (How many drones can be active at the same time)
-drone-amount: 10
+drone-amount: 100
 
 # Drone blacklist and whitelist
 drone-worlds:
