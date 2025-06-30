@@ -1225,7 +1225,7 @@ public class BattleDrones_Command implements CommandExecutor {
                                                             }
                                                             itemMeta.setLore(lores);
                                                             itemStack.setItemMeta(itemMeta);
-                                                            plugin.getItemStackManager().glow(itemStack, file, "gui.AMMO.OPTIONS");
+                                                            plugin.getItemStackManager().addGlow(itemStack, file, "gui.AMMO.OPTIONS");
                                                             if (target.getInventory().firstEmpty() == -1) {
                                                                 target.getWorld().dropItem(target.getLocation().add(0, 1, 0), itemStack);
                                                             } else {
@@ -1472,9 +1472,9 @@ public class BattleDrones_Command implements CommandExecutor {
                                 }
                             }
                         }
-                    } else if (args[0].equalsIgnoreCase("cleanup")) {
+                    } else if (args[0].equalsIgnoreCase("prune")) {
                         unknown = false;
-                        if (sender.hasPermission("battledrones.admin.cleanup")) {
+                        if (sender.hasPermission("battledrones.admin.prune")) {
                             if (args.length > 1) {
                                 boolean stopDrone = false;
                                 if (args.length > 2) {
@@ -1492,41 +1492,41 @@ public class BattleDrones_Command implements CommandExecutor {
                                     bypass = false;
                                 }
                                 if (bypass) {
-                                    final long amount = plugin.getDroneManager().cleanUP(projectiles, stopDrone);
+                                    final long amount = plugin.getDronePruneManager().cleanUP(projectiles, stopDrone);
                                     if (type.equalsIgnoreCase("player")) {
-                                        for (String message : plugin.getFileUtils().language.getStringList("cleanup.remove")) {
+                                        for (String message : plugin.getFileUtils().language.getStringList("prune.remove")) {
                                             plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName()).replace("{amount}", String.valueOf(amount))));
                                         }
                                     } else {
-                                        for (String message : plugin.getFileUtils().language.getStringList("console.cleanup.remove")) {
+                                        for (String message : plugin.getFileUtils().language.getStringList("console.prune.remove")) {
                                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.replace("{amount}", String.valueOf(amount))));
                                         }
                                     }
                                 } else {
                                     if (type.equalsIgnoreCase("player")) {
-                                        for (String message : plugin.getFileUtils().language.getStringList("cleanup.usage")) {
+                                        for (String message : plugin.getFileUtils().language.getStringList("prune.usage")) {
                                             plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
                                         }
                                     } else {
-                                        for (String message : plugin.getFileUtils().language.getStringList("console.cleanup.usage")) {
+                                        for (String message : plugin.getFileUtils().language.getStringList("console.prune.usage")) {
                                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                                         }
                                     }
                                 }
                             } else {
                                 if (type.equalsIgnoreCase("player")) {
-                                    for (String message : plugin.getFileUtils().language.getStringList("cleanup.usage")) {
+                                    for (String message : plugin.getFileUtils().language.getStringList("prune.usage")) {
                                         plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
                                     }
                                 } else {
-                                    for (String message : plugin.getFileUtils().language.getStringList("console.cleanup.usage")) {
+                                    for (String message : plugin.getFileUtils().language.getStringList("console.prune.usage")) {
                                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                                     }
                                 }
                             }
                         } else {
                             if (type.equalsIgnoreCase("player")) {
-                                for (String message : plugin.getFileUtils().language.getStringList("cleanup.permission")) {
+                                for (String message : plugin.getFileUtils().language.getStringList("prune.permission")) {
                                     plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
                                 }
                             }

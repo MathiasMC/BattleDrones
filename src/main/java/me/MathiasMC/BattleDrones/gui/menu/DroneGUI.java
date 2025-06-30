@@ -118,7 +118,7 @@ public class DroneGUI extends GUI {
                     if (plugin.getSupport().withdraw(player, file.getLong(path + ".cost"))) {
                         droneHolder.setLevel((droneHolder.getLevel() + 1));
                         if (plugin.getFileUtils().config.getBoolean("update-upgrade") && playerConnect.isActive()) {
-                            final DroneSpawnEvent droneSpawnEvent = new DroneSpawnEvent(player, playerConnect, droneHolder);
+                            DroneSpawnEvent droneSpawnEvent = new DroneSpawnEvent(player, playerConnect, droneHolder);
                             droneSpawnEvent.setBypassWait(true);
                             droneSpawnEvent.setBypassDroneAmount(true);
                             droneSpawnEvent.setBypassLocation(true);

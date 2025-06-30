@@ -189,10 +189,10 @@ auto-disable:
     list:
       - PLAYERS
 
-# Cleanup Interval (in minutes)
+# prune Interval (in minutes)
 # Removed armor stands identified as drones.
 # Note: Only removes stuck drones or projectiles, not active player-controlled drones.
-cleanup: 20
+prune: 20
 
 # Update drone on upgrade
 update-upgrade: true

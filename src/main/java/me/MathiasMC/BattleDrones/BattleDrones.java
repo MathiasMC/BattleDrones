@@ -66,6 +66,8 @@ public class BattleDrones extends JavaPlugin {
     public final HashMap<String, FileConfiguration> droneFiles = new HashMap<>();//
     public final HashMap<String, FileConfiguration> guiFiles = new HashMap<>();//
 
+    private int pruneDroneTaskId;
+
     //Managers API
     private ItemStackManager itemStackManager;
     private CalculateManager calculateManager;
@@ -75,6 +77,7 @@ public class BattleDrones extends JavaPlugin {
     private EntityManager entityManager;
     private PlaceholderManager placeholderManager;
     private TaskManager taskManager;
+    private DronePruneManager dronePruneManager;
 
 
     public final HashMap<String, String> drone_whitelist = new HashMap<>();//
@@ -96,13 +99,14 @@ public class BattleDrones extends JavaPlugin {
         database = new Database(this);
 
         itemStackManager = new ItemStackManager(this);
-        calculateManager = new CalculateManager(this);
+        calculateManager = new CalculateManager();
         droneManager = new DroneManager(this);
         particleManager = new ParticleManager(this);
         droneControllerManager = new DroneControllerManager(this);
         entityManager = new EntityManager(this);
         placeholderManager = new PlaceholderManager(this);
         taskManager = new TaskManager(this);
+        dronePruneManager = new DronePruneManager(this);
 
         support = new Support(this);
 
@@ -146,21 +150,23 @@ public class BattleDrones extends JavaPlugin {
         }
         particleManager.load();
 
-        cleanUP();
-
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI(this).register();
             textUtils.info("PlaceholderAPI (found)");
         }
+
+        dronePruneManager.start(fileUtils.config.getLong("prune"));
+
         new Metrics(this, 8224);
     }
 
     @Override
     public void onDisable() {
         for (String uuid : listPlayerConnect()) {
-            getPlayerConnect(uuid).stopDrone(true, true);
+            //getPlayerConnect(uuid).stopDrone(true, true);
         }
         database.close();
+        dronePruneManager.stop();
         call = null;
     }
 
@@ -212,6 +218,10 @@ public class BattleDrones extends JavaPlugin {
         return this.taskManager;
     }
 
+    public DronePruneManager getDronePruneManager() {
+        return this.dronePruneManager;
+    }
+
     public void unloadPlayerConnect(String uuid) {
         PlayerConnect playerConnect = this.playerConnect.remove(uuid);
         if (playerConnect != null) {
@@ -220,35 +230,20 @@ public class BattleDrones extends JavaPlugin {
     }
 
     public void unloadDroneHolder(String uuid) {
-        if (droneHolder.containsKey(uuid)) {
-            for (String drone : this.droneHolder.get(uuid).keySet()) {
-                droneHolder.get(uuid).get(drone).save();
-            }
+        Map<String, DroneHolder> map = droneHolder.get(uuid);
+        if (map != null) {
+            map.values().forEach(DroneHolder::save);
+            droneHolder.remove(uuid);
         }
-        droneHolder.remove(uuid);
     }
 
     public PlayerConnect getPlayerConnect(String uuid) {
-        if (playerConnect.containsKey(uuid)) {
-            return playerConnect.get(uuid);
-        }
-        PlayerConnect playerConnect = new PlayerConnect(uuid);
-        this.playerConnect.put(uuid, playerConnect);
-        return playerConnect;
+        return playerConnect.computeIfAbsent(uuid, PlayerConnect::new);
     }
 
     public DroneHolder getDroneHolder(String uuid, String drone) {
-        if (!droneHolder.containsKey(uuid)) {
-            droneHolder.put(uuid, new HashMap<>());
-        }
-        HashMap<String, DroneHolder> map = droneHolder.get(uuid);
-        if (map.containsKey(drone)) {
-            return droneHolder.get(uuid).get(drone);
-        }
-        DroneHolder droneHolder = new DroneHolder(uuid, drone);
-        map.put(drone, droneHolder);
-        this.droneHolder.put(uuid, map);
-        return droneHolder;
+        Map<String, DroneHolder> map = droneHolder.computeIfAbsent(uuid, k -> new HashMap<>());
+        return map.computeIfAbsent(drone, d -> new DroneHolder(uuid, d));
     }
 
     public Set<String> listPlayerConnect() {
@@ -260,14 +255,7 @@ public class BattleDrones extends JavaPlugin {
     }
 
     public Menu getPlayerMenu(Player player) {
-        Menu playerMenu;
-        if (!this.playerMenu.containsKey(player)) {
-            playerMenu = new Menu(player);
-            this.playerMenu.put(player, playerMenu);
-            return playerMenu;
-        } else {
-            return this.playerMenu.get(player);
-        }
+        return playerMenu.computeIfAbsent(player, Menu::new);
     }
 
     public void addHeads() {
@@ -275,16 +263,5 @@ public class BattleDrones extends JavaPlugin {
             drone_heads.put(head, itemStackManager.getHeadTexture(fileUtils.heads.getString(head)));
         }
         textUtils.info("Loaded ( " + fileUtils.heads.getConfigurationSection("").getKeys(false).size() + " ) heads.");
-    }
-
-    private void cleanUP() {
-        long interval = fileUtils.config.getLong("cleanup");
-        textUtils.info("[CleanUP] Started will be run every ( " + interval + " ) minutes.");
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            long amount = droneManager.cleanUP(null, false);
-            if (amount > 0) {
-                textUtils.info("[CleanUP] Removed " + amount + " entities");
-            }
-        }, interval * 1200, interval * 1200);
     }
 }

@@ -125,7 +125,7 @@ public class AmmoGUI extends GUI {
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(droneFile.getString("gui.AMMO.NAME"))));
         itemMeta.setLore(lores);
         itemStack.setItemMeta(itemMeta);
-        plugin.getItemStackManager().glow(itemStack, droneFile, "gui.AMMO.OPTIONS");
+        plugin.getItemStackManager().addGlow(itemStack, droneFile, "gui.AMMO.OPTIONS");
         int ammo = plugin.getDroneHolder(uuid, drone).getAmmo();
         for (int i = 0; i < inventory.getSize(); i++) {
             if (inventory.getItem(i) == null) {

@@ -19,7 +19,7 @@ public abstract class DroneRegistry {
 
     public final String droneCategory;
 
-    public DroneRegistry(final Plugin plugin, final String droneName, final String droneCategory) {
+    public DroneRegistry(Plugin plugin, String droneName, String droneCategory) {
         this.droneName = droneName;
         this.droneCategory = droneCategory;
         this.registeredPlugin = plugin;
@@ -47,21 +47,21 @@ public abstract class DroneRegistry {
         }
     }
 
-    public abstract void ability(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder);
+    public abstract void ability(Player player, PlayerConnect playerConnect, DroneHolder droneHolder);
 
-    public void find(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
+    public void find(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
         plugin.getTaskManager().find(player, playerConnect, droneHolder);
     }
 
-    public void follow(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
+    public void follow(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
         plugin.getTaskManager().follow(player, playerConnect, droneHolder);
     }
 
-    public void healing(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
+    public void healing(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
         plugin.getTaskManager().healing(player, playerConnect, droneHolder);
     }
 
-    public String onPlaceholderRequest(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder, final String placeholder) {
+    public String onPlaceholderRequest(Player player, PlayerConnect playerConnect, DroneHolder droneHolder, String placeholder) {
         return plugin.getPlaceholderManager().onPlaceholderRequest(playerConnect, droneHolder, placeholder);
     }
 }

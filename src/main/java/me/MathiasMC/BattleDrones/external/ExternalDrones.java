@@ -11,19 +11,19 @@ public class ExternalDrones {
         BattleDrones plugin = BattleDrones.getInstance();
         final List<String> disable = plugin.getFileUtils().config.getStringList("disable");
         if (!disable.contains("laser")) {
-            new Gun(plugin, "laser", "energy").register();
+            new Laser(plugin, "laser", "energy").register();
         }
         if (!disable.contains("machine_gun")) {
-            new Gun(plugin, "machine_gun", "kinetic").register();
+            new MachineGun(plugin, "machine_gun", "kinetic").register();
         }
         if (!disable.contains("rocket")) {
             new Rocket(plugin, "rocket", "explode").register();
         }
         if (!disable.contains("faf_missile")) {
-            new Rocket(plugin, "faf_missile", "explode").register();
+            new FaFMissile(plugin, "faf_missile", "explode").register();
         }
         if (!disable.contains("mortar")) {
-            new Rocket(plugin, "mortar", "explode").register();
+            new Mortar(plugin, "mortar", "explode").register();
         }
         if (!disable.contains("healing")) {
             new Healing(plugin, "healing", "protective").register();

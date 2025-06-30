@@ -1,5 +1,6 @@
 package me.MathiasMC.BattleDrones.managers;
 
+import com.google.common.base.Strings;
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
@@ -43,7 +44,7 @@ public class PlaceholderManager {
         final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
         if (playerConnect.isActive()) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
-            return plugin.getCalculateManager().getBar(droneHolder.getHealth(), plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"), "health", "-placeholder");
+            return getBar(droneHolder.getHealth(), plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".health"), "health", "-placeholder");
         }
         return "";
     }
@@ -70,7 +71,7 @@ public class PlaceholderManager {
         final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
         if (playerConnect.isActive()) {
             DroneHolder droneHolder = plugin.getDroneHolder(uuid, playerConnect.getActive());
-            return plugin.getCalculateManager().getBar(droneHolder.getAmmo(), plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".max-ammo-slots") * 64, "ammo", "-placeholder");
+            return getBar(droneHolder.getAmmo(), plugin.droneFiles.get(playerConnect.getActive()).getInt(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".max-ammo-slots") * 64, "ammo", "-placeholder");
         }
         return "";
     }
@@ -138,6 +139,58 @@ public class PlaceholderManager {
         return message;
     }
 
+    public String getBar(int current, int max, String path, String extra) {
+        try {
+            String basePath = path + extra + "." + path;
+            String nonePath = path + extra + ".none";
+
+            char xp = (char) Integer.parseInt(Objects.requireNonNull(plugin.getFileUtils().config.getString(basePath + ".symbol")).substring(2), 16);
+            char none = (char) Integer.parseInt(Objects.requireNonNull(plugin.getFileUtils().config.getString(nonePath + ".symbol")).substring(2), 16);
+
+            ChatColor xpColor = getChatColor(Objects.requireNonNull(plugin.getFileUtils().config.getString(basePath + ".color")));
+
+            ChatColor noneColor = getChatColor(Objects.requireNonNull(plugin.getFileUtils().config.getString(nonePath + ".color")));
+
+            int bars = plugin.getFileUtils().config.getInt(nonePath + ".amount");
+            int progressBars = 0;
+            if (max > 0) {
+                progressBars = (int) Math.round(bars * ((double) current / max));
+            }
+
+            return Strings.repeat("" + xpColor + xp, progressBars) + Strings.repeat("" + noneColor + none, bars - progressBars);
+
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private ChatColor getChatColor(String colorCode){
+        return switch (colorCode) {
+            case "&0" -> ChatColor.BLACK;
+            case "&1" -> ChatColor.DARK_BLUE;
+            case "&2" -> ChatColor.DARK_GREEN;
+            case "&3" -> ChatColor.DARK_AQUA;
+            case "&4" -> ChatColor.DARK_RED;
+            case "&5" -> ChatColor.DARK_PURPLE;
+            case "&6" -> ChatColor.GOLD;
+            case "&7" -> ChatColor.GRAY;
+            case "&8" -> ChatColor.DARK_GRAY;
+            case "&9" -> ChatColor.BLUE;
+            case "&a" -> ChatColor.GREEN;
+            case "&b" -> ChatColor.AQUA;
+            case "&c" -> ChatColor.RED;
+            case "&d" -> ChatColor.LIGHT_PURPLE;
+            case "&e" -> ChatColor.YELLOW;
+            case "&k" -> ChatColor.MAGIC;
+            case "&l" -> ChatColor.BOLD;
+            case "&m" -> ChatColor.STRIKETHROUGH;
+            case "&n" -> ChatColor.UNDERLINE;
+            case "&o" -> ChatColor.ITALIC;
+            case "&r" -> ChatColor.RESET;
+            default -> ChatColor.WHITE;
+        };
+    }
+
     public String onPlaceholderRequest(final PlayerConnect playerConnect, final DroneHolder droneHolder, final String placeholder) {
         final FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
         final String path = playerConnect.getGroup() + "." + droneHolder.getLevel();
@@ -191,7 +244,7 @@ public class PlaceholderManager {
             return String.valueOf(droneHolder.getHealth());
         }
         if (placeholder.equals("health_bar")) {
-            return plugin.getCalculateManager().getBar(droneHolder.getHealth(), file.getInt(path + ".health"), "health", "");
+            return getBar(droneHolder.getHealth(), file.getInt(path + ".health"), "health", "");
         }
         if (placeholder.equals("health_percentage")) {
             return String.valueOf(plugin.getCalculateManager().getPercent(droneHolder.getHealth(), file.getInt(path + ".health")));
@@ -200,7 +253,7 @@ public class PlaceholderManager {
             return String.valueOf(droneHolder.getAmmo());
         }
         if (placeholder.equals("ammo_bar")) {
-            return plugin.getCalculateManager().getBar(droneHolder.getAmmo(), file.getInt(path + ".max-ammo-slots") * 64, "ammo", "");
+            return getBar(droneHolder.getAmmo(), file.getInt(path + ".max-ammo-slots") * 64, "ammo", "");
         }
         if (placeholder.equals("ammo_percentage")) {
             return String.valueOf(plugin.getCalculateManager().getPercent(droneHolder.getAmmo(), file.getInt(path + ".max-ammo-slots") * 64));

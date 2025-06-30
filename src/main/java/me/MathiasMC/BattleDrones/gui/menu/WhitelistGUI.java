@@ -116,7 +116,7 @@ public class WhitelistGUI extends GUI {
                 final NamespacedKey nameKey = new NamespacedKey(plugin, "whitelist");
                 itemMeta.getPersistentDataContainer().set(nameKey, PersistentDataType.STRING, players.get(index));
                 itemStackS.setItemMeta(itemMeta);
-                plugin.getItemStackManager().glow(itemStackS, file, "gui.WHITELIST.OPTIONS");
+                plugin.getItemStackManager().addGlow(itemStackS, file, "gui.WHITELIST.OPTIONS");
                 inventory.setItem(index, itemStackS);
             }
         }

@@ -247,10 +247,10 @@ public class BattleDrones_TabComplete implements TabCompleter {
                     commands.add("update");
                 }
             }
-            if (player.hasPermission("battledrones.admin.cleanup")) {
+            if (player.hasPermission("battledrones.admin.prune")) {
                 if (args.length == 1) {
-                    commands.add("cleanup");
-                } else if (args.length > 1 && args[0].equalsIgnoreCase("cleanup")) {
+                    commands.add("prune");
+                } else if (args.length > 1 && args[0].equalsIgnoreCase("prune")) {
                     if (args.length == 2) {
                         commands.add("drones");
                         commands.add("projectiles");

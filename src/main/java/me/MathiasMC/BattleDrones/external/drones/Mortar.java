@@ -14,11 +14,11 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class Rocket extends DroneRegistry {
+public class Mortar extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Rocket(BattleDrones plugin, String droneName, String droneCategory) {
+    public Mortar(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
         this.plugin = plugin;
     }
@@ -132,7 +132,6 @@ public class Rocket extends DroneRegistry {
 
             new BukkitRunnable() {
                 final Vector p1 = missile.getLocation().toVector();
-                Vector vector = targetLocation.toVector().clone().subtract(p1).normalize().multiply(rocketSpeed);
                 int timer = 0;
                 int particle1 = 0;
                 int particle2 = 0;
@@ -148,7 +147,13 @@ public class Rocket extends DroneRegistry {
                 @Override
                 public void run() {
 
-                    missile.teleport(p1.toLocation(world).setDirection(vector));
+                    Vector vector = startVector.clone().normalize().multiply(length * timer / finalPoint);
+                    float x = ((float) timer / finalPoint) * length - length / 2;
+                    float y = (float) (-pitch * Math.pow(x, 2) + height);
+                    start.add(vector).add(0, y, 0);
+                    plugin.getEntityManager().lookAT(missile, start.clone());
+                    missile.teleport(start);
+                    start.subtract(0, y, 0).subtract(vector);
 
                     p1.add(vector);
                     Location currentMissileLocation = missile.getLocation();
@@ -171,11 +176,11 @@ public class Rocket extends DroneRegistry {
                             double damage = plugin.getCalculateManager().randomDouble(minDamage, maxDamage);
                             plugin.getCalculateManager().damage(entity, damage);
                             if (plugin.getCalculateManager().randomChance() <= file.getDouble(path + "chance") && entity instanceof Player) {
-                                    if (file.contains(path + "chance-commands")) {
-                                        for (String command : file.getStringList(path + "chance-commands")) {
-                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', command.replace("{player}", entity.getName())));
-                                        }
+                                if (file.contains(path + "chance-commands")) {
+                                    for (String command : file.getStringList(path + "chance-commands")) {
+                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', command.replace("{player}", entity.getName())));
                                     }
+                                }
                             }
                         }
 
@@ -201,9 +206,9 @@ public class Rocket extends DroneRegistry {
 
                     if (particleFile.contains(customParticle_2)) {
                         if (++particle1 > tick_2) {
-                                final Location location = currentMissileLocation.clone().add(0, yOffset_2, 0);
-                                plugin.getServer().getScheduler().runTaskLater(plugin, () ->
-                                        plugin.getParticleManager().displayParticle(customParticle_2, particleType_2, location, r_2, g_2, b_2, size_2, amount_2), delay_2);
+                            final Location location = currentMissileLocation.clone().add(0, yOffset_2, 0);
+                            plugin.getServer().getScheduler().runTaskLater(plugin, () ->
+                                    plugin.getParticleManager().displayParticle(customParticle_2, particleType_2, location, r_2, g_2, b_2, size_2, amount_2), delay_2);
                             particle1 = 1;
                         }
                     }

@@ -9,7 +9,6 @@ import me.MathiasMC.BattleDrones.api.events.DroneDamageEvent;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 import java.util.Objects;
@@ -170,66 +169,5 @@ public class DroneManager {
             droneHolder.setAmmo(0);
         }
         droneHolder.save();
-    }
-
-    public long cleanUP(final Boolean projectiles, final boolean stopDrone) {
-        long amount = 0;
-        for (World world : plugin.getServer().getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (entity instanceof ArmorStand) {
-                    final ArmorStand armorStand = (ArmorStand) entity;
-                    final String key = armorStand.getPersistentDataContainer().get(plugin.droneKey, PersistentDataType.STRING);
-                    final PlayerConnect playerConnect = plugin.getPlayerConnect(key);
-                    if (!playerConnect.isActive()) {
-                        amount = amount + getRemoveAmount(projectiles, key, armorStand);
-                    } else if (stopDrone) {
-                        amount = amount + getRemoveAmount(projectiles, key, armorStand);
-                        if (key != null) {
-                            final OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(UUID.fromString(key));
-                            if (offlinePlayer.isOnline() && offlinePlayer.getName() != null) {
-                                final DroneHolder droneHolder = plugin.getDroneHolder(key, playerConnect.getActive());
-                                for (String message : plugin.getFileUtils().language.getStringList("cleanup.drone")) {
-                                    plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{target}", offlinePlayer.getName()).replace("{drone}", plugin.getPlaceholderManager().getActiveDrone(droneHolder.getDrone())).replace("{amount}", String.valueOf(amount))));
-                                }
-                            }
-                        }
-                        playerConnect.stopDrone(true, true);
-                    }
-                }
-            }
-        }
-        return amount;
-    }
-
-    private long getRemoveAmount(final Boolean projectiles, final String key, final ArmorStand armorStand) {
-        long amount = 0;
-        if (projectiles == null) {
-            if (key != null) {
-                armorStand.remove();
-                amount++;
-            }
-            if (removeProjectile(armorStand)) {
-                amount++;
-            }
-        } else if (projectiles) {
-            if (removeProjectile(armorStand)) {
-                amount++;
-            }
-        } else {
-            if (key != null) {
-                armorStand.remove();
-                amount++;
-            }
-        }
-        return amount;
-    }
-
-    private boolean removeProjectile(final ArmorStand armorStand) {
-        final String keyString = armorStand.getPersistentDataContainer().get(plugin.projectileKey, PersistentDataType.STRING);
-        if (keyString != null) {
-            armorStand.remove();
-            return true;
-        }
-        return false;
     }
 }

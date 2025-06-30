@@ -14,11 +14,11 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class Rocket extends DroneRegistry {
+public class FaFMissile extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Rocket(BattleDrones plugin, String droneName, String droneCategory) {
+    public FaFMissile(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
         this.plugin = plugin;
     }
@@ -147,8 +147,13 @@ public class Rocket extends DroneRegistry {
 
                 @Override
                 public void run() {
+                    Location targetLocation = target.getLocation();
+                    Location missileLocation = missile.getLocation();
 
-                    missile.teleport(p1.toLocation(world).setDirection(vector));
+                    vector = targetLocation.toVector().clone().subtract(p1).normalize().multiply(rocketSpeed);
+                    plugin.getEntityManager().lookAT(missile, targetLocation);
+                    Vector direction = target.getLocation().toVector().subtract(missileLocation.toVector()).normalize();
+                    missile.teleport(p1.toLocation(world).setDirection(direction));
 
                     p1.add(vector);
                     Location currentMissileLocation = missile.getLocation();
@@ -171,11 +176,11 @@ public class Rocket extends DroneRegistry {
                             double damage = plugin.getCalculateManager().randomDouble(minDamage, maxDamage);
                             plugin.getCalculateManager().damage(entity, damage);
                             if (plugin.getCalculateManager().randomChance() <= file.getDouble(path + "chance") && entity instanceof Player) {
-                                    if (file.contains(path + "chance-commands")) {
-                                        for (String command : file.getStringList(path + "chance-commands")) {
-                                            plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', command.replace("{player}", entity.getName())));
-                                        }
+                                if (file.contains(path + "chance-commands")) {
+                                    for (String command : file.getStringList(path + "chance-commands")) {
+                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', command.replace("{player}", entity.getName())));
                                     }
+                                }
                             }
                         }
 
@@ -201,9 +206,9 @@ public class Rocket extends DroneRegistry {
 
                     if (particleFile.contains(customParticle_2)) {
                         if (++particle1 > tick_2) {
-                                final Location location = currentMissileLocation.clone().add(0, yOffset_2, 0);
-                                plugin.getServer().getScheduler().runTaskLater(plugin, () ->
-                                        plugin.getParticleManager().displayParticle(customParticle_2, particleType_2, location, r_2, g_2, b_2, size_2, amount_2), delay_2);
+                            final Location location = currentMissileLocation.clone().add(0, yOffset_2, 0);
+                            plugin.getServer().getScheduler().runTaskLater(plugin, () ->
+                                    plugin.getParticleManager().displayParticle(customParticle_2, particleType_2, location, r_2, g_2, b_2, size_2, amount_2), delay_2);
                             particle1 = 1;
                         }
                     }

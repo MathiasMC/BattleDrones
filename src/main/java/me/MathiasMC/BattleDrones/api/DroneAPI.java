@@ -29,19 +29,19 @@ public class DroneAPI {
         this.plugin = BattleDrones.getInstance();
     }
 
-    public PlayerConnect getPlayerConnect(final String uuid) {
+    public PlayerConnect getPlayerConnect(String uuid) {
         return plugin.getPlayerConnect(uuid);
     }
 
-    public DroneHolder getDroneHolder(final String uuid, final String droneName) {
+    public DroneHolder getDroneHolder(String uuid, String droneName) {
         return plugin.getDroneHolder(uuid, droneName);
     }
 
-    public void unloadPlayerConnect(final String uuid) {
+    public void unloadPlayerConnect(String uuid) {
         plugin.unloadPlayerConnect(uuid);
     }
 
-    public void unloadDroneHolder(final String uuid) {
+    public void unloadDroneHolder(String uuid) {
         plugin.unloadDroneHolder(uuid);
     }
 
@@ -91,6 +91,10 @@ public class DroneAPI {
 
     public TaskManager getTaskManager() {
         return plugin.getTaskManager();
+    }
+
+    public DronePruneManager getDronePruneManager() {
+        return plugin.getDronePruneManager();
     }
 
     public HashMap<String, LivingEntity> getDroneTargets() {

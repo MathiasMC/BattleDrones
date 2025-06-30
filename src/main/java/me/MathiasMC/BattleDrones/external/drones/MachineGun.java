@@ -12,13 +12,13 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Gun extends DroneRegistry {
+public class MachineGun extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Gun(BattleDrones plugin,
-               String droneName,
-               String droneCategory
+    public MachineGun(BattleDrones plugin,
+                 String droneName,
+                 String droneCategory
     ) {
         super(plugin, droneName, droneCategory);
         this.plugin = plugin;
@@ -82,11 +82,7 @@ public class Gun extends DroneRegistry {
                 Location start = head.getEyeLocation().add(0, yOffset, 0);
 
                 plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                    double distancenew = distance;
-                    if (droneName.equalsIgnoreCase("laser")) {
-                        distancenew = start.distance(targetLocation);
-                    }
-                    plugin.getParticleManager().displayLineParticle(particleType, start, targetLocation, distancenew, space, r, g, b, amount, size);
+                    plugin.getParticleManager().displayLineParticle(particleType, start, targetLocation, distance, space, r, g, b, amount, size);
                 }, delay);
             }
 
