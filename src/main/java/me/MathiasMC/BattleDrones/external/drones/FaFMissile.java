@@ -12,6 +12,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -34,46 +35,47 @@ public class FaFMissile extends DroneRegistry {
         ArmorStand head = playerConnect.head;
 
         FileConfiguration particleFile = plugin.getFileUtils().particles;
-        String customParticle_2 = droneName + "_ability_1";
-        String customParticle_3 = droneName + "_ability_2";
 
-        String particleType_1 = particleFile.getString(droneName + ".particle");
-        String particleType_2 = particleFile.getString(customParticle_2 + ".particle");
-        String particleType_3 = particleFile.getString(customParticle_3 + ".particle");
+        String customParticle2 = droneName + "_ability_1";
+        String customParticle3 = droneName + "_ability_2";
 
-        int size_1 = particleFile.getInt(droneName + ".size");
-        int size_2 = particleFile.getInt(customParticle_2 + ".size");
-        int size_3 = particleFile.getInt(customParticle_3 + ".size");
+        String particleType1 = particleFile.getString(droneName + ".particle");
+        String particleType2 = particleFile.getString(customParticle2 + ".particle");
+        String particleType3 = particleFile.getString(customParticle3 + ".particle");
 
-        int amount_1 = particleFile.getInt(droneName + ".amount");
-        int amount_2 = particleFile.getInt(customParticle_2 + ".amount");
-        int amount_3 = particleFile.getInt(customParticle_3 + ".amount");
+        int size1 = particleFile.getInt(droneName + ".size");
+        int size2 = particleFile.getInt(customParticle2 + ".size");
+        int size3 = particleFile.getInt(customParticle3 + ".size");
 
-        int r_1 = particleFile.getInt(droneName + ".rgb.r");
-        int r_2 = particleFile.getInt(customParticle_2 + ".rgb.r");
-        int r_3 = particleFile.getInt(customParticle_3 + ".rgb.r");
+        int amount1 = particleFile.getInt(droneName + ".amount");
+        int amount2 = particleFile.getInt(customParticle2 + ".amount");
+        int amount3 = particleFile.getInt(customParticle3 + ".amount");
+
+        int r1 = particleFile.getInt(droneName + ".rgb.r");
+        int r2 = particleFile.getInt(customParticle2 + ".rgb.r");
+        int r3 = particleFile.getInt(customParticle3 + ".rgb.r");
 
 
-        int g_1 = particleFile.getInt(droneName + ".rgb.g");
-        int g_2 = particleFile.getInt(customParticle_2 + ".rgb.g");
-        int g_3 = particleFile.getInt(customParticle_3 + ".rgb.g");
+        int g1 = particleFile.getInt(droneName + ".rgb.g");
+        int g2 = particleFile.getInt(customParticle2 + ".rgb.g");
+        int g3 = particleFile.getInt(customParticle3 + ".rgb.g");
 
-        int b_1 = particleFile.getInt(droneName + ".rgb.b");
-        int b_2 = particleFile.getInt(customParticle_2 + ".rgb.b");
-        int b_3 = particleFile.getInt(customParticle_3 + ".rgb.b");
+        int b1 = particleFile.getInt(droneName + ".rgb.b");
+        int b2 = particleFile.getInt(customParticle2 + ".rgb.b");
+        int b3 = particleFile.getInt(customParticle3 + ".rgb.b");
 
-        int delay_1 = particleFile.getInt(droneName + ".delay");
-        int delay_2 = particleFile.getInt(customParticle_2 + ".delay");
-        int delay_3 = particleFile.getInt(customParticle_3 + ".delay");
+        int delay1 = particleFile.getInt(droneName + ".delay");
+        int delay2 = particleFile.getInt(customParticle2 + ".delay");
+        int delay3 = particleFile.getInt(customParticle3 + ".delay");
 
-        double yOffset_1 = particleFile.getDouble(droneName + ".y-offset");
-        double yOffset_2 = particleFile.getDouble(customParticle_2 + ".y-offset");
-        double yOffset_3 = particleFile.getDouble(customParticle_3 + ".y-offset");
+        double yOffset1 = particleFile.getDouble(droneName + ".y-offset");
+        double yOffset2 = particleFile.getDouble(customParticle2 + ".y-offset");
+        double yOffset3 = particleFile.getDouble(customParticle3 + ".y-offset");
 
-        int tick_2 = particleFile.getInt(customParticle_2 + ".tick");
-        int tick_3 = particleFile.getInt(customParticle_3 + ".tick");
+        int tick2 = particleFile.getInt(customParticle2 + ".tick");
+        int tick3 = particleFile.getInt(customParticle3 + ".tick");
 
-        List<String> blockCheckList = plugin.getFileUtils().getBlockCheck(file, path);
+        List<String> blockCheckList = file.getStringList(path + "block-check");
 
         long cooldown = file.getLong(path + "cooldown");
 
@@ -95,7 +97,6 @@ public class FaFMissile extends DroneRegistry {
                 playerConnect.setHealing(true);
                 return;
             }
-
             playerConnect.setHealing(false);
 
             boolean hasAmmo = droneHolder.getAmmo() > 0 || player.hasPermission("battledrones.bypass.ammo." + droneName);
@@ -105,19 +106,15 @@ public class FaFMissile extends DroneRegistry {
             Location targetLocation = target.getLocation();
 
             boolean canSeeTarget = head.hasLineOfSight(target) && plugin.getEntityManager().hasBlockSight(headLocation, targetLocation, blockCheckList);
-
             if (!canSeeTarget) return;
 
             ArmorStand missile = plugin.getEntityManager().getArmorStand(head.getLocation());
             missile.getPersistentDataContainer().set(plugin.projectileKey, PersistentDataType.STRING, uuid);
-            if (file.contains(path + "rocket-head")) {
-                final EntityEquipment equipment = missile.getEquipment();
-                if (equipment != null) {
-                    equipment.setHelmet(plugin.drone_heads.get(rocketHead));
-                }
+            EntityEquipment equipment = missile.getEquipment();
+            if (equipment != null) {
+                equipment.setHelmet(plugin.drone_heads.get(rocketHead));
             }
             plugin.projectiles.add(missile);
-
             missile.setHeadPose(head.getHeadPose());
 
             new BukkitRunnable() {
@@ -137,6 +134,10 @@ public class FaFMissile extends DroneRegistry {
 
                     vector = targetLocation.toVector().clone().subtract(p1).normalize().multiply(rocketSpeed);
                     plugin.getEntityManager().lookAT(missile, targetLocation);
+
+                    Location directionPose = targetLocation.subtract(missile.getLocation());
+                    missile.setHeadPose(new EulerAngle(Math.atan2(Math.sqrt(directionPose.getX()*directionPose.getX() + directionPose.getZ()*directionPose.getZ()), directionPose.getY()) - Math.PI / 2, 0, 0));
+
                     Vector direction = target.getLocation().toVector().subtract(missileLocation.toVector()).normalize();
                     missile.teleport(p1.toLocation(world).setDirection(direction));
 
@@ -168,9 +169,9 @@ public class FaFMissile extends DroneRegistry {
 
                         if (particleFile.contains(droneName)) {
                             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                                Location location = currentMissileLocation.add(0, yOffset_1, 0);
-                                plugin.getParticleManager().displayParticle(droneName, particleType_1, location, r_1, g_1, b_1, size_1, amount_1);
-                            }, delay_1);
+                                Location location = currentMissileLocation.add(0, yOffset1, 0);
+                                plugin.getParticleManager().displayParticle(droneName, particleType1, location, r1, g1, b1, size1, amount1);
+                            }, delay1);
                         }
 
                         missile.remove();
@@ -181,23 +182,19 @@ public class FaFMissile extends DroneRegistry {
                         }, 2);
                     }
 
-                    if (particleFile.contains(customParticle_2)) {
-                        if (++particle1 > tick_2) {
-                            final Location location = currentMissileLocation.clone().add(0, yOffset_2, 0);
+                        if (++particle1 > tick2) {
+                            Location location = currentMissileLocation.clone().add(0, yOffset2, 0);
                             plugin.getServer().getScheduler().runTaskLater(plugin, () ->
-                                    plugin.getParticleManager().displayParticle(customParticle_2, particleType_2, location, r_2, g_2, b_2, size_2, amount_2), delay_2);
+                                    plugin.getParticleManager().displayParticle(customParticle2, particleType2, location, r2, g2, b2, size2, amount2), delay2);
                             particle1 = 1;
                         }
-                    }
 
-                    if (particleFile.contains(customParticle_3)) {
-                        if (++particle2 > tick_3) {
-                            final Location location = currentMissileLocation.clone().add(0, yOffset_3, 0);
+                        if (++particle2 > tick3) {
+                            Location location = currentMissileLocation.clone().add(0, yOffset3, 0);
                             plugin.getServer().getScheduler().runTaskLater(plugin, () ->
-                                    plugin.getParticleManager().displayParticle(customParticle_3, particleType_3, location, r_3, g_3, b_3, size_3, amount_3), delay_3);
+                                    plugin.getParticleManager().displayParticle(customParticle3, particleType3, location, r3, g3, b3, size3, amount3), delay3);
                             particle2 = 1;
                         }
-                    }
 
                     timer++;
                 }
@@ -206,7 +203,6 @@ public class FaFMissile extends DroneRegistry {
             droneHolder.setAmmo(droneHolder.getAmmo() - 1);
 
             dispatchTargetCommands(target, player, headLocation, path + "ability", file);
-
 
             if (droneHolder.getWear() > 0) {
                 droneHolder.setWear(droneHolder.getWear() - 1);
@@ -255,8 +251,7 @@ public class FaFMissile extends DroneRegistry {
                     return;
                 }
 
-                List<String> lowHealthCommands = file.getStringList("low-" + "health" + "." + percentLeft);
-                dispatchCommands(lowHealthCommands, player);
+                dispatchCommands(file.getStringList("low-" + "health" + "." + percentLeft), player);
 
             }
         }, 0, cooldown).getTaskId();
