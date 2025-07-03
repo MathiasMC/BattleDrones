@@ -20,8 +20,23 @@ public class TaskManager {
 
     private final BattleDrones plugin;
 
+    public final ArrayList<Double> x = new ArrayList<>();
+    public final ArrayList<Double> y = new ArrayList<>();
+    public final ArrayList<Double> z = new ArrayList<>();
+
     public TaskManager(final BattleDrones plugin) {
         this.plugin = plugin;
+        for (String add : plugin.getFileUtils().config.getConfigurationSection("follow").getKeys(false)) {
+            final int points = plugin.getFileUtils().config.getInt("follow." + add + ".distance");
+            final double radius = plugin.getFileUtils().config.getDouble("follow." + add + ".radius");
+            final double yoffset = plugin.getFileUtils().config.getDouble("follow." + add + ".y-offset");
+            for (int i = 0; i < points; i++) {
+                final double angle = 2 * Math.PI * i / points;
+                x.add((double) Math.round(radius * Math.sin(angle)));
+                y.add(yoffset);
+                z.add((double) Math.round(radius * Math.cos(angle)));
+            }
+        }
     }
 
     public void find(final Player player, final PlayerConnect playerConnect, final DroneHolder droneHolder) {
@@ -113,19 +128,19 @@ public class TaskManager {
         ArmorStand name = playerConnect.name;
         EulerAngle defaultPose = new EulerAngle(0, 0, 0);
 
-        double xOffset = plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575);
-        double yOffset = plugin.getFileUtils().getDouble(file, path + ".position.y", 2);
-        double zOffset = plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575);
+        double xOffset = file.getDouble(path + ".position-x", 1.575);
+        double yOffset = file.getDouble(path + ".position-y", 2);
+        double zOffset = file.getDouble(path + ".position-z", 1.575);
 
         EulerAngle customAngle = file.contains(path + ".angle")
                 ? new EulerAngle(file.getDouble(path + ".angle"), 0, 0)
                 : null;
 
-        double closeRange = plugin.getFileUtils().getFollow(file, path, "follow.close.range");
-        double closeSpeed = plugin.getFileUtils().getFollow(file, path, "follow.close.speed");
-        double middleSpeed = plugin.getFileUtils().getFollow(file, path, "follow.middle.speed");
-        double farRange = plugin.getFileUtils().getFollow(file, path, "follow.far.range");
-        double farSpeed = plugin.getFileUtils().getFollow(file, path, "follow.far.speed");
+        double closeRange = file.getDouble(path + ".follow-close-range");
+        double closeSpeed = file.getDouble(path + ".follow-close-speed");
+        double middleSpeed = file.getDouble(path + ".follow-middle-speed");
+        double farRange = file.getDouble(path + ".follow-far-range");
+        double farSpeed = file.getDouble(path + ".follow-far-speed");
 
         playerConnect.follow = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
 
@@ -163,13 +178,13 @@ public class TaskManager {
                             || headLocation.distance(playerConnect.dronePoint) < 1;
 
                     if (needNewPoint) {
-                        int size = plugin.getCalculateManager().x.size();
+                        int size = x.size();
                         if (size == 0) return;
                         int i = ThreadLocalRandom.current().nextInt(size);
                         Vector offset = new Vector(
-                                plugin.getCalculateManager().x.get(i),
-                                plugin.getCalculateManager().y.get(i),
-                                plugin.getCalculateManager().z.get(i)
+                                x.get(i),
+                                y.get(i),
+                                z.get(i)
                         );
                         Location newPoint = targetLocation.clone().add(offset);
 
@@ -219,8 +234,8 @@ public class TaskManager {
         String path = playerConnect.getGroup() + "." + droneHolder.getLevel();
         FileConfiguration file = plugin.droneFiles.get(droneHolder.getDrone());
 
-        int healingAmount = file.getInt(path + ".healing.health");
-        long delaySeconds = file.getLong(path + ".healing.delay");
+        int healingAmount = file.getInt(path + ".healing-health");
+        long delaySeconds = file.getLong(path + ".healing-delay");
 
         if (delaySeconds > 0 && healingAmount > 0) {
             long delayTicks = delaySeconds * 20;

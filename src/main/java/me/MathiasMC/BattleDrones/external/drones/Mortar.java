@@ -191,7 +191,35 @@ public class Mortar extends DroneRegistry {
                                     rocketBlock);
                         }
 
-                        plugin.getDroneManager().checkShot(player, target, file, currentMissileLocation, path, "explode");
+                        String newPathX = "";
+                        if (target instanceof Player) {
+                            newPathX = path + "explode" + ".player";
+                        } else if (plugin.getEntityManager().isMonster(target)) {
+                            newPathX = path + "explode" + ".monster";
+                        } else if (plugin.getEntityManager().isAnimal(target)) {
+                            newPathX = path + "explode" + ".animal";
+                        }
+                        final String xX = String.valueOf(headLocation.getBlockX());
+                        final String yY = String.valueOf(headLocation.getBlockY());
+                        final String zZ = String.valueOf(headLocation.getBlockZ());
+                        final String worldX = Objects.requireNonNull(headLocation.getWorld()).getName();
+                        String targetNameX = target.getName();
+                        final String translateX = targetNameX.toUpperCase().replace(" ", "_");
+                        if (plugin.getFileUtils().language.contains("translate." + translateX)) {
+                            targetNameX = String.valueOf(plugin.getFileUtils().language.getString("translate." + translateX));
+                        }
+                        if (file.contains(newPathX)) {
+                            for (String command : file.getStringList(newPathX)) {
+                                plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                                        .replace("{world}", worldX)
+                                        .replace("{x}", xX)
+                                        .replace("{y}", yY)
+                                        .replace("{z}", zZ)
+                                        .replace("{player}", player.getName())
+                                        .replace("{target}", targetNameX));
+                            }
+
+                        }
 
                         if (particleFile.contains(droneName)) {
                             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
@@ -201,7 +229,40 @@ public class Mortar extends DroneRegistry {
                         }
 
                         missile.remove();
-                        plugin.getDroneManager().checkTarget(player, target, file, currentMissileLocation, path, 2);
+                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                            if (target.isDead()) {
+                                String newPath = "";
+                                if (target instanceof Player) {
+                                    newPath = path + "killed" + ".player";
+                                } else if (plugin.getEntityManager().isMonster(target)) {
+                                    newPath = path + "killed" + ".monster";
+                                } else if (plugin.getEntityManager().isAnimal(target)) {
+                                    newPath = path + "killed" + ".animal";
+                                }
+                                final String xx = String.valueOf(currentMissileLocation.getBlockX());
+                                final String yy = String.valueOf(currentMissileLocation.getBlockY());
+                                final String zz = String.valueOf(currentMissileLocation.getBlockZ());
+                                final String world = Objects.requireNonNull(currentMissileLocation.getWorld()).getName();
+                                String targetName = target.getName();
+                                final String translate = targetName.toUpperCase().replace(" ", "_");
+                                if (plugin.getFileUtils().language.contains("translate." + translate)) {
+                                    targetName = String.valueOf(plugin.getFileUtils().language.getString("translate." + translate));
+                                }
+                                if (file.contains(newPath)) {
+                                    for (String command : file.getStringList(newPath)) {
+                                        plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                                                .replace("{world}", world)
+                                                .replace("{x}", xx)
+                                                .replace("{y}", yy)
+                                                .replace("{z}", zz)
+                                                .replace("{player}", player.getName())
+                                                .replace("{target}", targetName));
+                                    }
+
+                                }
+                            }
+                        }, 2);
+
                     }
 
                     if (particleFile.contains(customParticle_2)) {
@@ -226,9 +287,37 @@ public class Mortar extends DroneRegistry {
                 }
             }.runTaskTimer(plugin, 0, 1);
 
-            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
-            plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
-            plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
+            // ADD LOGIC
+
+            String newPathX = "";
+            if (target instanceof Player) {
+                newPathX = path + "run" + ".player";
+            } else if (plugin.getEntityManager().isMonster(target)) {
+                newPathX = path + "run" + ".monster";
+            } else if (plugin.getEntityManager().isAnimal(target)) {
+                newPathX = path + "run" + ".animal";
+            }
+            final String xX = String.valueOf(headLocation.getBlockX());
+            final String yY = String.valueOf(headLocation.getBlockY());
+            final String zZ = String.valueOf(headLocation.getBlockZ());
+            final String worldX = Objects.requireNonNull(headLocation.getWorld()).getName();
+            String targetNameX = target.getName();
+            final String translateX = targetNameX.toUpperCase().replace(" ", "_");
+            if (plugin.getFileUtils().language.contains("translate." + translateX)) {
+                targetNameX = String.valueOf(plugin.getFileUtils().language.getString("translate." + translateX));
+            }
+            if (file.contains(newPathX)) {
+                for (String command : file.getStringList(newPathX)) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                            .replace("{world}", worldX)
+                            .replace("{x}", xX)
+                            .replace("{y}", yY)
+                            .replace("{z}", zZ)
+                            .replace("{player}", player.getName())
+                            .replace("{target}", targetNameX));
+                }
+
+            }
 
         }, 0, cooldown).getTaskId();
     }

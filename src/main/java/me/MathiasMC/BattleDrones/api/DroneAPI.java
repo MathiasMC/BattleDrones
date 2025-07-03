@@ -200,4 +200,8 @@ public class DroneAPI {
         }
         return instance;
     }
+
+    public ItemStack getHeadTexture(String texture) {
+        return plugin.getItemStackManager().getHeadTexture(texture);
+    }
 }

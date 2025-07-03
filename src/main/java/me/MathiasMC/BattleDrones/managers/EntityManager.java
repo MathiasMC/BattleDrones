@@ -9,6 +9,7 @@ import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EntityEquipment;
@@ -16,13 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class EntityManager {
 
@@ -114,20 +111,30 @@ public class EntityManager {
         return livingEntity;
     }
 
-    public boolean hasBlockSight(Location start, Location end, List<String> list) {
-        if (list == null || list.isEmpty()) return true;
-        World world = start.getWorld();
-        if (world == null) return false;
+    public boolean hasBlockSight(Location start, Location end, List<String> ignoredBlocks) {
+        if (start.getWorld() == null || !start.getWorld().equals(end.getWorld())) return false;
 
+        Set<String> ignoreSet = new HashSet<>();
+        for (String name : ignoredBlocks) {
+            ignoreSet.add(name.toUpperCase());
+        }
+
+        World world = start.getWorld();
         Vector direction = end.toVector().subtract(start.toVector()).normalize();
         double distance = start.distance(end);
 
-        RayTraceResult result = world.rayTraceBlocks(start, direction, distance, FluidCollisionMode.NEVER, true);
+        Vector current = start.toVector();
+        double stepSize = 0.3;
+        for (double traveled = 0; traveled <= distance; traveled += stepSize) {
+            Block block = world.getBlockAt(current.getBlockX(), current.getBlockY(), current.getBlockZ());
+            Material type = block.getType();
+            if (ignoreSet.contains(type.name()) && !type.isAir()) {
+                return false;
+            }
 
-        if (result != null && result.getHitBlock() != null) {
-            Material hitMaterial = result.getHitBlock().getType();
-            return list.contains(hitMaterial.name());
+            current.add(direction.clone().multiply(stepSize));
         }
+
         return true;
     }
 
@@ -168,7 +175,7 @@ public class EntityManager {
     ) {
         String basePath = group + "." + droneLevel + ".";
 
-        String headRaw = file.getString(basePath + "text." + message);
+        String headRaw = file.getString(basePath + "text-" + message);
         if (headRaw != null && !headRaw.isEmpty()) {
             String headText = ChatColor.translateAlternateColorCodes('&', headRaw.replace("{name}", player.getName()));
             headText = plugin.getPlaceholderManager().replacePlaceholders(player, headText);
@@ -184,7 +191,7 @@ public class EntityManager {
         }
 
         if (name != null) {
-            String nameRaw = file.getString(basePath + "name." + message);
+            String nameRaw = file.getString(basePath + "name-" + message);
             if (nameRaw != null && !nameRaw.isEmpty()) {
                 String nameText = ChatColor.translateAlternateColorCodes('&', nameRaw.replace("{name}", player.getName()));
                 nameText = plugin.getPlaceholderManager().replacePlaceholders(player, nameText);
@@ -264,10 +271,10 @@ public class EntityManager {
         }
         Location playerLocation = droneSpawnEvent.getLocation();
         if (playerLocation == null) {
-            playerLocation = player.getLocation().add(0, plugin.getFileUtils().getDouble(file, path + ".position.y", 2), 0);
+            playerLocation = player.getLocation().add(0, file.getDouble(path + ".position.y", 2), 0);
             final float yaw = playerLocation.getYaw();
-            final double xD = Math.sin(-0.0175 * yaw + plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575)) + playerLocation.getX();
-            final double zD = Math.cos(-0.0175 * yaw + plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575)) + playerLocation.getZ();
+            final double xD = Math.sin(-0.0175 * yaw + file.getDouble(path + ".position.x", 1.575)) + playerLocation.getX();
+            final double zD = Math.cos(-0.0175 * yaw + file.getDouble(path + ".position.z", 1.575)) + playerLocation.getZ();
             playerLocation = new Location(player.getWorld(), xD, playerLocation.getY(), zD);
         }
         playerLocation.setDirection(playerLocation.getDirection());
@@ -280,7 +287,7 @@ public class EntityManager {
         head.setCustomNameVisible(true);
         head.getPersistentDataContainer().set(plugin.droneKey, PersistentDataType.STRING, uuid);
         playerConnect.head = head;
-        if (Objects.requireNonNull(file.getString(path + ".name.searching")).length() > 0 || Objects.requireNonNull(file.getString(path + ".name.target")).length() > 0) {
+        if (Objects.requireNonNull(file.getString(path + ".name-searching")).length() > 0 || Objects.requireNonNull(file.getString(path + ".name-target")).length() > 0) {
             final ArmorStand name = getArmorStand(playerLocation.add(0, 0.3, 0));
             name.setCustomName(" ");
             name.setCustomNameVisible(true);

@@ -10,6 +10,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class DroneDeathEvent extends Event implements Cancellable {
+
     private static final HandlerList handlers = new HandlerList();
 
     private boolean cancelled = false;

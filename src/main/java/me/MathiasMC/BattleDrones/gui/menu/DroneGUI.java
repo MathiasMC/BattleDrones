@@ -117,7 +117,7 @@ public class DroneGUI extends GUI {
                     }
                     if (plugin.getSupport().withdraw(player, file.getLong(path + ".cost"))) {
                         droneHolder.setLevel((droneHolder.getLevel() + 1));
-                        if (plugin.getFileUtils().config.getBoolean("update-upgrade") && playerConnect.isActive()) {
+                        if (playerConnect.isActive()) {
                             DroneSpawnEvent droneSpawnEvent = new DroneSpawnEvent(player, playerConnect, droneHolder);
                             droneSpawnEvent.setBypassWait(true);
                             droneSpawnEvent.setBypassDroneAmount(true);
@@ -132,25 +132,25 @@ public class DroneGUI extends GUI {
                             }
                             droneSpawnEvent.spawn();
                         }
-                        for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.levelup")) {
+                        for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".upgrade-commands-level")) {
                             plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                         }
                         droneHolder.save();
                         new DroneGUI(plugin.getPlayerMenu(player), drone).open();
                     } else {
-                        for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.enough")) {
+                        for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".upgrade-commands-enough")) {
                             plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                         }
                     }
                 } else {
-                    for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".commands.max")) {
+                    for (String command : file.getStringList(playerConnect.getGroup() + "." + droneHolder.getLevel() + ".upgrade-commands-max")) {
                         plugin.getServer().dispatchCommand(plugin.consoleSender, command.replace("{player}", player.getName()));
                     }
                 }
             } else if (file.getStringList(slot + ".OPTIONS").contains("CLOSE")) {
                 player.closeInventory();
             }
-            if (plugin.getFileUtils().config.getBoolean("update-toggle") && updateAI) {
+            if (updateAI) {
                 if (playerConnect.isActive() && playerConnect.getActive().equalsIgnoreCase(drone)) {
                     playerConnect.stopAI();
                     final DroneRegistry droneRegistry = plugin.droneRegistry.get(drone);

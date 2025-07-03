@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class DroneSpawnEvent extends Event implements Cancellable {
+
     private static final HandlerList handlers = new HandlerList();
 
     private final BattleDrones plugin;

@@ -4,6 +4,7 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.api.DroneRegistry;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -84,9 +85,39 @@ public class Healing extends DroneRegistry {
             double add = plugin.getCalculateManager().randomDouble(min, max);
             target.setHealth(Math.min(health + add, maxHealth));
 
-            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
-            plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
-            plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
+
+            // ADD LOGIC
+
+
+            String newPath = "";
+            if (target instanceof Player) {
+                newPath = path + "run" + ".player";
+            } else if (plugin.getEntityManager().isMonster(target)) {
+                newPath = path + "run" + ".monster";
+            } else if (plugin.getEntityManager().isAnimal(target)) {
+                newPath = path + "run" + ".animal";
+            }
+            final String x = String.valueOf(headLocation.getBlockX());
+            final String y = String.valueOf(headLocation.getBlockY());
+            final String z = String.valueOf(headLocation.getBlockZ());
+            final String world = Objects.requireNonNull(headLocation.getWorld()).getName();
+            String targetName = target.getName();
+            final String translate = targetName.toUpperCase().replace(" ", "_");
+            if (plugin.getFileUtils().language.contains("translate." + translate)) {
+                targetName = String.valueOf(plugin.getFileUtils().language.getString("translate." + translate));
+            }
+            if (file.contains(newPath)) {
+                for (String command : file.getStringList(newPath)) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                            .replace("{world}", world)
+                            .replace("{x}", x)
+                            .replace("{y}", y)
+                            .replace("{z}", z)
+                            .replace("{player}", player.getName())
+                            .replace("{target}", targetName));
+                }
+
+            }
 
         }, 0, cooldown).getTaskId();
     }

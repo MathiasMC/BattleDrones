@@ -121,7 +121,7 @@ public class DroneHolder {
     }
 
     public boolean isStationary() {
-        return BattleDrones.getInstance().getFileUtils().config.getStringList("stationary-mode").contains(droneName);
+        return BattleDrones.getInstance().droneFiles.get(droneName).getBoolean("stationary");
     }
 
     private String exclude() {

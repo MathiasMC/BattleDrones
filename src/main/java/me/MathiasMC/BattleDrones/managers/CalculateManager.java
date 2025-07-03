@@ -16,10 +16,6 @@ import java.util.stream.Stream;
 
 public class CalculateManager {
 
-    public final ArrayList<Double> x = new ArrayList<>();
-    public final ArrayList<Double> y = new ArrayList<>();
-    public final ArrayList<Double> z = new ArrayList<>();
-
     public void damage(LivingEntity livingEntity, double damage) {
         int resistance = Optional.ofNullable(livingEntity.getPotionEffect(PotionEffectType.INSTANT_DAMAGE))
                 .map(PotionEffect::getAmplifier)

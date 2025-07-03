@@ -2,6 +2,8 @@ package me.MathiasMC.BattleDrones.external.drones;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.api.DroneRegistry;
+import me.MathiasMC.BattleDrones.api.Type;
+import me.MathiasMC.BattleDrones.api.events.DroneDeathEvent;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
 import org.bukkit.*;
@@ -24,10 +26,7 @@ public class FaFMissile extends DroneRegistry {
     }
 
     @Override
-    public void ability(Player player,
-                        PlayerConnect playerConnect,
-                        DroneHolder droneHolder
-    ) {
+    public void ability(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
         String uuid = player.getUniqueId().toString();
         String group = playerConnect.getGroup();
         FileConfiguration file = plugin.droneFiles.get(droneName);
@@ -78,27 +77,18 @@ public class FaFMissile extends DroneRegistry {
 
         long cooldown = file.getLong(path + "cooldown");
 
-        long maxAmmoSlots = file.getLong(path + "max-ammo-slots") * 64;
-
         String rocketHead = file.getString(path + "rocket-head");
 
         double rocketSpeed = file.getDouble(path + "rocket-speed");
-        double rocketRadius = file.getDouble(path + "rocket-radius");
         double rocketPower = file.getDouble(path + "rocket-explosion-power");
-
-        double minDamage = file.getDouble(path + "min");
-        double maxDamage = file.getDouble(path + "max");
 
         boolean rocketExplosion = file.getBoolean(path + "rocket-explosion");
         boolean rocketFire = file.getBoolean(path + "rocket-explosion-fire");
         boolean rocketBlock = file.getBoolean(path + "rocket-explosion-block");
         boolean rocketDestruction = file.getBoolean(path + "rocket-self-destruction");
 
-
         long rocketTime = file.getLong(path + "rocket-time") * 20;
 
-        int finalPoint = plugin.getCalculateManager().getProcentFromDouble(rocketSpeed);
-        double finalHeight = file.getDouble(path + "rocket-height");
         playerConnect.ability = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             LivingEntity target = plugin.drone_targets.get(uuid);
             if (target == null) {
@@ -138,11 +128,6 @@ public class FaFMissile extends DroneRegistry {
                 int particle2 = 0;
                 final ArrayList<String> exclude = new ArrayList<>();
                 final World world = missile.getWorld();
-                final Location start = missile.getLocation();
-                final double height = start.distance(target.getLocation()) / finalHeight;
-                final Vector startVector = target.getLocation().toVector().subtract(start.toVector());
-                final float length = (float) startVector.length();
-                final float pitch = (float) (4 * height / Math.pow(length, 2));
                 final Set<Material> passable = Set.of(Material.AIR, Material.WATER, Material.LAVA, Material.GRASS_BLOCK, Material.TALL_GRASS);
 
                 @Override
@@ -168,30 +153,18 @@ public class FaFMissile extends DroneRegistry {
 
                     if (shouldExplode) {
                         this.cancel();
-                        ArrayList<LivingEntity> affected = plugin.getEntityManager().getLivingEntitiesAround(
-                                missile, rocketRadius, 1, 1, 1, exclude, exclude, false
-                        );
-
-                        for (LivingEntity entity : affected) {
-                            double damage = plugin.getCalculateManager().randomDouble(minDamage, maxDamage);
-                            plugin.getCalculateManager().damage(entity, damage);
-                            if (plugin.getCalculateManager().randomChance() <= file.getDouble(path + "chance") && entity instanceof Player) {
-                                if (file.contains(path + "chance-commands")) {
-                                    for (String command : file.getStringList(path + "chance-commands")) {
-                                        plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', command.replace("{player}", entity.getName())));
-                                    }
-                                }
-                            }
-                        }
 
                         if (rocketExplosion) {
-                            world.createExplosion(currentMissileLocation.getX(), currentMissileLocation.getY(), currentMissileLocation.getZ(),
+                            world.createExplosion(
+                                    currentMissileLocation.getX(),
+                                    currentMissileLocation.getY(),
+                                    currentMissileLocation.getZ(),
                                     (float) rocketPower,
                                     rocketFire,
                                     rocketBlock);
                         }
 
-                        plugin.getDroneManager().checkShot(player, target, file, currentMissileLocation, path, "explode");
+                        dispatchTargetCommands(target, player, currentMissileLocation, path + "explode", file);
 
                         if (particleFile.contains(droneName)) {
                             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
@@ -201,7 +174,11 @@ public class FaFMissile extends DroneRegistry {
                         }
 
                         missile.remove();
-                        plugin.getDroneManager().checkTarget(player, target, file, currentMissileLocation, path, 2);
+                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                            if (target.isDead()) {
+                                dispatchTargetCommands(target, player, currentMissileLocation, path + "killed", file);
+                            }
+                        }, 2);
                     }
 
                     if (particleFile.contains(customParticle_2)) {
@@ -226,10 +203,118 @@ public class FaFMissile extends DroneRegistry {
                 }
             }.runTaskTimer(plugin, 0, 1);
 
-            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
-            plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
-            plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
+            droneHolder.setAmmo(droneHolder.getAmmo() - 1);
 
+            dispatchTargetCommands(target, player, headLocation, path + "ability", file);
+
+
+            if (droneHolder.getWear() > 0) {
+                droneHolder.setWear(droneHolder.getWear() - 1);
+            } else {
+                if (droneHolder.getHealth() - 1 >= 0) {
+                    droneHolder.setWear(file.getInt(path + "wear-and-tear"));
+                    droneHolder.setHealth(droneHolder.getHealth() - 1);
+                } else {
+                    List<String> wearDeathCommands = file.getStringList("dead.wear");
+                    dispatchCommands(wearDeathCommands, player);
+
+                    DroneDeathEvent droneDeathEvent = new DroneDeathEvent(player, playerConnect, droneHolder);
+                    droneDeathEvent.setType(Type.WEAR);
+                    plugin.getServer().getPluginManager().callEvent(droneDeathEvent);
+                    if (!droneDeathEvent.isCancelled()) {
+                        playerConnect.stopDrone(true, true);
+                        playerConnect.setLastActive("");
+                        droneHolder.setUnlocked(file.getInt("dead.unlocked"));
+
+                        if (file.getLong("dead.set-level") != 0) {
+                            droneHolder.setLevel(file.getInt("dead.set-level"));
+                        }
+                        if (!file.getBoolean("dead.ammo")) {
+                            droneHolder.setAmmo(0);
+                        }
+
+                        droneHolder.save();
+                    }
+                    return;
+                }
+            }
+
+            if (droneHolder.getHealth() - 1 > 0) {
+                droneHolder.setHealth(droneHolder.getHealth() - 1);
+
+                List<String> hitCommands = file.getStringList(path + ".hit-commands");
+                dispatchCommands(hitCommands, player);
+
+                long currentHealth = droneHolder.getHealth();
+                long maxHealth = file.getLong(path + ".health");
+
+                long percentLeft = (long) Math.floor(currentHealth * (100D / maxHealth));
+                long previousPercent = (long) Math.floor((currentHealth + 1) * (100D / maxHealth));
+
+                if ((percentLeft == previousPercent && percentLeft != 0L) || (percentLeft == 0L && currentHealth != 1)) {
+                    return;
+                }
+
+                List<String> lowHealthCommands = file.getStringList("low-" + "health" + "." + percentLeft);
+                dispatchCommands(lowHealthCommands, player);
+
+            }
         }, 0, cooldown).getTaskId();
+    }
+
+    private void dispatchCommands(List<String> commands, Player player) {
+        for (String command : commands) {
+            plugin.getServer().dispatchCommand(
+                    plugin.consoleSender,
+                    plugin.getPlaceholderManager().replacePlaceholders(
+                            player,
+                            ChatColor.translateAlternateColorCodes('&', command)
+                    )
+            );
+        }
+    }
+
+    private void dispatchTargetCommands(Entity target, Player player, Location headLocation, String path, FileConfiguration file) {
+        String type = null;
+        if (target instanceof Player) {
+            type = "player";
+        } else if (plugin.getEntityManager().isMonster(target)) {
+            type = "monster";
+        } else if (plugin.getEntityManager().isAnimal(target)) {
+            type = "animal";
+        }
+
+        if (type == null) return;
+
+        String fullPath = path + "-commands-" + type;
+        if (!file.contains(fullPath)) return;
+
+        World worldObj = headLocation.getWorld();
+        if (worldObj == null) return;
+
+        String x = Integer.toString(headLocation.getBlockX());
+        String y = Integer.toString(headLocation.getBlockY());
+        String z = Integer.toString(headLocation.getBlockZ());
+        String world = worldObj.getName();
+
+        String targetName = target.getName();
+
+        String translateKey = "translate." + targetName.toUpperCase().replace(" ", "_");
+
+        if (plugin.getFileUtils().language.contains(translateKey)) {
+            targetName = plugin.getFileUtils().language.getString(translateKey);
+        }
+        for (String command : file.getStringList(fullPath)) {
+            plugin.getServer().dispatchCommand(
+                    plugin.consoleSender,
+                    command
+                            .replace("{world}", world)
+                            .replace("{x}", x)
+                            .replace("{y}", y)
+                            .replace("{z}", z)
+                            .replace("{player}", player.getName())
+                            .replace("{target}", targetName)
+            );
+        }
     }
 }

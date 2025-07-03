@@ -4,6 +4,7 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.api.DroneRegistry;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -11,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Laser extends DroneRegistry {
 
@@ -53,7 +55,7 @@ public class Laser extends DroneRegistry {
 
         long maxAmmoSlots = file.getLong(path + "max-ammo-slots") * 64;
 
-        double knockback = plugin.getFileUtils().getDouble(file, path + "knockback", 0);
+        double knockback = file.getDouble(path + ".knockback", 0);
 
         double min = file.getDouble(path + "min");
         double max = file.getDouble(path + "max");
@@ -97,10 +99,71 @@ public class Laser extends DroneRegistry {
 
             plugin.getCalculateManager().damage(target, damage);
 
-            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
-            plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
-            plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
-            plugin.getDroneManager().checkTarget(player, target, file, targetLocation, path, 2);
+            // ADD LOGIC
+
+            String newPathX = "";
+            if (target instanceof Player) {
+                newPathX = path + "run" + ".player";
+            } else if (plugin.getEntityManager().isMonster(target)) {
+                newPathX = path + "run" + ".monster";
+            } else if (plugin.getEntityManager().isAnimal(target)) {
+                newPathX = path + "run" + ".animal";
+            }
+            final String xX = String.valueOf(headLocation.getBlockX());
+            final String yY = String.valueOf(headLocation.getBlockY());
+            final String zZ = String.valueOf(headLocation.getBlockZ());
+            final String worldX = Objects.requireNonNull(headLocation.getWorld()).getName();
+            String targetNameX = target.getName();
+            final String translateX = targetNameX.toUpperCase().replace(" ", "_");
+            if (plugin.getFileUtils().language.contains("translate." + translateX)) {
+                targetNameX = String.valueOf(plugin.getFileUtils().language.getString("translate." + translateX));
+            }
+            if (file.contains(newPathX)) {
+                for (String command : file.getStringList(newPathX)) {
+                    plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                            .replace("{world}", worldX)
+                            .replace("{x}", xX)
+                            .replace("{y}", yY)
+                            .replace("{z}", zZ)
+                            .replace("{player}", player.getName())
+                            .replace("{target}", targetNameX));
+                }
+
+            }
+
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                if (target.isDead()) {
+                    String newPath = "";
+                    if (target instanceof Player) {
+                        newPath = path + "killed" + ".player";
+                    } else if (plugin.getEntityManager().isMonster(target)) {
+                        newPath = path + "killed" + ".monster";
+                    } else if (plugin.getEntityManager().isAnimal(target)) {
+                        newPath = path + "killed" + ".animal";
+                    }
+                    final String x = String.valueOf(targetLocation.getBlockX());
+                    final String y = String.valueOf(targetLocation.getBlockY());
+                    final String z = String.valueOf(targetLocation.getBlockZ());
+                    final String world = Objects.requireNonNull(targetLocation.getWorld()).getName();
+                    String targetName = target.getName();
+                    final String translate = targetName.toUpperCase().replace(" ", "_");
+                    if (plugin.getFileUtils().language.contains("translate." + translate)) {
+                        targetName = String.valueOf(plugin.getFileUtils().language.getString("translate." + translate));
+                    }
+                    if (file.contains(newPath)) {
+                        for (String command : file.getStringList(newPath)) {
+                            plugin.getServer().dispatchCommand(plugin.consoleSender, command
+                                    .replace("{world}", world)
+                                    .replace("{x}", x)
+                                    .replace("{y}", y)
+                                    .replace("{z}", z)
+                                    .replace("{player}", player.getName())
+                                    .replace("{target}", targetName));
+                        }
+
+                    }
+                }
+            }, 2);
 
         }, 0, cooldown).getTaskId();
     }

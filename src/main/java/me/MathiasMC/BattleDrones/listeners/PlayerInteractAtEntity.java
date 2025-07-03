@@ -24,23 +24,28 @@ public class PlayerInteractAtEntity implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInteract(PlayerInteractAtEntityEvent e) {
         final Entity entity = e.getRightClicked();
-        if (entity instanceof ArmorStand) {
-            final ArmorStand armorStand = (ArmorStand) entity;
+        if (entity instanceof ArmorStand armorStand) {
             final String key = armorStand.getPersistentDataContainer().get(new NamespacedKey(plugin, "drone_uuid"), PersistentDataType.STRING);
             if (key != null) {
                 e.setCancelled(true);
-                if (plugin.getFileUtils().config.getBoolean("drone-click")) {
-                    final Player player = e.getPlayer();
-                    final String uuid = player.getUniqueId().toString();
-                    if (uuid.equalsIgnoreCase(key)) {
-                        if (player.isSneaking()) {
-                            final PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
-                            if (playerConnect.isActive()) {
-                                new DroneGUI(plugin.getPlayerMenu(player), playerConnect.getActive()).open();
-                            }
-                        }
-                    }
-                }
+
+                Player player = e.getPlayer();
+
+                if (!player.isSneaking()) return;
+
+                String uuid = player.getUniqueId().toString();
+
+                if (!uuid.equalsIgnoreCase(key)) return;
+
+                PlayerConnect playerConnect = plugin.getPlayerConnect(uuid);
+
+                if (!playerConnect.isActive()) return;
+
+                boolean can = plugin.droneFiles.get(playerConnect.getActive()).getBoolean("drone-click");
+                if (!can) return;
+
+                new DroneGUI(plugin.getPlayerMenu(player), playerConnect.getActive()).open();
+
             }
         }
     }

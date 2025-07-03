@@ -4,6 +4,7 @@ import me.MathiasMC.BattleDrones.BattleDrones;
 import me.MathiasMC.BattleDrones.api.DroneRegistry;
 import me.MathiasMC.BattleDrones.data.DroneHolder;
 import me.MathiasMC.BattleDrones.data.PlayerConnect;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.HashSet;
+import java.util.List;
 
 public class ShieldGenerator extends DroneRegistry implements Listener {
 
@@ -128,8 +130,7 @@ public class ShieldGenerator extends DroneRegistry implements Listener {
                             ), delay);
         }
 
-        plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
-        plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
+        // ADD LOGIC
 
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             cooldown.remove(uuid);

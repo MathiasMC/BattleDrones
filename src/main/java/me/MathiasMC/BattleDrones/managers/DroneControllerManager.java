@@ -22,7 +22,6 @@ public class DroneControllerManager {
 
     public DroneControllerManager(final BattleDrones plugin) {
         this.plugin = plugin;
-        updateFollowPath();
     }
 
     public void selectTarget(final Player player, final PlayerInteractEvent e) {
@@ -201,22 +200,5 @@ public class DroneControllerManager {
         );
 
         return result != null ? (LivingEntity) result.getHitEntity() : null;
-    }
-
-    public void updateFollowPath() {
-        plugin.getCalculateManager().x.clear();
-        plugin.getCalculateManager().y.clear();
-        plugin.getCalculateManager().z.clear();
-        for (String add : plugin.getFileUtils().config.getConfigurationSection("follow.locations").getKeys(false)) {
-            final int points = plugin.getFileUtils().config.getInt("follow.locations." + add + ".distance");
-            final double radius = plugin.getFileUtils().config.getDouble("follow.locations." + add + ".radius");
-            final double yoffset = plugin.getFileUtils().config.getDouble("follow.locations." + add + ".y-offset");
-            for (int i = 0; i < points; i++) {
-                final double angle = 2 * Math.PI * i / points;
-                plugin.getCalculateManager().x.add((double) Math.round(radius * Math.sin(angle)));
-                plugin.getCalculateManager().y.add(yoffset);
-                plugin.getCalculateManager().z.add((double) Math.round(radius * Math.cos(angle)));
-            }
-        }
     }
 }

@@ -19,19 +19,13 @@ public class Flamethrower extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Flamethrower(BattleDrones plugin,
-                        String droneName,
-                        String droneCategory
-    ) {
+    public Flamethrower(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
         this.plugin = plugin;
     }
 
     @Override
-    public void ability(Player player,
-                        PlayerConnect playerConnect,
-                        DroneHolder droneHolder
-    ) {
+    public void ability(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
         String uuid = playerConnect.getUniqueId();
         String group = playerConnect.getGroup();
         FileConfiguration file = plugin.droneFiles.get(droneName);
@@ -53,8 +47,6 @@ public class Flamethrower extends DroneRegistry {
         List<String> blockCheckList = plugin.getFileUtils().getBlockCheck(file, path);
 
         long cooldown = file.getLong(path + "cooldown");
-
-        long maxAmmoSlots = file.getLong(path + "max-ammo-slots") * 64;
 
         double projectileSpace = file.getDouble(path + "projectile-space");
         double damage = plugin.getCalculateManager().randomDouble(file.getDouble(path + "min"), file.getDouble(path + "max"));
@@ -107,7 +99,11 @@ public class Flamethrower extends DroneRegistry {
                                 target.setFireTicks(burnTime);
                             }
                             target.damage(damage);
-                            plugin.getDroneManager().checkTarget(player, target, file, location, path, 2);
+                            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                                if (target.isDead()) {
+                                    dispatchTargetCommands(target, player, location, path + "killed", file);
+                                }
+                            }, 2);
                             cancel();
                         }
 
@@ -126,10 +122,65 @@ public class Flamethrower extends DroneRegistry {
                 }.runTaskTimer(plugin, 0, projectileSpeed);
             }
 
-            plugin.getDroneManager().checkMessage(droneHolder.getAmmo(), maxAmmoSlots, player, "ammo");
-            plugin.getDroneManager().checkShot(player, target, file, headLocation, path, "run");
-            plugin.getDroneManager().takeAmmo(player, playerConnect, droneHolder, file, path);
+            // ADD LOGIC
+
+            dispatchTargetCommands(target, player, headLocation, path + "ability", file);
 
         }, 0, cooldown).getTaskId();
+    }
+
+    private void dispatchCommands(List<String> commands, Player player) {
+        for (String command : commands) {
+            plugin.getServer().dispatchCommand(
+                    plugin.consoleSender,
+                    plugin.getPlaceholderManager().replacePlaceholders(
+                            player,
+                            ChatColor.translateAlternateColorCodes('&', command)
+                    )
+            );
+        }
+    }
+
+    private void dispatchTargetCommands(Entity target, Player player, Location headLocation, String path, FileConfiguration file) {
+        String type = null;
+        if (target instanceof Player) {
+            type = "player";
+        } else if (plugin.getEntityManager().isMonster(target)) {
+            type = "monster";
+        } else if (plugin.getEntityManager().isAnimal(target)) {
+            type = "animal";
+        }
+
+        if (type == null) return;
+
+        String fullPath = path + "-commands-" + type;
+        if (!file.contains(fullPath)) return;
+
+        World worldObj = headLocation.getWorld();
+        if (worldObj == null) return;
+
+        String x = Integer.toString(headLocation.getBlockX());
+        String y = Integer.toString(headLocation.getBlockY());
+        String z = Integer.toString(headLocation.getBlockZ());
+        String world = worldObj.getName();
+
+        String targetName = target.getName();
+        String translateKey = "translate." + targetName.toUpperCase().replace(" ", "_");
+
+        if (plugin.getFileUtils().language.contains(translateKey)) {
+            targetName = plugin.getFileUtils().language.getString(translateKey);
+        }
+        for (String command : file.getStringList(fullPath)) {
+            plugin.getServer().dispatchCommand(
+                    plugin.consoleSender,
+                    command
+                            .replace("{world}", world)
+                            .replace("{x}", x)
+                            .replace("{y}", y)
+                            .replace("{z}", z)
+                            .replace("{player}", player.getName())
+                            .replace("{target}", targetName)
+            );
+        }
     }
 }

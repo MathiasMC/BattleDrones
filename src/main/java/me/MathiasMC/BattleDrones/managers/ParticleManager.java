@@ -2,11 +2,12 @@ package me.MathiasMC.BattleDrones.managers;
 
 import me.MathiasMC.BattleDrones.BattleDrones;
 import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class ParticleManager {
@@ -21,67 +22,105 @@ public class ParticleManager {
 
     public void load() {
         lib.clear();
-        for (String particle : Objects.requireNonNull(plugin.getFileUtils().particles.getConfigurationSection("")).getKeys(false)) {
-            if (Objects.requireNonNull(plugin.getFileUtils().particles.getString(particle + ".type")).equalsIgnoreCase("sphere")) {
-                final Set<double[]> set = new LinkedHashSet<>();
-                final double r = plugin.getFileUtils().particles.getDouble(particle + ".radius");
-                final int distance = plugin.getFileUtils().particles.getInt(particle + ".distance");
-                for (double phi = 0; phi <= Math.PI; phi += Math.PI / distance) {
-                    for (double theta = 0; theta <= 2 * Math.PI; theta += Math.PI / distance) {
-                        double x = r * Math.cos(theta) * Math.sin(phi);
-                        double y = r * Math.cos(phi) + 0.3;
-                        double z = r * Math.sin(theta) * Math.sin(phi);
-                        set.add(new double[] { x, y , z });
-                    }
-                }
-                lib.put(particle, set);
-            } else if (Objects.requireNonNull(plugin.getFileUtils().particles.getString(particle + ".type")).equalsIgnoreCase("circle")) {
-                final Set<double[]> set = new LinkedHashSet<>();
-                final int points = plugin.getFileUtils().particles.getInt(particle + ".distance");
-                final double radius = plugin.getFileUtils().particles.getDouble(particle + ".radius");
-                for (int i = 0; i < points; i++) {
-                    double angle = 2 * Math.PI * i / points;
-                    set.add(new double[] { radius * Math.sin(angle), 0.0d , radius * Math.cos(angle) });
-                }
-                lib.put(particle, set);
+
+        FileConfiguration particlesConfig = plugin.getFileUtils().particles;
+        ConfigurationSection rootSection = particlesConfig.getConfigurationSection("");
+        if (rootSection == null) {
+            plugin.getTextUtils().error("Particles section missing!");
+            return;
+        }
+
+        for (String particleName : rootSection.getKeys(false)) {
+            String type = particlesConfig.getString(particleName + ".type", "").toLowerCase();
+
+            Set<double[]> pointsSet;
+            switch (type) {
+                case "sphere":
+                    pointsSet = calculateSpherePoints(
+                      particlesConfig.getDouble(particleName + ".radius"),
+                      particlesConfig.getInt(particleName + ".distance")
+                    );
+                    break;
+
+                case "circle":
+                    pointsSet = calculateCirclePoints(
+                            particlesConfig.getDouble(particleName + ".radius"),
+                            particlesConfig.getInt(particleName + ".distance")
+                    );
+                    break;
+                default:
+                    continue;
+            }
+
+            lib.put(particleName, pointsSet);
+        }
+    }
+
+    private Set<double[]> calculateSpherePoints(double radius, int distance) {
+        Set<double[]> points = new LinkedHashSet<>();
+        for (double phi = 0; phi <= Math.PI; phi += Math.PI / distance) {
+            for (double theta = 0; theta <= 2 * Math.PI; theta += Math.PI / distance) {
+                double x = radius * Math.cos(theta) * Math.sin(phi);
+                double y = radius * Math.cos(phi) + 0.3;
+                double z = radius * Math.sin(theta) * Math.sin(phi);
+                points.add(new double[]{x, y, z});
+            }
+        }
+        return points;
+    }
+
+    private Set<double[]> calculateCirclePoints(double radius, int pointsCount) {
+        Set<double[]> points = new LinkedHashSet<>();
+        for (int i = 0; i < pointsCount; i++) {
+            double angle = 2 * Math.PI * i / pointsCount;
+            points.add(new double[]{radius * Math.sin(angle), 0.0d, radius * Math.cos(angle)});
+        }
+        return points;
+    }
+
+    public void displayParticle(String particleName, String particleType, Location location, int r, int g, int b, int size, int amount) {
+        Set<double[]> points = lib.get(particleName);
+        if (points == null) return;
+
+        World world = location.getWorld();
+        if (world == null) return;
+
+        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
+
+        for (double[] offset : points) {
+            location.add(offset[0], offset[1], offset[2]);
+            spawnParticle(particleType, world, location, amount, dustOptions);
+            location.subtract(offset[0], offset[1], offset[2]);
+        }
+    }
+
+    private void spawnParticle(String particleType, World world, Location location, int amount, Particle.DustOptions dustOptions) {
+        if ("DUST".equalsIgnoreCase(particleType)) {
+            world.spawnParticle(Particle.DUST, location, amount, 0, 0, 0, 0F, dustOptions);
+        } else {
+            try {
+                Particle particle = Particle.valueOf(particleType.toUpperCase());
+                world.spawnParticle(particle, location, amount, 0, 0, 0, 0F);
+            } catch (IllegalArgumentException e) {
+                plugin.getTextUtils().error("Invalid particle type: " + particleType);
             }
         }
     }
 
-    public void displayParticle(final String particleName, final String particleType, final Location location, final int r, final int g, final int b, final int size, final int amount) {
-        if (!lib.containsKey(particleName)) {
-            plugin.getTextUtils().error("&cAn error has occurred, " + particleName + " particle is not found.");
-            return;
-        }
-        final World world = location.getWorld();
-        final Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
-        for (double[] set : lib.get(particleName)) {
-            location.add(set[0], set[1], set[2]);
-            switchParticle(particleType, world, location, amount, dustOptions);
-            location.subtract(set[0], set[1], set[2]);
-        }
-    }
 
-    private void switchParticle(final String particleType, final World world, final Location location, final int amount, final Particle.DustOptions dustOptions) {
-        if ("DUST".equals(particleType)) {
-            world.spawnParticle(Particle.DUST, location, amount, 0, 0, 0, 0F, dustOptions);
-            return;
-        }
-        world.spawnParticle(Particle.valueOf(particleType), location, amount, 0, 0, 0, 0F);
-    }
+    public void displayLineParticle(String particleType, Location start, Location end, double distance, double space, int r, int g, int b, int amount, int size) {
+        World world = start.getWorld();
+        if (world == null) return;
 
-    public void displayLineParticle(final String particleType, final Location start, final Location end, final double distance, final double space, final int r, final int g, final int b, final int amount, final int size) {
-        final Vector p1 = start.toVector();
-        final Vector vector = end.toVector().clone().subtract(p1).normalize().multiply(space);
-        final World world = start.getWorld();
-        if (world == null) {
-            return;
-        }
-        final Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
-        double length = 0;
-        for (; length < distance; p1.add(vector)) {
-            switchParticle(particleType, world, p1.toLocation(world), amount, dustOptions);
-            length += space;
+        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(r, g, b), size);
+        Vector current = start.toVector();
+        Vector direction = end.toVector().subtract(current).normalize().multiply(space);
+
+        double traveled = 0;
+        while (traveled < distance) {
+            spawnParticle(particleType, world, current.toLocation(world), amount, dustOptions);
+            current.add(direction);
+            traveled += space;
         }
     }
 }

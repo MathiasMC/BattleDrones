@@ -18,35 +18,23 @@ public class Teleport extends DroneRegistry {
 
     private final BattleDrones plugin;
 
-    public Teleport(BattleDrones plugin,
-                    String droneName,
-                    String droneCategory
-    ) {
+    public Teleport(BattleDrones plugin, String droneName, String droneCategory) {
         super(plugin, droneName, droneCategory);
         this.plugin = plugin;
     }
 
     @Override
-    public void ability(Player player,
-                        PlayerConnect playerConnect,
-                        DroneHolder droneHolder
-    ) {
+    public void ability(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
 
     }
 
     @Override
-    public void find(Player player,
-                     PlayerConnect playerConnect,
-                     DroneHolder droneHolder
-    ) {
+    public void find(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
 
     }
 
     @Override
-    public void follow(Player player,
-                       PlayerConnect playerConnect,
-                       DroneHolder droneHolder
-    ) {
+    public void follow(Player player, PlayerConnect playerConnect, DroneHolder droneHolder) {
         String uuid = player.getUniqueId().toString();
         String group = playerConnect.getGroup();
         String drone = droneHolder.getDrone();
@@ -58,15 +46,15 @@ public class Teleport extends DroneRegistry {
         ArmorStand name = playerConnect.name;
         EulerAngle defaultPose = new EulerAngle(0, 0, 0);
 
-        double xOffset = plugin.getFileUtils().getDouble(file, path + ".position.x", 1.575);
-        double yOffset = plugin.getFileUtils().getDouble(file, path + ".position.y", 2);
-        double zOffset = plugin.getFileUtils().getDouble(file, path + ".position.z", 1.575);
+        double xOffset = file.getDouble(path + ".position-x", 1.575);
+        double yOffset = file.getDouble(path + ".position-y", 2);
+        double zOffset = file.getDouble(path + ".position-z", 1.575);
 
-        double closeRange = plugin.getFileUtils().getFollow(file, path, "follow.close.range");
-        double closeSpeed = plugin.getFileUtils().getFollow(file, path, "follow.close.speed");
-        double middleSpeed = plugin.getFileUtils().getFollow(file, path, "follow.middle.speed");
-        double farRange = plugin.getFileUtils().getFollow(file, path, "follow.far.range");
-        double farSpeed = plugin.getFileUtils().getFollow(file, path, "follow.far.speed");
+        double closeRange = file.getDouble(path + ".follow-close-range");
+        double closeSpeed = file.getDouble(path + ".follow-close-speed");
+        double middleSpeed = file.getDouble(path + ".follow-middle-speed");
+        double farRange = file.getDouble(path + ".follow-far-range");
+        double farSpeed = file.getDouble(path + ".follow-far-speed");
 
         playerConnect.follow = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             LivingEntity target = plugin.drone_targets.get(uuid);

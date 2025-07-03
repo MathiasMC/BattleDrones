@@ -516,7 +516,6 @@ public class BattleDrones_Command implements CommandExecutor {
                                     plugin.getFileUtils().loadParticles();
                                     plugin.getParticleManager().load();
                                     plugin.addHeads();
-                                    plugin.getDroneControllerManager().updateFollowPath();
                                     if (type.equalsIgnoreCase("player")) {
                                         for (String message : plugin.getFileUtils().language.getStringList("reload.all")) {
                                             plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));
@@ -528,7 +527,6 @@ public class BattleDrones_Command implements CommandExecutor {
                                     }
                                 } else if (args[1].equalsIgnoreCase("config")) {
                                     plugin.getFileUtils().loadConfig();
-                                    plugin.getDroneControllerManager().updateFollowPath();
                                     if (type.equalsIgnoreCase("player")) {
                                         for (String message : plugin.getFileUtils().language.getStringList("reload.config")) {
                                             plugin.getServer().dispatchCommand(plugin.consoleSender, ChatColor.translateAlternateColorCodes('&', message.replace("{player}", sender.getName())));

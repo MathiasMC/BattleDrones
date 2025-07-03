@@ -31,6 +31,14 @@ swap:
     - deactivate-2
     - deactivate-3
 
+# Stationary Configuration
+# When enabled, drones remain fixed at their spawn locations.
+# Drone will not follow any targets or move from their initial position.
+stationary: false
+
+# Owner can shift right click to open drone menu
+drone-click: true
+
 dead:
   # Level to set the drone to when dead (0 = disable, the level must be found for the drone)
   set-level: 1
@@ -38,6 +46,9 @@ dead:
   unlocked: 0
   # Keep ammo on drone dead?
   ammo: false
+  # Remove drone on player dead??
+  remove: true
+
   player:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYour flamethrower drone was destroyed by the enemy.'
   wear:
@@ -135,36 +146,29 @@ default:
 
     # Drone head position (x z is best to keep the same value or it will not be a perfect circle around player)
     # But you can create some awesome shapes around player if you have the values a little bit off like x: 1.875 z: 1.575
-    position:
-      # x position (1.575 is left -1.575 is right)
-      x: 1.575
-      # Drone head height (y offset you can use - values also)
-      y: 2
-      # z position (1.575 is left -1.575 is right)
-      z: 1.575
+    # x position (1.575 is left -1.575 is right)
+    position-x: 1.575
+    # Drone head height (y offset you can use - values also)
+    position-y: 2
+    # z position (1.575 is left -1.575 is right)
+    position-z: 1.575
 
-    # Follow mode (if removed it uses default values from config.yml)
-    follow:
-      # Close to target
-      close:
-        # Range it will apply new speed (drone distance to target is lower than range)
-        range: 5
-        # Speed the drone will fly (0.value is recommend)
-        speed: 0.25
-      # Between far and close
-      middle:
-        speed: 0.2
-      # Far from target
-      far:
-        # Range it will apply new speed (drone distance to target is higher than range)
-        range: 6
-        speed: 0.14
+    # Follow mode
+    # Range it will apply new speed (drone distance to target is lower than range)
+    follow-close-range: 5
+    # Speed the drone will fly (0.value is recommend)
+    follow-close-speed: 0.25
+    # Between far and close
+    follow-middle-speed: 0.2
+    # Range it will apply new speed (drone distance to target is higher than range)
+    follow-far-range: 6
+    follow-far-speed: 0.14
 
     # List of blocks the drone cannot shoot thru
-    #block-check:
-    #  - WATER
-    #  - LAVA
-    #  - VINE
+    block-check:
+      - WATER
+      - LAVA
+      - VINE
 
     # You can also use the __global__ to disable everywhere
     #worldguard:
@@ -214,13 +218,11 @@ default:
     health: 50
 
     # Heal drone
-    healing:
+    # Amount of health to add
+    healing-health: 1
 
-      # Amount of health to add
-      health: 1
-
-      # Regen (health) every (x amount of seconds) (0 to disable)
-      delay: 14
+    # Regen (health) every (x amount of seconds) (0 to disable)
+    healing-delay: 14
 
     # Commands when damaged
     hit-commands:
@@ -233,187 +235,31 @@ default:
     park: 50
 
     # This section is run every time the drone shoots
-    run:
-      player:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
-      monster:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
-      animal:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    ability-commands-player:
+      - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    ability-commands-monster:
+      - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
+    ability-commands-animal:
+      - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
 
     # This section is run every time the drone has killed the target
-    killed:
-      player:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
-      monster:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
-      animal:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+    killed-commands-player:
+      - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+    killed-commands-monster:
+      - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
+    killed-commands-animal:
+      - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
 
     # Upgrade commands
-    commands:
-      levelup:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'
-      enough:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your flamethrower drone!'
-      max:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour flamethrower drone is at the max level already!'
+    upgrade-commands-level:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'
+    upgrade-commands-enough:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your flamethrower drone!'
+    upgrade-commands-max:
+      - 'battledrones message {player} &7[&dBattleDrones&7] &cYour flamethrower drone is at the max level already!'
 
-    name:
-      searching: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e1&7)'
-      target: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e1&7)'
-    text:
-      searching: '&aSearching...'
-      target: '&cDetected Enemy...'
-  2:
-    find-target: 3
-    head: flamethrower-2
-    position:
-      x: 1.575
-      y: 2
-      z: 1.575
-    follow:
-      close:
-        range: 5
-        speed: 0.25
-      middle:
-        speed: 0.2
-      far:
-        range: 6
-        speed: 0.14
-    #block-check:
-    #  - WATER
-    #  - LAVA
-    #  - VINE
-    #worldguard:
-    #  damage: []
-    #  players: []
-    #  animals: []
-    #  monsters: []
-    exclude:
-      - villager
-      - vindicator
-      - iron_golem
-      - silverfish
-    min: 0.5
-    max: 5
-    range: 11
-    cooldown: 23
-    projectile-speed: 1
-    projectile-space: 0.9
-    projectile-radius: 1.0
-    setfire-chance: 0.55
-    burning-time: 100
-    cost: 1000
-    max-ammo-slots: 4
-    health: 65
-    healing:
-      health: 1
-      delay: 12
-    hit-commands:
-      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
-    wear-and-tear: 14
-    park: 50
-    run:
-      player:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
-      monster:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
-      animal:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
-    killed:
-      player:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
-      monster:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
-      animal:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
-    commands:
-      levelup:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'
-      enough:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your flamethrower drone!'
-      max:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour flamethrower drone is at the max level already!'
-    name:
-      searching: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e2&7)'
-      target: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e2&7)'
-    text:
-      searching: '&aSearching...'
-      target: '&cDetected Enemy...'
-  3:
-    find-target: 3
-    head: flamethrower-3
-    position:
-      x: 1.575
-      y: 2
-      z: 1.575
-    follow:
-      close:
-        range: 5
-        speed: 0.25
-      middle:
-        speed: 0.2
-      far:
-        range: 6
-        speed: 0.14
-    #block-check:
-    #  - WATER
-    #  - LAVA
-    #  - VINE
-    #worldguard:
-    #  damage: []
-    #  players: []
-    #  animals: []
-    #  monsters: []
-    exclude:
-      - villager
-      - vindicator
-      - iron_golem
-      - silverfish
-    min: 0.5
-    max: 8
-    range: 12
-    cooldown: 19
-    projectile-speed: 1
-    projectile-space: 1.3
-    projectile-radius: 2.1
-    setfire-chance: 0.55
-    burning-time: 160
-    cost: 2000
-    max-ammo-slots: 6
-    health: 75
-    healing:
-      health: 1
-      delay: 10
-    hit-commands:
-      - 'bd sound entity_guardian_death {world} {x} {y} {z} 1 2'
-    wear-and-tear: 16
-    park: 50
-    run:
-      player:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
-      monster:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
-      animal:
-        - 'bd sound entity_guardian_death_land {world} {x} {y} {z} 1 2'
-    killed:
-      player:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
-      monster:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
-      animal:
-        - 'bd actionbar {player} 4 &6Your flamethrower drone killed &c{target}'
-    commands:
-      levelup:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &aYour flamethrower drone is now a level higher!'
-      enough:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have enough coins to upgrade your flamethrower drone!'
-      max:
-        - 'battledrones message {player} &7[&dBattleDrones&7] &cYour flamethrower drone is at the max level already!'
-    name:
-      searching: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e3&7)'
-      target: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e3&7)'
-    text:
-      searching: '&aSearching...'
-      target: '&cDetected Enemy...'
+    name-searching: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e1&7)'
+    name-target: '&6FLAMETHROWER DRONE &7(&3{name}&7) &7(&e1&7)'
+
+    text-searching: '&aSearching...'
+    text-target: '&cDetected Enemy...'

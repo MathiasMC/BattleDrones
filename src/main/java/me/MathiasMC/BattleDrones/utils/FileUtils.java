@@ -109,14 +109,6 @@ public class FileUtils {
         return file;
     }
 
-    public File getGuiFolder() {
-        return this.guiFolder;
-    }
-
-    public File getDronesFolder() {
-        return this.dronesFolder;
-    }
-
     public void loadDroneFiles() {
         for (String drone : droneFiles.keySet()) {
             plugin.droneFiles.put(drone, YamlConfiguration.loadConfiguration(droneFiles.get(drone)));
@@ -134,19 +126,5 @@ public class FileUtils {
             return file.getStringList(path + "block-check");
         }
         return null;
-    }
-
-    public double getDouble(FileConfiguration file, String path, double standard) {
-        if (file.contains(path)) {
-            return file.getDouble(path);
-        }
-        return standard;
-    }
-
-    public double getFollow(FileConfiguration file, String path, String type) {
-        if (file.contains(path + "." + type)) {
-            return file.getDouble(path + "." + type);
-        }
-        return config.getDouble(type);
     }
 }
