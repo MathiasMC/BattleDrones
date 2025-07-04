@@ -79,6 +79,8 @@ public class FaFMissile extends DroneRegistry {
 
         long cooldown = file.getLong(path + "cooldown");
 
+        int tickDead = file.getInt(path + "tick-dead");
+
         String rocketHead = file.getString(path + "rocket-head");
 
         double rocketSpeed = file.getDouble(path + "rocket-speed");
@@ -118,8 +120,8 @@ public class FaFMissile extends DroneRegistry {
             missile.setHeadPose(head.getHeadPose());
 
             new BukkitRunnable() {
-                final Vector p1 = missile.getLocation().toVector();
-                Vector vector = targetLocation.toVector().clone().subtract(p1).normalize().multiply(rocketSpeed);
+                final Vector startVector = missile.getLocation().toVector();
+                Vector vector = targetLocation.toVector().clone().subtract(startVector).normalize().multiply(rocketSpeed);
                 int timer = 0;
                 int particle1 = 0;
                 int particle2 = 0;
@@ -132,16 +134,15 @@ public class FaFMissile extends DroneRegistry {
                     Location targetLocation = target.getLocation();
                     Location missileLocation = missile.getLocation();
 
-                    vector = targetLocation.toVector().clone().subtract(p1).normalize().multiply(rocketSpeed);
+                    vector = targetLocation.toVector().clone().subtract(startVector).normalize().multiply(rocketSpeed);
                     plugin.getEntityManager().lookAT(missile, targetLocation);
 
                     Location directionPose = targetLocation.subtract(missile.getLocation());
                     missile.setHeadPose(new EulerAngle(Math.atan2(Math.sqrt(directionPose.getX()*directionPose.getX() + directionPose.getZ()*directionPose.getZ()), directionPose.getY()) - Math.PI / 2, 0, 0));
 
                     Vector direction = target.getLocation().toVector().subtract(missileLocation.toVector()).normalize();
-                    missile.teleport(p1.toLocation(world).setDirection(direction));
+                    missile.teleport(startVector.toLocation(world).setDirection(direction));
 
-                    p1.add(vector);
                     Location currentMissileLocation = missile.getLocation();
                     ArrayList<LivingEntity> hits = plugin.getEntityManager().getLivingEntitiesAround(missile, 1, 1, 1, 1, exclude, exclude, false);
                     hits.remove(player);
@@ -179,7 +180,7 @@ public class FaFMissile extends DroneRegistry {
                             if (target.isDead()) {
                                 dispatchTargetCommands(target, player, currentMissileLocation, path + "killed", file);
                             }
-                        }, 2);
+                        }, tickDead);
                     }
 
                         if (++particle1 > tick2) {
@@ -197,6 +198,7 @@ public class FaFMissile extends DroneRegistry {
                         }
 
                     timer++;
+                    startVector.add(vector);
                 }
             }.runTaskTimer(plugin, 0, 1);
 
@@ -211,9 +213,6 @@ public class FaFMissile extends DroneRegistry {
                     droneHolder.setWear(file.getInt(path + "wear-and-tear"));
                     droneHolder.setHealth(droneHolder.getHealth() - 1);
                 } else {
-                    List<String> wearDeathCommands = file.getStringList("dead.wear");
-                    dispatchCommands(wearDeathCommands, player);
-
                     DroneDeathEvent droneDeathEvent = new DroneDeathEvent(player, playerConnect, droneHolder);
                     droneDeathEvent.setType(Type.WEAR);
                     plugin.getServer().getPluginManager().callEvent(droneDeathEvent);
@@ -230,6 +229,8 @@ public class FaFMissile extends DroneRegistry {
                         }
 
                         droneHolder.save();
+
+                        dispatchCommands(file.getStringList("dead.wear"), player);
                     }
                     return;
                 }
@@ -251,8 +252,7 @@ public class FaFMissile extends DroneRegistry {
                     return;
                 }
 
-                dispatchCommands(file.getStringList("low-" + "health" + "." + percentLeft), player);
-
+                dispatchCommands(file.getStringList("low-health" + "." + percentLeft), player);
             }
         }, 0, cooldown).getTaskId();
     }

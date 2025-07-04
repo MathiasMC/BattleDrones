@@ -190,20 +190,6 @@ drone-worlds:
 player-world-change-commands:
   - 'battledrones message {player} &7[&dBattleDrones&7] &cYou had an active drone and it was removed, you changed world.'
 
-low-ammo:
-
-  # if player has 0% left warn the player!
-  0:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have any more ammo left.'
-
-  # if player has 10% left warn the player!
-  10:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on ammo only 10% left.'
-
-  # if player has 50% left warn the player!
-  50:
-    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on ammo only 50% left.'
-
 low-health:
 
   # if player has 0% left warn the player!

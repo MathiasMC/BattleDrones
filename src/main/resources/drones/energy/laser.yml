@@ -54,6 +54,20 @@ dead:
   wear:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYour laser drone was destroyed by wear and tear.'
 
+low-ammo:
+
+  # if player has 0% left warn the player!
+  0:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have any more ammo left.'
+
+  # if player has 10% left warn the player!
+  10:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on ammo only 10% left.'
+
+  # if player has 50% left warn the player!
+  50:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on ammo only 50% left.'
+
 gui:
 
   MAX-REACHED:
@@ -193,6 +207,9 @@ default:
 
     # Delay 20 = 1 second
     cooldown: 23
+
+    # Check if target is killed after x amount of ticks
+    tick-dead: 15
 
     # The accuracy of the drone to hit and damage max (0-1)
     chance: 0.45

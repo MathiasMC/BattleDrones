@@ -54,6 +54,20 @@ dead:
   wear:
     - 'battledrones message {player} &7[&dBattleDrones&7] &cYour lightning drone was destroyed by wear and tear.'
 
+low-ammo:
+
+  # if player has 0% left warn the player!
+  0:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou dont have any more ammo left.'
+
+  # if player has 10% left warn the player!
+  10:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on ammo only 10% left.'
+
+  # if player has 50% left warn the player!
+  50:
+    - 'battledrones message {player} &7[&dBattleDrones&7] &cYou are low on ammo only 50% left.'
+
 gui:
 
   MAX-REACHED:
@@ -195,7 +209,7 @@ default:
     cooldown: 100
 
     # Check if target is killed after x amount of ticks
-    target-dead: 15
+    tick-dead: 15
 
     # 0.00-1.00, Chance to set to fire the target
     setfire-chance: 0.25
